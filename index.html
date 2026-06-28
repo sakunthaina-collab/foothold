@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตั้งหลัก — เครื่องมือตั้งหลักเรื่องบัญชีม้า</title>
+<meta name="description" content="เครื่องมือฟรีช่วยคนที่บัญชีถูกระงับ/ถูกกล่าวหาเรื่องบัญชีม้า เข้าใจสถานะตัวเอง เตรียมเอกสาร และไปต่อยังธนาคารหรือทนายที่ช่วยได้จริง">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1b2734; --navy2:#243341; --gold:#caa75f; --gold2:#a8853f; --gold-soft:#d8b774;
+  --paper:#ece7da; --card:#faf6ec; --card-line:#e2d9c5; --ink:#2c271f; --ink2:#4d473b;
+  --mut:#6f6757; --mut2:#5f5849; --sage:#3f6d5f; --warn:#bd5a3c; --warnbg:#fbeee9;
+  --calmbg:#eef4f0; --notebg:#f7f0e2;
+  --serif:'Noto Serif Thai',serif; --sans:'IBM Plex Sans Thai',sans-serif; --doc:'Sarabun',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#c8bea8;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+@keyframes scFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scPop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+a{color:var(--gold2)}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh;width:100%}
+.sidebar{width:286px;flex-shrink:0;background:var(--navy);color:#e9e2d2;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{padding:24px 22px 20px;border-bottom:1px solid rgba(202,167,95,.22)}
+.brand-row{display:flex;align-items:center;gap:11px}
+.brand-mark{width:38px;height:38px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-mark span{font-family:var(--serif);font-weight:700;font-size:21px;color:var(--navy)}
+.brand-name{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.3px;line-height:1}
+.brand-en{font-size:11px;letter-spacing:2px;color:var(--gold);margin-top:3px;text-transform:uppercase}
+.brand-tag{font-size:12px;color:#9aa3ad;margin-top:13px;line-height:1.5}
+.nav{flex:1;overflow-y:auto;padding:16px 13px}
+.nav-h{font-size:10.5px;letter-spacing:1.6px;color:#6f7a85;text-transform:uppercase;padding:4px 10px 9px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;cursor:pointer;margin-bottom:3px;transition:background .15s;border:none;background:transparent;color:inherit;width:100%;text-align:left;font-family:var(--sans)}
+.nav-item:hover{background:rgba(202,167,95,.10)}
+.nav-item.on{background:rgba(202,167,95,.16)}
+.nav-item.lock{opacity:.4;cursor:not-allowed}
+.nav-num{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;background:rgba(255,255,255,.07);color:#aeb6bf}
+.nav-item.on .nav-num{background:var(--gold);color:var(--navy)}
+.nav-item.done .nav-num{background:rgba(108,163,108,.22);color:#bcd6bc}
+.nav-tx{flex:1;min-width:0}
+.nav-lb{font-size:13.5px;font-weight:600;line-height:1.25}
+.nav-sb{font-size:11px;color:#79828c;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item.on .nav-sb{color:#c2b89f}
+.nav-ck{color:var(--gold);font-size:14px}
+.side-foot{padding:15px 17px 18px;border-top:1px solid rgba(202,167,95,.22)}
+.lawyer-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:12px;font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;transition:background .15s}
+.lawyer-btn:hover{background:var(--gold-soft)}
+.save-ind{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11.5px;color:#8b95a0}
+.save-dot{width:7px;height:7px;border-radius:50%;background:#6ca36c;box-shadow:0 0 0 3px rgba(108,163,108,.2);flex-shrink:0}
+
+.main{flex:1;min-width:0;position:relative}
+.wrap{max-width:920px;margin:0 auto;padding:44px 48px 96px}
+
+/* mobile top bar */
+.topbar{display:none;align-items:center;gap:12px;background:var(--navy);color:#e9e2d2;padding:13px 16px;position:sticky;top:0;z-index:40}
+.topbar .brand-mark{width:32px;height:32px}
+.topbar .brand-mark span{font-size:18px}
+.topbar-name{font-family:var(--serif);font-weight:700;font-size:17px}
+.menu-btn{margin-left:auto;background:rgba(255,255,255,.08);border:none;color:#e9e2d2;border-radius:8px;padding:8px 11px;cursor:pointer;font-size:18px;line-height:1}
+.scrim{display:none;position:fixed;inset:0;background:rgba(20,26,33,.55);z-index:45}
+
+/* ---------- content primitives ---------- */
+.screen{animation:scFade .4s ease both}
+.eyebrow{font-size:12px;letter-spacing:2.5px;color:var(--gold2);text-transform:uppercase;font-weight:600}
+h1.q{font-family:var(--serif);font-weight:700;font-size:34px;line-height:1.22;margin:13px 0 0}
+h2.q{font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.3;margin:34px 0 0}
+.lead{font-size:16px;line-height:1.7;color:var(--mut2);max-width:62ch;margin:16px 0 0}
+.hero-h{font-size:42px;max-width:18ch}
+.hero-h .hl{color:var(--gold2)}
+
+.btn-row{display:flex;gap:12px;margin:30px 0 0;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:11px;padding:14px 24px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;border:none;transition:background .15s,border-color .15s,transform .15s}
+.btn svg{display:block}
+.btn-primary{background:var(--navy);color:#f3ecda}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid #c3b89f;font-weight:600}
+.btn-ghost:hover{border-color:var(--gold);background:#f3eee2}
+
+.card{background:var(--card);border:1px solid var(--card-line);border-radius:14px}
+.card.pad{padding:22px 24px}
+
+.note{display:flex;gap:12px;align-items:flex-start;background:var(--notebg);border:1px solid var(--card-line);border-radius:12px;padding:15px 17px;margin:18px 0 0;font-size:13.5px;line-height:1.6}
+.note svg{flex-shrink:0;margin-top:1px}
+.note .t{flex:1}
+.note.warn{background:var(--warnbg);border-color:#e6c4b6}
+.note.calm{background:var(--calmbg);border-color:#cfe0d6}
+.note.dark{background:var(--navy);border-color:var(--navy);color:#cdd4dc}
+
+/* status spectrum (signature) */
+.spectrum{display:flex;flex-direction:column;gap:10px;margin:24px 0 0}
+.opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--card-line);border-radius:13px;padding:15px 17px;cursor:pointer;font-family:var(--sans);transition:border-color .14s,background .14s,transform .14s}
+.opt:hover{border-color:var(--gold);background:#fbf3e2;transform:translateX(2px)}
+.swatch{width:30px;height:30px;border-radius:8px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.ttl{display:block;font-weight:700;font-size:15.5px;color:var(--ink)}
+.sub{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
+.door{font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.door.bank{background:#e7efe9;color:#356152}
+.door.case{background:#ece3d3;color:#7c5320}
+
+/* law cards */
+.law{background:var(--card);border:1px solid var(--card-line);border-radius:13px;padding:18px 20px;margin:12px 0 0}
+.law .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold2);background:#f1e6cf;padding:4px 10px;border-radius:7px;text-transform:uppercase}
+.law h4{font-family:var(--serif);font-weight:600;font-size:17px;margin:11px 0 0;line-height:1.35}
+.law p{font-size:14px;line-height:1.65;color:var(--ink2);margin:7px 0 0}
+.verify{font-size:12px;color:var(--gold2);margin-top:10px;font-weight:600}
+
+/* hero grid */
+.layers{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:42px 0 0}
+.layer{background:var(--card);border:1px solid var(--card-line);border-radius:14px;padding:21px 21px 19px;cursor:pointer;text-align:left;font-family:var(--sans);transition:transform .15s,box-shadow .15s,border-color .15s}
+.layer:hover{transform:translateY(-3px);box-shadow:0 12px 30px -14px rgba(43,39,31,.32);border-color:var(--gold)}
+.layer-top{display:flex;align-items:center;justify-content:space-between}
+.layer-num{width:40px;height:40px;border-radius:10px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:19px}
+.layer-ic{font-size:22px}
+.layer-t{font-family:var(--serif);font-weight:600;font-size:18px;margin:14px 0 0}
+.layer-d{font-size:13.5px;line-height:1.6;color:var(--mut);margin:7px 0 0}
+
+/* fields */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin:14px 0 0}
+.field:first-child{margin-top:0}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+.field .hint{font-weight:400;color:var(--mut);font-size:12px}
+.field input,.field textarea{width:100%;font-family:var(--sans);font-size:14.5px;color:var(--ink);background:#fff;border:1.5px solid var(--card-line);border-radius:10px;padding:11px 13px;transition:border-color .14s}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold)}
+.field textarea{min-height:78px;resize:vertical;line-height:1.55}
+
+/* timeline */
+.tl{display:flex;flex-direction:column;gap:0}
+.tl-item{position:relative;padding:0 0 18px 26px;border-left:2px solid var(--card-line)}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--card)}
+.tl-item .d{font-weight:700;font-size:13.5px;color:var(--navy)}
+.tl-item .e{font-size:14px;color:var(--ink2);margin-top:3px;line-height:1.6}
+
+/* checklist */
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--card-line);cursor:pointer}
+.check:last-child{border-bottom:none}
+.check input{margin-top:3px;width:18px;height:18px;accent-color:var(--gold2);flex-shrink:0}
+.ct{display:block;font-size:14.5px;font-weight:500;color:var(--ink)}
+.cs{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
+
+/* petition document */
+.doc{background:#fff;border:1px solid var(--card-line);border-radius:12px;padding:40px 42px;margin:18px 0 0;font-family:var(--doc);font-size:15.5px;line-height:1.95;color:#1d1a15;white-space:pre-wrap}
+.doc .rt{text-align:right;white-space:pre-wrap}
+.doc .center{text-align:center;white-space:pre-wrap;margin-top:8px}
+.doc b{font-weight:600}
+.fill{background:#fff4cc;border-bottom:1px dashed #d9b53a;padding:0 3px;border-radius:2px;font-style:normal}
+
+/* contacts */
+.contact{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--card-line);border-radius:12px;padding:15px 17px;margin:11px 0 0}
+.contact .ci{width:34px;height:34px;border-radius:9px;background:#f1e6cf;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.contact b{font-size:14.5px}
+.contact .cd{font-size:13px;color:var(--mut2);margin-top:3px;line-height:1.55}
+
+/* dev */
+.dev{margin:34px 0 0;border:1px dashed #c3b89f;border-radius:12px;background:#f3eee2}
+.dev summary{cursor:pointer;padding:14px 18px;font-size:13px;font-weight:600;color:var(--mut2)}
+.dev .body{padding:0 18px 16px;font-size:13px;line-height:1.7;color:var(--ink2)}
+.dev code{background:#e7ddc8;padding:1px 6px;border-radius:5px;font-size:12.5px}
+
+.disclaimer{margin:40px 0 0;padding-top:18px;border-top:1px solid var(--card-line);font-size:12.5px;color:var(--mut);line-height:1.7}
+
+@media (max-width:860px){
+  .sidebar{display:none;position:fixed;left:0;top:0;z-index:50;height:100vh;width:280px;box-shadow:6px 0 30px -10px rgba(0,0,0,.4)}
+  .app.nav-open .sidebar{display:flex}
+  .app.nav-open .scrim{display:block}
+  .topbar{display:flex}
+  .wrap{padding:26px 20px 80px}
+  h1.q{font-size:27px}
+  .hero-h{font-size:31px}
+  .two{grid-template-columns:1fr}
+  .layers{grid-template-columns:1fr}
+  .doc{padding:26px 20px;font-size:14.5px}
+  .opt{flex-wrap:wrap}
+  .door{order:3}
+}
+
+@media print{
+  .sidebar,.topbar,.scrim,.btn-row,.note.no-print,.dev,.eyebrow,.disclaimer,.lead{display:none!important}
+  .main,.wrap{margin:0;padding:0;max-width:none}
+  .doc{border:none;padding:0;margin:0}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="scrim" onclick="closeNav()"></div>
+
+  <!-- top bar (mobile) -->
+  <div class="topbar">
+    <div class="brand-mark"><span>ต</span></div>
+    <div class="topbar-name">ตั้งหลัก</div>
+    <button class="menu-btn" onclick="toggleNav()" aria-label="เมนู">☰</button>
+  </div>
+
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-row">
+        <div class="brand-mark"><span>ต</span></div>
+        <div>
+          <div class="brand-name">ตั้งหลัก</div>
+          <div class="brand-en">Foothold</div>
+        </div>
+      </div>
+      <div class="brand-tag">เครื่องมือตั้งหลักเรื่องบัญชีม้า — ฟรี และข้อมูลไม่ออกจากเครื่องคุณ</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot">
+      <button class="lawyer-btn" onclick="go('next')"><span style="font-size:15px">⚖️</span> หาทนายความ</button>
+      <div class="save-ind"><span class="save-dot"></span> ข้อมูลอยู่ในเครื่องนี้ · ไม่ถูกส่งออก</div>
+    </div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <div class="wrap"><div id="screen"></div></div>
+  </main>
+</div>
+
+<script>
+/* ===================== data model ===================== */
+const STEPS = ['entry','triage','orient','facts','timeline','docs','petition','next'];
+const NAV = [
+  {key:'entry',   num:'•', label:'หน้าแรก',     sub:'ภาพรวมและเริ่มต้น'},
+  {key:'triage',  num:'1', label:'สถานะของคุณ',  sub:'คุณเป็น “สีม้า” ไหน'},
+  {key:'orient',  num:'2', label:'ทางออก',        sub:'ธนาคาร หรือ คดี'},
+  {key:'facts',   num:'3', label:'ข้อเท็จจริง',    sub:'เล่าเรื่องของคุณ'},
+  {key:'timeline',num:'4', label:'ไทม์ไลน์',      sub:'ลำดับเหตุการณ์'},
+  {key:'docs',    num:'5', label:'เอกสาร',         sub:'เช็กลิสต์ก่อนไป'},
+  {key:'petition',num:'6', label:'คำร้อง',         sub:'ร่างหนังสือเพิกถอน'},
+  {key:'next',    num:'7', label:'ส่งต่อ',         sub:'ธนาคาร / ทนาย'},
+];
+
+const state = {
+  step:'entry',
+  status:null,
+  facts:{ name:'', idcard:'', addr:'', phone:'', bank:'', acct:'',
+          caseId:'', bankRef:'', officer:'', station:'',
+          frozenWhen:'', frozenHow:'', involve:'', edd:'' },
+  events:[],
+  done:{}
+};
+
+/* horse-color taxonomy — door = which path the person actually takes (verified CFR/BOT) */
+const STATUS = {
+  nocolor:   {label:'ไม่ปรากฏสี / ม้าน้ำตาล', sw:'#d8c4a8', door:'bank',
+              short:'บัญชีต้องสงสัย ยังไม่มีคดี ไม่มีเลขรับแจ้งความ',
+              meaning:'บัญชีถูกระงับเพราะระบบเฝ้าระวังพฤติกรรม โดย<b>ยังไม่มีผู้เสียหายแจ้งความ ไม่มี Case ID และคุณยังไม่ใช่ผู้ต้องหา</b> — ฝั่งตำรวจ/Prasan เรียก "ไม่ปรากฏสี (CFR)" ส่วนฝั่ง ธปท. เรียกบัญชีต้องสงสัยที่ยังไม่มีเหยื่อว่า "ม้าน้ำตาล/น้ำตาลเข้ม" (ต้นน้ำสุด)'},
+  lightgrey: {label:'ม้าเทาอ่อน', sw:'#cdc7ba', door:'bank',
+              short:'เส้นเงินเข้าข่ายเฝ้าระวัง แต่ยังไม่มีคดีอาญา',
+              meaning:'บัญชีอยู่ในเส้นเงินที่ผู้เสียหายแจ้งสถาบันการเงิน แต่<b>ยังไม่มีการแจ้งความกับตำรวจ</b> — ปลดได้ที่ธนาคารด้วยการยืนยันตัวตนเข้มข้น (EDD)'},
+  grey:      {label:'ม้าเทา', sw:'#9a948a', door:'case',
+              short:'มีเลขรับแจ้งความ/คดีแล้ว',
+              meaning:'มี Case ID และเข้าสู่กระบวนการของพนักงานสอบสวนแล้ว การปลดต้องผ่านการพิสูจน์ข้อเท็จจริงกับพนักงานสอบสวน/ศปอส.ตร.'},
+  darkgrey:  {label:'ม้าเทาเข้ม', sw:'#5f5a52', door:'case',
+              short:'เส้นเงินเข้ม เชื่อมโยงคดีชัด',
+              meaning:'เส้นเงินเชื่อมโยงคดีชัดเจน มักถูกตั้งข้อกล่าวหา การพิสูจน์ "ไม่รู้/ไม่ควรรู้" สำคัญมาก — ควรมีทนายร่วม'},
+  black:     {label:'ม้าดำ', sw:'#26211c', door:'case',
+              short:'มีคดี/ผู้เสียหายแจ้งความ เป็นผู้ต้องหา',
+              meaning:'มีคดีอาญาและผู้เสียหายแจ้งความชัด คุณอาจเป็นผู้ต้องหา <b>ควรปรึกษาทนายก่อนให้การ</b> — ตั้งหลักช่วยเตรียมข้อเท็จจริง ไม่ใช่สู้คดีแทน'}
+};
+
+/* law references keyed by door (verified) */
+const LAW = {
+  bank:[
+    {tag:'ฐานอำนาจระงับ', h:'พ.ร.ก.ฯ มาตรา 6 และ 7 (พ.ศ. 2566)', p:'ม.6 = ธนาคารพบเหตุสงสัยเอง/ได้ข้อมูลจากระบบ · ม.7 = ผู้เสียหายเจ้าของบัญชีแจ้งเอง — ทั้งสองคือฐาน "ระงับธุรกรรม" ไม่ใช่ฐานความผิดอาญา การถูกระงับ ≠ ถูกตั้งข้อหา', v:false},
+    {tag:'แจ้งรายชื่อ→เพิกถอน', h:'พ.ร.ก.ฯ มาตรา 4/2 (เพิ่มโดยฉบับที่ 2 พ.ศ. 2568)', p:'เมื่อ ศปอท. แจ้งรายชื่อ/เลขกระเป๋าดิจิทัลที่เกี่ยวข้องกับความผิด ให้สถาบันการเงินระงับ/ปฏิเสธ/ปิดบัญชี จนกว่าจะมีการ "เพิกถอนรายชื่อ" — นี่คือฐานกฎหมายของระบบม้าเทา/CFR และครอบคลุมกระเป๋าสินทรัพย์ดิจิทัล (crypto) ด้วย', v:false},
+    {tag:'มาตรฐาน EDD', h:'ประกาศ ธปท. ที่ 19/2568 และ 58/2568', p:'ออกตามอำนาจ พ.ร.ก.ฯ — ให้สถาบันการเงินตรวจสอบลูกค้าเข้มข้น (Enhanced Due Diligence) แล้ว "ปลดเองได้" หากพบว่าไม่เกี่ยวข้องกับอาชญากรรม (คำว่า "ม้าเทา/CFR" มาจากชั้นประกาศนี้ ไม่ใช่ตัวบท พ.ร.ก.)', v:true},
+    {tag:'ใครปลด', h:'ธนาคารเป็นผู้ปลด ไม่ใช่ตำรวจ', p:'สำหรับ "ม้าเทาอ่อน/ไม่ปรากฏสี" ที่ยังไม่มีคดี พนักงานสอบสวนไม่มีอำนาจออกคำสั่งถอนอายัด เพราะไม่ได้เป็นผู้สั่งอายัด — ต้องทำ EDD ที่สาขา', v:true}
+  ],
+  case:[
+    {tag:'ฐานอำนาจระงับ', h:'พ.ร.ก.ฯ มาตรา 6 และ 7 (พ.ศ. 2566)', p:'ฐานอำนาจระงับบัญชี — แยกจากฐานความผิดอาญา', v:false},
+    {tag:'ฐานความผิด (ถ้ามี)', h:'พ.ร.ก.ฯ มาตรา 9', p:'เจ้าของบัญชี/ซิม — องค์ประกอบหัวใจคือ "รู้หรือควรรู้" ว่าจะถูกนำไปใช้ทำผิด จุดนี้คือจุดสู้หลัก โทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท หรือทั้งจำทั้งปรับ (ฉบับที่ 2/2568 ไม่ได้แก้ ม.9 — โทษเท่าเดิม)', v:false},
+    {tag:'สิทธิของคุณ', h:'ป.วิ.อาญา ม.134/4 และ ม.131', p:'คุณมีสิทธิจะให้การหรือไม่ให้การก็ได้ มีสิทธิมีทนายร่วมฟังการสอบสวน และขอให้พนักงานสอบสวนรวบรวมพยานหลักฐานพิสูจน์ความบริสุทธิ์ (ม.131)', v:true},
+    {tag:'ช่องทางขอเพิกถอน', h:'ระบบ Prasan (Thaipoliceonline → Bank-Portal)', p:'ยื่นคำขอเพิกถอน HR03/ม้าเทา ออนไลน์ผ่าน ThaID หรือยื่นหนังสือถึงพนักงานสอบสวน/ขอความเป็นธรรมต่อ ศปอส.ตร.', v:true}
+  ]
+};
+
+/* ===================== helpers ===================== */
+const screenEl = document.getElementById('screen');
+const navEl = document.getElementById('nav');
+const appEl = document.getElementById('app');
+const esc = s => (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const F = (v,ph) => v && v.trim() ? esc(v) : `<span class="fill">${ph}</span>`;
+const arrow = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const iWarn='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#bd5a3c" stroke-width="1.9"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+const iInfo='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c79a3e" stroke-width="1.9"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/></svg>';
+const iCheck='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f6d5f" stroke-width="1.9"><path d="M20 6 9 17l-5-5"/></svg>';
+
+function reached(key){
+  // entry & triage always; the rest require a chosen status
+  if(key==='entry'||key==='triage') return true;
+  return !!state.status;
+}
+function go(step){
+  if(!reached(step)) step='triage';
+  state.step=step; closeNav(); render();
+  document.querySelector('.main').scrollTop=0; window.scrollTo({top:0,behavior:'smooth'});
+}
+function setStatus(s){ state.status=s; state.done.triage=true; go('orient'); }
+function markDone(k){ state.done[k]=true; }
+function bind(id,path){ const el=document.getElementById(id); if(el) el.addEventListener('input',e=>{ const k=path.split('.'); let o=state; for(let i=0;i<k.length-1;i++)o=o[k[i]]; o[k[k.length-1]]=e.target.value; }); }
+function toggleNav(){ appEl.classList.toggle('nav-open'); }
+function closeNav(){ appEl.classList.remove('nav-open'); }
+
+/* ===================== sidebar nav ===================== */
+function renderNav(){
+  const cur = state.step;
+  navEl.innerHTML = `<div class="nav-h">ขั้นตอน</div>` + NAV.map(n=>{
+    const on = cur===n.key;
+    const done = state.done[n.key] && !on;
+    const lock = !reached(n.key);
+    return `<button class="nav-item ${on?'on':''} ${done?'done':''} ${lock?'lock':''}" ${lock?'disabled':''} onclick="go('${n.key}')">
+      <span class="nav-num">${n.num}</span>
+      <span class="nav-tx"><span class="nav-lb">${n.label}</span><span class="nav-sb">${n.sub}</span></span>
+      ${done?'<span class="nav-ck">✓</span>':''}
+    </button>`;
+  }).join('');
+}
+
+/* ===================== screens ===================== */
+function screenEntry(){
+  return `<div class="screen">
+    <div class="eyebrow">ตั้งหลัก · เข้าใจ · ไปต่อ</div>
+    <h1 class="q hero-h">ได้ข้อความว่าบัญชี<span class="hl">ถูกระงับ</span>? ตั้งหลักที่นี่</h1>
+    <p class="lead">เครื่องมือช่วยคุณเข้าใจว่าเกิดอะไรขึ้น แยกแยะสถานะตัวเอง เตรียมข้อเท็จจริงและเอกสารให้ครบ แล้วพาไปยังธนาคารหรือทนายที่ช่วยได้จริง — เป็นภาษาที่คนทั่วไปเข้าใจ ไม่ใช่คำแนะนำทางกฎหมายแทนทนายความ</p>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="go('triage')">เริ่มทีละขั้น ${arrow}</button>
+      <button class="btn btn-ghost" onclick="go('next')">⚖️ หาทนายความ</button>
+    </div>
+
+    <div class="note warn" style="margin-top:26px">${iWarn}
+      <div class="t"><b>ก่อนทำอะไร — กันมิจฉาชีพซ้ำ:</b> อย่าโทรเบอร์ใน SMS ทันที · อย่าโอนเงินให้ใครเพื่อ "ปลดบัญชี" · อย่ากดลิงก์ใน SMS · ติดต่อธนาคารผ่านเบอร์หลังบัตร/แอปทางการ และสายด่วน AOC <b>1441</b> เท่านั้น</div>
+    </div>
+    <div class="note calm">${iInfo.replace('#c79a3e','#3f6d5f')}
+      <div class="t">การที่บัญชี "ถูกระงับ" <b>ไม่ได้แปลว่าคุณถูกตั้งข้อหา</b>เสมอไป — หลายกรณีเป็นแค่ระบบเฝ้าระวัง (CFR) และปลดได้ที่ธนาคาร ขั้นแรกเราจะช่วยดูว่าคุณอยู่สถานะไหน</div>
+    </div>
+
+    <div class="layers">
+      ${[
+        ['1','📋','รู้สถานะตัวเอง','ดูว่าคุณเป็น "สีม้า" ใด และประตูของคุณคือธนาคารหรือคดี','triage'],
+        ['2','⚖️','เข้าใจข้อกฎหมาย','เห็นมาตราที่เกี่ยวกับสถานะคุณ และ "จุดที่ต้องพิสูจน์"','triage'],
+        ['3','🗂️','เตรียมเอกสาร+คำร้อง','เก็บข้อเท็จจริง สร้างไทม์ไลน์ และร่างหนังสือเพิกถอน','triage'],
+        ['4','🤝','ส่งต่อคนที่ช่วยได้','ธนาคาร ระบบ Prasan หรือทนายอาสาฟรี','next']
+      ].map(L=>`<button class="layer" onclick="go('${L[4]}')">
+        <div class="layer-top"><div class="layer-num">${L[0]}</div><span class="layer-ic">${L[1]}</span></div>
+        <div class="layer-t">${L[2]}</div><div class="layer-d">${L[3]}</div>
+      </button>`).join('')}
+    </div>
+
+    <div class="note dark">🔒
+      <div class="t">ข้อมูลทั้งหมดอยู่ในเครื่องของคุณเท่านั้น ไม่ถูกส่งออกไปไหน และเครื่องมือนี้เป็นเพียงแนวทางเบื้องต้น ไม่แทนคำปรึกษาจากทนายความ</div>
+    </div>
+  </div>`;
+}
+
+function screenTriage(){
+  const order=['nocolor','lightgrey','grey','darkgrey','black'];
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 1 · คุณอยู่ตรงไหน</div>
+    <h1 class="q">บัญชีของคุณถูกจัดเป็น "สีม้า" อะไร?</h1>
+    <p class="lead">ธนาคารหรือเอกสารมักระบุไว้ — ถ้าไม่แน่ใจ เลือกอันที่ตรงกับสถานการณ์ที่สุด ระบบจะบอกว่า "ประตูของคุณ" คือธนาคารหรือคดี แต่ละสถานะเดินคนละทาง</p>
+    <div class="spectrum">
+    ${order.map(k=>{const s=STATUS[k];const door=s.door==='bank'
+      ?'<span class="door bank">🏦 ปลดที่ธนาคาร</span>'
+      :'<span class="door case">⚖️ ผ่านคดี/ตำรวจ</span>';
+      return `<button class="opt" onclick="setStatus('${k}')">
+        <span class="swatch" style="background:${s.sw}"></span>
+        <span style="flex:1;min-width:0"><span class="ttl">${s.label}</span><span class="sub">${s.short}</span></span>
+        ${door}
+      </button>`;}).join('')}
+    </div>
+    <div class="note">${iInfo}
+      <div class="t">ดูสถานะได้จากข้อความธนาคาร เอกสารหมายอายัด หรือถามที่สาขา/สายด่วน 1441 พร้อมแจ้ง <b>Police Case ID</b> ของคุณ</div>
+    </div>
+    <div class="btn-row"><button class="btn btn-ghost" onclick="go('entry')">ย้อนกลับ</button></div>
+  </div>`;
+}
+
+function screenOrient(){
+  const s=STATUS[state.status], door=s.door, isBank=door==='bank';
+  const laws=LAW[door].map(l=>`<div class="law">
+     <span class="tag">${l.tag}</span>
+     <h4>${l.h}</h4><p>${l.p}</p>
+     ${l.v
+       ?'<div class="verify">⚑ ออกตามอำนาจ พ.ร.ก. / เลขประกาศควรยืนยันฉบับล่าสุดกับทนายก่อนใช้จริง</div>'
+       :'<div class="verify" style="color:#3f6d5f">✓ ตรงตัวบท พ.ร.ก. 2566 (ตรวจกับราชกิจจานุเบกษา/วุฒิสภาแล้ว)</div>'}
+   </div>`).join('');
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 2 · ทางออกของคุณ</div>
+    <h1 class="q">สถานะ "${s.label}" — ${isBank?'ปลดได้ที่ธนาคาร':'เดินผ่านคดี/ตำรวจ'}</h1>
+    <div class="card pad" style="margin-top:18px"><p style="margin:0;font-size:15px;line-height:1.7">${s.meaning}</p></div>
+    <div class="note calm">${iCheck}
+      <div class="t"><b>ขั้นต่อไปของคุณ:</b> ${isBank
+        ? 'นำเอกสารยืนยันตัวตน + แหล่งที่มาเงิน ไปทำ EDD ที่สาขาธนาคาร — เราจะช่วยจัดข้อเท็จจริงและเอกสารให้พร้อมก่อนไป'
+        : 'เตรียมข้อเท็จจริงและคำร้องเพิกถอนเพื่อยื่นผ่านระบบ Prasan / พนักงานสอบสวน และถ้าเป็นผู้ต้องหา ควรปรึกษาทนายก่อนให้การ'}</div>
+    </div>
+    <h2 class="q">กฎหมายที่เกี่ยวกับสถานการณ์คุณ</h2>
+    <p class="lead" style="margin-bottom:4px">นี่คือข้อกฎหมายที่เกี่ยวข้องและ "จุดที่คุณต้องพิสูจน์" — ไม่ใช่คำตัดสินว่าคุณผิดหรือถูก</p>
+    ${laws}
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('triage')">เปลี่ยนสถานะ</button>
+      <button class="btn btn-primary" onclick="go('facts')">เก็บข้อเท็จจริงของคุณ ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+function screenFacts(){
+  const f=state.facts; const isCase=STATUS[state.status].door==='case';
+  setTimeout(()=>{[['fn','facts.name'],['fid','facts.idcard'],['fad','facts.addr'],['fph','facts.phone'],
+    ['fbk','facts.bank'],['fac','facts.acct'],['fci','facts.caseId'],['fbr','facts.bankRef'],
+    ['fof','facts.officer'],['fst','facts.station'],['ffw','facts.frozenWhen'],
+    ['ffh','facts.frozenHow'],['fiv','facts.involve'],['fed','facts.edd']].forEach(([id,p])=>bind(id,p));},0);
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 3 · ข้อเท็จจริงของคุณ</div>
+    <h1 class="q">เล่าตามจริง ทีละช่อง</h1>
+    <p class="lead">กรอกเท่าที่รู้ ช่องไหนไม่รู้เว้นไว้ได้ — ข้อมูลนี้จะกลายเป็นไทม์ไลน์และคำร้องให้อัตโนมัติ</p>
+    <div class="note">${iInfo}<div class="t"><b>ตอบตามความจริงเท่านั้น</b> — ตำรวจและธนาคารตรวจย้อนได้ การให้ข้อมูลเท็จเป็นความผิดใหม่และทำให้เรื่องแย่ลง</div></div>
+    <div class="card pad" style="margin-top:18px">
+      <div class="two">
+        <div class="field"><label>ชื่อ–นามสกุล</label><input id="fn" value="${esc(f.name)}" placeholder="เช่น สมชาย ใจดี"></div>
+        <div class="field"><label>เลขบัตรประชาชน</label><input id="fid" value="${esc(f.idcard)}" placeholder="13 หลัก"></div>
+      </div>
+      <div class="field"><label>ที่อยู่</label><input id="fad" value="${esc(f.addr)}" placeholder="ที่อยู่ตามบัตร / ที่ติดต่อได้"></div>
+      <div class="field"><label>เบอร์โทร <span class="hint">(เบอร์ที่ลงทะเบียนกับธนาคาร)</span></label><input id="fph" value="${esc(f.phone)}" placeholder="08x-xxx-xxxx"></div>
+      <div class="two">
+        <div class="field"><label>ธนาคาร</label><input id="fbk" value="${esc(f.bank)}" placeholder="เช่น กรุงเทพ"></div>
+        <div class="field"><label>เลขที่บัญชีที่ถูกระงับ</label><input id="fac" value="${esc(f.acct)}" placeholder="เลขบัญชี"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label>เลขรับแจ้งความ (Case ID) <span class="hint">ถ้ามี</span></label><input id="fci" value="${esc(f.caseId)}" placeholder="ถ้ายังไม่มี เว้นไว้"></div>
+        <div class="field"><label>เลขอ้างอิงธนาคาร (Bank Ref) <span class="hint">ถ้ามี</span></label><input id="fbr" value="${esc(f.bankRef)}" placeholder=""></div>
+      </div>
+      ${isCase?`<div class="two">
+        <div class="field"><label>พนักงานสอบสวนผู้รับผิดชอบ <span class="hint">ถ้าทราบ</span></label><input id="fof" value="${esc(f.officer)}" placeholder="ยศ-ชื่อ"></div>
+        <div class="field"><label>สถานีตำรวจ <span class="hint">ถ้าทราบ</span></label><input id="fst" value="${esc(f.station)}" placeholder="สน./สภ."></div>
+      </div>`:`<input type="hidden" id="fof"><input type="hidden" id="fst">`}
+      <div class="field"><label>บัญชีถูกระงับเมื่อไหร่ <span class="hint">วัน/เดือน/ปี ที่รู้ว่าใช้ไม่ได้</span></label><input id="ffw" value="${esc(f.frozenWhen)}" placeholder="เช่น 20 มิ.ย. 2569"></div>
+      <div class="field"><label>รู้ได้อย่างไรว่าถูกระงับ</label><textarea id="ffh" placeholder="เช่น ได้ SMS จากธนาคาร / โอนเงินไม่ได้ / ธนาคารโทรแจ้ง">${esc(f.frozenHow)}</textarea></div>
+      <div class="field"><label>คุณเข้าไปเกี่ยวข้องกับเรื่องนี้ได้อย่างไร <span class="hint">เล่าตามจริง — นี่คือหัวใจของคำชี้แจง</span></label><textarea id="fiv" placeholder="เช่น เปิดบัญชีรับเงินค่าขายของออนไลน์ / ถูกหลอกให้เปิดบัญชีผ่านแอปหางาน / ขายของแล้วลูกค้าโอนมา">${esc(f.involve)}</textarea></div>
+      ${!isCase?`<div class="field"><label>ติดต่อธนาคารทำ EDD แล้วหรือยัง ผลเป็นอย่างไร</label><textarea id="fed" placeholder="เช่น ไปสาขาแล้ว ธนาคารให้มาพบตำรวจ / ยังไม่ได้ไป / ธนาคารกำลังตรวจสอบ">${esc(f.edd)}</textarea></div>`:`<input type="hidden" id="fed">`}
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('orient')">ย้อนกลับ</button>
+      <button class="btn btn-primary" onclick="markDone('facts');go('timeline')">สร้างไทม์ไลน์ ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+function buildTimeline(){
+  const f=state.facts; const ev=[];
+  if(f.frozenWhen||f.frozenHow) ev.push({d:f.frozenWhen||'(ระบุวันที่)', e:'บัญชีถูกระงับ — '+(f.frozenHow||'ทราบว่าทำธุรกรรมไม่ได้')});
+  if(f.involve) ev.push({d:'ความเกี่ยวข้อง', e:f.involve});
+  if(f.edd) ev.push({d:'การติดต่อธนาคาร (EDD)', e:f.edd});
+  if(f.caseId) ev.push({d:'มีคดี', e:'เลขรับแจ้งความ (Case ID): '+f.caseId});
+  state.events=ev; return ev;
+}
+
+function screenTimeline(){
+  const ev=buildTimeline();
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 4 · ไทม์ไลน์</div>
+    <h1 class="q">ลำดับเหตุการณ์ของคุณ</h1>
+    <p class="lead">เรียงจากข้อเท็จจริงที่กรอก — ไทม์ไลน์ที่ชัดช่วยให้ธนาคาร/พนักงานสอบสวนเข้าใจเรื่องเร็วขึ้น แก้ไขได้โดยย้อนกลับไปแก้ข้อเท็จจริง</p>
+    ${ev.length? `<div class="card pad" style="margin-top:18px"><div class="tl">${ev.map(x=>`<div class="tl-item"><div class="d">${esc(x.d)}</div><div class="e">${esc(x.e)}</div></div>`).join('')}</div></div>`
+      : `<div class="note">${iInfo}<div class="t">ยังไม่มีข้อมูลพอจะสร้างไทม์ไลน์ — ลองย้อนไปกรอกข้อเท็จจริงเพิ่ม</div></div>`}
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('facts')">แก้ข้อเท็จจริง</button>
+      <button class="btn btn-primary" onclick="markDone('timeline');go('docs')">เอกสารที่ต้องเตรียม ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+function screenDocs(){
+  const isBank=STATUS[state.status].door==='bank';
+  const common=[
+    ['บัตรประชาชนฉบับจริง','ใช้ยืนยันตัวตนที่สาขา/แนบสำเนาคำร้อง'],
+    ['โทรศัพท์ที่ใช้ SIM เบอร์ที่ลงทะเบียนกับธนาคาร','ธนาคารใช้ยืนยันตัวตน'],
+    ['สมุดบัญชี / ข้อมูลบัญชีที่ถูกระงับ',''],
+    ['เอกสารแสดงแหล่งที่มาของเงิน','สลิปเงินเดือน บัญชีรายรับ-รายจ่าย ใบเสร็จ/ออร์เดอร์ขายของ หลักฐานภาษี']
+  ];
+  const bank=[['ข้อความ/SMS หรือหนังสือแจ้งจากธนาคาร','เก็บต้นฉบับ ห้ามลบ'],
+    ['หลักฐานการติดต่อธนาคาร (ถ้าเคยไป)','วันที่ สาขา ผลที่ได้']];
+  const cs=[['สำเนาหมายอายัด / บันทึกแจ้งข้อหา (ถ้ามี)',''],
+    ['แชต/โฆษณาหางาน หรือหลักฐานว่าถูกหลอก (ถ้ามี)','เก็บต้นฉบับ ห้ามลบ'],
+    ['บันทึกแจ้งความในฐานะผู้เสียหาย (ถ้าเคยแจ้ง)','พร้อมเลขรับแจ้ง']];
+  const list=[...common, ...(isBank?bank:cs)];
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 5 · เอกสารที่ต้องเตรียม</div>
+    <h1 class="q">เช็กลิสต์ก่อนไป${isBank?'ธนาคาร':'ยื่นเรื่อง'}</h1>
+    <p class="lead">ติ๊กเมื่อเตรียมได้ — ครบยิ่งมาก เรื่องยิ่งเร็ว</p>
+    <div class="card pad" style="margin-top:18px">
+      ${list.map((x,i)=>`<label class="check"><input type="checkbox" id="ck${i}"><span><span class="ct">${x[0]}</span>${x[1]?`<span class="cs">${x[1]}</span>`:''}</span></label>`).join('')}
+    </div>
+    <div class="note warn">${iWarn}<div class="t">หลักฐานที่แสดงว่าถูกหลอก/เป็นผู้เสียหาย <b>ห้ามลบของจริง</b> เก็บต้นฉบับไว้เสมอ</div></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('timeline')">ย้อนกลับ</button>
+      <button class="btn btn-primary" onclick="markDone('docs');go('petition')">ร่างคำร้อง ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+function screenPetition(){
+  const f=state.facts; const statusLine=STATUS[state.status].label; const isCase=STATUS[state.status].door==='case';
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 6 · คำร้อง</div>
+    <h1 class="q">หนังสือขอเพิกถอนรายชื่อม้าเทา</h1>
+    <p class="lead">ร่างจากข้อเท็จจริงของคุณ ตามรูปแบบทางการ — <b>ส่วนที่ไฮไลต์เหลือง</b> คือช่องที่ยังต้องเติม ตรวจแล้วกด "พิมพ์/บันทึก PDF" เพื่อนำไปยื่น</p>
+    <div class="doc" id="petition"><div class="rt">เขียนที่ ${F('','สถานที่')}
+วันที่ ........ เดือน .......... พ.ศ. ........</div>
+
+<b>เรื่อง</b>  ขอให้เพิกถอนรายชื่อออกจากมาตรการม้าเทา (${esc(statusLine)})
+<b>เรียน</b>  ผู้กำกับการสถานีตำรวจ ${F(f.station,'ระบุสถานี')} ${isCase?'(ผ่าน ศปอส.ตร.)':''}
+
+         ข้าพเจ้า ${F(f.name,'ชื่อ–นามสกุล')} เลขประจำตัวประชาชน ${F(f.idcard,'13 หลัก')}
+ที่อยู่ ${F(f.addr,'ที่อยู่')} โทรศัพท์ ${F(f.phone,'เบอร์โทร')}
+
+         ปัจจุบันข้าพเจ้าถูกระงับการทำธุรกรรมทางการเงินของบัญชีธนาคาร ${F(f.bank,'ธนาคาร')} เลขที่บัญชี ${F(f.acct,'เลขบัญชี')} ตามมาตรา 6 และมาตรา 7 แห่งพระราชกำหนดมาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 และที่แก้ไขเพิ่มเติม โดยจัดกลุ่มเป็น "${esc(statusLine)}" รายละเอียดดังนี้
+            เลขคดี (Case ID) ${F(f.caseId,'ถ้ามี')}
+            เลขอ้างอิงจากธนาคาร (Bank Case ID) ${F(f.bankRef,'ถ้ามี')}
+            พนักงานสอบสวนผู้รับผิดชอบ ${F(f.officer,'ถ้าทราบ')}
+
+         ทั้งนี้ ข้าพเจ้าเข้าไปเกี่ยวข้องกับกรณีดังกล่าว เนื่องจาก
+${F(f.involve,'เล่าข้อเท็จจริงตามจริง')}
+${!isCase? `
+         กรณีบัญชีอยู่ในมาตรการ "ม้าเทาอ่อน/ไม่ปรากฏสี" ข้าพเจ้าได้ติดต่อธนาคารเพื่อตรวจสอบข้อมูลลูกค้าเพิ่มเติม (EDD) แล้ว ผลการดำเนินการ: ${F(f.edd,'ระบุผล')}` : ''}
+         ข้าพเจ้าขอความอนุเคราะห์ให้ท่านเร่งรัดการตรวจสอบข้อเท็จจริง และดำเนินการเพิกถอนรายชื่อของข้าพเจ้าออกจากมาตรการอายัดบัญชีดังกล่าว โดยขอให้พิจารณาดำเนินการตามประมวลกฎหมายวิธีพิจารณาความอาญา มาตรา 131
+
+         ทั้งนี้ หากพ้นกำหนด 7 วันนับแต่วันที่ท่านได้รับหนังสือฉบับนี้ แล้วยังมิได้ดำเนินการใด ข้าพเจ้าขอสงวนสิทธิ์ที่จะใช้หนังสือฉบับนี้เป็นหลักฐานแสดงความบริสุทธิ์ของข้าพเจ้าต่อไป
+
+<div class="center">ขอแสดงความนับถือ
+
+ลงชื่อ ........................................................
+( ${F(f.name,'ชื่อ–นามสกุล')} )</div></div>
+
+    <div class="note no-print">${iInfo}<div class="t">นี่เป็น <b>ร่างตั้งต้น</b> ตามแบบฟอร์มทางการ — ควรให้ทนายตรวจ และปรับถ้อยคำตามข้อเท็จจริงจริงก่อนยื่น</div></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('docs')">ย้อนกลับ</button>
+      <button class="btn btn-ghost" onclick="window.print()">พิมพ์ / บันทึก PDF
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+      </button>
+      <button class="btn btn-primary" onclick="markDone('petition');go('next')">ขั้นสุดท้าย: ส่งต่อ ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+function screenNext(){
+  const isBank = state.status ? STATUS[state.status].door==='bank' : true;
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 7 · ส่งต่อให้คนที่ช่วยได้จริง</div>
+    <h1 class="q">เตรียมครบแล้ว — เอาทั้งหมดไปยื่น</h1>
+    <p class="lead">ตั้งหลักช่วยถึงตรงนี้ ขั้นตัดสินใจและยื่นจริงเป็นของคุณ + คนที่มีอำนาจช่วย</p>
+
+    <h2 class="q">${isBank?'1) ไปธนาคาร (ทางหลักของคุณ)':'1) ยื่นเพิกถอนผ่านช่องทางตำรวจ'}</h2>
+    ${isBank? `
+    <div class="contact"><div class="ci">🏦</div><div><b>สาขาธนาคารเจ้าของบัญชี</b><div class="cd">นำเอกสารตามเช็กลิสต์ไปทำ EDD (ยืนยันตัวตนเข้มข้น) — ธนาคารเป็นผู้ปลดบัญชีม้าเทาอ่อน/ไม่ปรากฏสี</div></div></div>
+    <div class="contact"><div class="ci">☎️</div><div><b>ถ้าธนาคารปฏิเสธ/ปัดให้ไปตำรวจ</b><div class="cd">ร้องเรียน ธปท. (BOT) โทร 1213 · fcc@bot.or.th · services.bot.or.th — และสมาคมธนาคารไทย (TBA) 0 2558 7500</div></div></div>`
+    :`
+    <div class="contact"><div class="ci">🖥️</div><div><b>ระบบ Prasan (ออนไลน์)</b><div class="cd">Thaipoliceonline → "อายัดบัญชีธนาคาร Bank-Portal" → ยืนยันตัวด้วย ThaID → "ส่งคำขอเปิด HR03/ม้าเทา"</div></div></div>
+    <div class="contact"><div class="ci">📄</div><div><b>หรือยื่นหนังสือคำร้อง</b><div class="cd">นำคำร้องที่ร่าง + เอกสาร ยื่นต่อพนักงานสอบสวน หรือขอความเป็นธรรมต่อ ศปอส.ตร.</div></div></div>`}
+
+    <h2 class="q">2) ขอทนายฟรี ถ้าไม่มีเงินจ้าง</h2>
+    <div class="contact"><div class="ci">⚖️</div><div><b>สภาทนายความฯ — ทนายอาสา/ขอแรง</b><div class="cd">ให้คำปรึกษาและช่วยคดีฟรีสำหรับผู้มีรายได้น้อย/เข้าเกณฑ์ · โทร 1167</div></div></div>
+    <div class="contact"><div class="ci">🤝</div><div><b>กองทุนยุติธรรม กระทรวงยุติธรรม</b><div class="cd">ขอเงินช่วยค่าทนาย/ค่าประกันตัว · สายด่วน 1111 กด 77</div></div></div>
+    <div class="contact"><div class="ci">🛡️</div><div><b>สำนักงานอัยการคุ้มครองสิทธิฯ (สคช.)</b><div class="cd">ปรึกษากฎหมายเบื้องต้นฟรี</div></div></div>
+
+    <div class="note calm">${iCheck}<div class="t">ถ้าได้รับ <b>หมายเรียก</b> อย่าให้การโดยไม่มีทนายอยู่ด้วยถ้าไม่จำเป็น และตรวจ <b>กำหนดเวลา</b>ในหมายเสมอ</div></div>
+    <div class="note">${iInfo}<div class="t">ถ้าคุณมี<b>บัญชีนิติบุคคล (บริษัท/ห้างหุ้นส่วน)</b>ด้วย — การปลดบัญชีบุคคลกับนิติบุคคลต้อง<b>ยื่นขอปลดแยกกัน</b> และนิติบุคคลมีเงื่อนไขเพิ่ม (เช่น กรรมการที่อยู่ใน HR-03 ต้องยืนยันตัวตนต่อนายทะเบียน) ควรปรึกษาทนายสำหรับเคสนิติบุคคล</div></div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go('petition')">กลับไปดูคำร้อง</button>
+      <button class="btn btn-primary" onclick="window.print()">พิมพ์ชุดเอกสาร</button>
+    </div>
+
+    <div class="disclaimer">ตั้งหลัก (Foothold) เป็นเครื่องมือให้ข้อมูลและช่วยจัดเตรียมเอกสารเบื้องต้นเท่านั้น ไม่ใช่คำแนะนำทางกฎหมายและไม่แทนทนายความ · ข้อมูลกฎหมายอ้างอิง พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 และฉบับที่ 2 พ.ศ. 2568 ควรยืนยันฉบับล่าสุดกับทนายก่อนใช้จริง</div>
+  </div>`;
+}
+
+/* ===================== router ===================== */
+function render(){
+  renderNav();
+  const map={entry:screenEntry,triage:screenTriage,orient:screenOrient,facts:screenFacts,
+             timeline:screenTimeline,docs:screenDocs,petition:screenPetition,next:screenNext};
+  screenEl.innerHTML=(map[state.step]||screenEntry)();
+}
+render();
+</script>
+</body>
+</html>
