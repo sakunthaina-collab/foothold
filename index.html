@@ -230,21 +230,23 @@ h2.q{font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.3;mar
 
 <script>
 /* ===================== data model ===================== */
-const STEPS = ['entry','triage','orient','facts','timeline','docs','petition','next'];
+const STEPS = ['entry','triage','orient','pattern','facts','timeline','docs','petition','next'];
 const NAV = [
   {key:'entry',   num:'•', label:'หน้าแรก',     sub:'ภาพรวมและเริ่มต้น'},
   {key:'triage',  num:'1', label:'สถานะของคุณ',  sub:'คุณเป็น “สีม้า” ไหน'},
   {key:'orient',  num:'2', label:'ทางออก',        sub:'ธนาคาร หรือ คดี'},
-  {key:'facts',   num:'3', label:'ข้อเท็จจริง',    sub:'เล่าเรื่องของคุณ'},
-  {key:'timeline',num:'4', label:'ไทม์ไลน์',      sub:'ลำดับเหตุการณ์'},
-  {key:'docs',    num:'5', label:'เอกสาร',         sub:'เช็กลิสต์ก่อนไป'},
-  {key:'petition',num:'6', label:'คำร้อง',         sub:'ร่างหนังสือเพิกถอน'},
-  {key:'next',    num:'7', label:'ส่งต่อ',         sub:'ธนาคาร / ทนาย'},
+  {key:'pattern', num:'3', label:'เหตุการณ์',     sub:'รูปแบบเรื่องของคุณ'},
+  {key:'facts',   num:'4', label:'ข้อเท็จจริง',    sub:'เล่าเรื่องของคุณ'},
+  {key:'timeline',num:'5', label:'ไทม์ไลน์',      sub:'ลำดับเหตุการณ์'},
+  {key:'docs',    num:'6', label:'เอกสาร',         sub:'เช็กลิสต์ก่อนไป'},
+  {key:'petition',num:'7', label:'คำร้อง',         sub:'ร่างหนังสือเพิกถอน'},
+  {key:'next',    num:'8', label:'ส่งต่อ',         sub:'ธนาคาร / ทนาย'},
 ];
 
 const state = {
   step:'entry',
   status:null,
+  pattern:null,
   facts:{ name:'', idcard:'', addr:'', phone:'', bank:'', acct:'',
           caseId:'', bankRef:'', officer:'', station:'',
           frozenWhen:'', frozenHow:'', involve:'', edd:'' },
@@ -412,6 +414,121 @@ function screenOrient(){
     ${laws}
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="go('triage')">เปลี่ยนสถานะ</button>
+      <button class="btn btn-primary" onclick="go('${STATUS[state.status].door==='case'?'pattern':'facts'}')">${STATUS[state.status].door==='case'?'ระบุรูปแบบเหตุการณ์':'เก็บข้อเท็จจริงของคุณ'} ${arrow}</button>
+    </div>
+  </div>`;
+}
+
+/* PATTERNS — รูปแบบเหตุการณ์ของผู้ถูกกล่าวหา (อ้างจาก patterns-of-accused.md ในสกิล)
+   ใช้สำหรับ "เตรียมข้อเท็จจริง+เก็บหลักฐาน" เท่านั้น — ห้ามใช้ทำนายผล/ให้คะแนน */
+const PATTERNS = {
+  job:    {icon:'💼', label:'ถูกหลอกผ่านประกาศรับสมัครงาน',
+           lead:'เห็นโพสต์งานรายได้สูง → ส่งบัตร ปชช./บัญชี/สแกนใบหน้าให้ "นายจ้าง" → บัญชีถูกใช้รับเงินจากเหยื่อ',
+           charges:['พ.ร.ก.เทคโนโลยี ม.9 (รู้หรือควรรู้)','ร่วมฉ้อโกงประชาชน (ป.อาญา ม.343)','พ.ร.บ.คอมพ์ ม.14'],
+           prove:['มีเจตนาใช้บัญชีเพื่อตนเอง หรือเพื่อ "นายจ้าง"?','ได้รับ "เงินเดือน/ค่าจ้างเปิดบัญชี" จริงหรือไม่?','ส่งมอบรหัส OTP/รหัสผ่านโดยสมัครใจ?'],
+           evidence:['แชต/ข้อความสนทนาสมัครงาน','ลิงก์โพสต์รับสมัครงาน (ถ้ายังอยู่)','สัญญาจ้างที่ได้รับ (จริงหรือปลอม)','บันทึกการโทรศัพท์ระหว่างนัด','ข้อความขอ OTP / ขอ Mobile Banking','หลักฐานว่ารีบแจ้งระงับบัญชี/แจ้งความเมื่อรู้ตัว'],
+           questions:['ทำงานตำแหน่งอะไร นายจ้างเป็นใคร?','ได้รับเงินเดือนจริงไหม จำนวนเท่าใด?','ทำไมยอมมอบรหัสและสแกนใบหน้าให้คนอื่นควบคุมบัญชี?']},
+  close:  {icon:'👥', label:'ถูกคนใกล้ชิด (เพื่อน/ญาติ) ขอยืม/หลอกให้เปิดบัญชี',
+           lead:'คนรู้จักขอยืมบัญชี/ATM อ้างว่าบัญชีตัวเองมีปัญหา → ถูกนำไปใช้รับเงินฉ้อโกง',
+           charges:['พ.ร.ก.เทคโนโลยี ม.9','ร่วมฉ้อโกงประชาชน','ฟอกเงิน'],
+           prove:['ความสัมพันธ์/ความน่าเชื่อถือของผู้ยืม','พฤติการณ์ส่งมอบอำนาจควบคุม (ATM, รหัส, Mobile Banking?)','ได้รับค่าตอบแทน/เปอร์เซ็นต์/ของขวัญหรือไม่'],
+           evidence:['แชตข้อความขอยืม + เหตุผลที่อ้าง','หลักฐานความสัมพันธ์ใกล้ชิด','ถ้าระบุว่า "ยืมเงิน" → หลักฐานการคืนเงิน','หลักฐานว่ารีบแจ้งระงับเมื่อรู้ผิดวัตถุประสงค์'],
+           questions:['ผู้ยืมเป็นใครกับคุณ?','ทำไมเขาไม่ใช้บัญชีของตัวเอง?','ได้รับผลประโยชน์ตอบแทนหรือไม่?']},
+  sold:   {icon:'💰', label:'ขาย/ให้เช่าบัญชีโดยรู้ตัว',
+           lead:'เห็นโพสต์รับซื้อบัญชี → ยินยอมเปิดและส่งสมุด/ATM/รหัส แลกเงินสด',
+           charges:['พ.ร.ก.เทคโนโลยี ม.9 (และ ม.10 ถ้าชวนผู้อื่นต่อ)','ฟอกเงิน'],
+           prove:['⚠ องค์ประกอบความผิดน่าจะครบ — สู้ให้หลุดทำได้ยาก','รูปคดีหลักคือ <b>"ขอบรรเทาโทษ/รอลงอาญา"</b> ไม่ใช่ "สู้ให้หลุด"','ปัจจัยลดโทษ: ประวัติไม่เคยทำผิด · เหตุจำเป็นทางเศรษฐกิจ · นำเงินคืนผู้เสียหาย · ให้ความร่วมมือชี้คนใหญ่'],
+           evidence:['หลักฐานเหตุจำเป็น/ความยากลำบาก (ใบรับรองแพทย์ ใบรับเงินกู้ ฯลฯ)','หลักฐานการนำเงินคืนผู้เสียหาย (ถ้าทำได้)','ประวัติส่วนตัว — ไม่เคยทำผิดมาก่อน','หลักฐานให้ความร่วมมือกับเจ้าหน้าที่'],
+           questions:['รู้หรือไม่ว่าการขายบัญชีเป็นสิ่งผิดกฎหมาย?','ได้รับค่าตอบแทนเท่าใด?','ใครเป็นคนติดต่อรับซื้อ?'],
+           warn:'เคสนี้ Foothold ช่วยเรื่อง "เตรียมขอบรรเทาโทษ" — ไม่ใช่ "สู้ให้หลุด" ควรปรึกษาทนายตั้งแต่แรกเพื่อรูปคดีที่ดีที่สุด'},
+  shop:   {icon:'🛒', label:'ร้านค้าออนไลน์รับโอนเงินสีเทา (กลโกงสามเหลี่ยม)',
+           lead:'ขายของออนไลน์ปกติ → มิจฉาชีพหลอกเหยื่อโอนเข้าบัญชีร้าน → มิจฉาชีพมารับสินค้า/แลกเงินสด',
+           charges:['ร่วมฉ้อโกงประชาชน','ร่วมฟอกเงิน','(ม.9 อาจไม่ถูกตั้ง ถ้าพิสูจน์ค้าขายจริง)'],
+           prove:['ความสุจริตในการค้าขายตามปกติวิสัย','กิจกรรมค้าขายมีจริง (โพสต์ขาย ออเดอร์ ใบเสร็จ)','ส่งมอบสินค้าจริงตามมูลค่าธุรกรรม','<b>ชื่อผู้โอนเงินตรงกับชื่อผู้ติดต่อซื้อสินค้าหรือไม่</b> — จุดสำคัญที่สุด'],
+           evidence:['โพสต์ขายสินค้า (Facebook/Shopee/Lazada/Line)','แชตสั่งซื้อกับลูกค้า','ใบเสร็จขนส่ง (Kerry/Flash/ไปรษณีย์) + tracking','รายการเดินบัญชีย้อนหลัง (แสดงรูปแบบค้าขายปกติ)','CCTV ร้าน/หน้าร้านถ้ามี','บัญชีรายรับ-รายจ่าย/ภาษี'],
+           questions:['มีธุรกรรมค้าขายจริงไหม?','ส่งสินค้าให้ใคร ช่องทางใด ที่อยู่ใด?','ชื่อผู้โอนเงินตรงกับชื่อผู้สั่งซื้อหรือไม่?']},
+  crypto: {icon:'🪙', label:'ซื้อขายคริปโต/USDT แบบ P2P',
+           lead:'ตั้งคำสั่งขายเหรียญบน P2P → มิจฉาชีพเอาเงินที่หลอกเหยื่อมาโอนเข้าบัญชี เพื่อฟอกเป็นสินทรัพย์ดิจิทัล',
+           charges:['ร่วมฉ้อโกงประชาชน','ร่วมฟอกเงิน','ฉบับที่ 2/2568 ขยายนิยามครอบคลุมกระเป๋าสินทรัพย์ดิจิทัลแล้ว'],
+           prove:['ทำ KYC บนแพลตฟอร์มถูกต้อง','อัตราแลกเปลี่ยนปกติของตลาด ไม่สูงผิดปกติ','<b>ตรวจชื่อบัญชีโอนเงินตรงกับชื่อผู้ซื้อในระบบ P2P</b>'],
+           evidence:['ประวัติคำสั่งซื้อ-ขายบนแพลตฟอร์ม (Binance/Bitkub/อื่นๆ)','แชตสนทนาในคำสั่งซื้อ','หลักฐานการตรวจสลิป/ใบหน้าคู่สัญญาก่อนปล่อยเหรียญ','ประวัติเรท trade ในวันนั้น'],
+           questions:['ตรวจชื่อผู้โอนตรงกับชื่อผู้ซื้อใน P2P หรือไม่?','เรทแลกเปลี่ยนเป็นอย่างไรเทียบตลาด?','ปล่อยเหรียญหลังตรวจสลิปอย่างไร?']},
+  border: {icon:'🚨', label:'ถูกหลอก/พาไปทำงานตะเข็บชายแดน (รวมเหยื่อค้ามนุษย์)',
+           lead:'ถูกชวนไปทำงานบ่อน/ท่องเที่ยวชายแดน → ลักลอบข้ามแดน → กักขัง → บังคับสแกนใบหน้า/โอนเงิน',
+           charges:['ร่วมฉ้อโกงประชาชน','มีส่วนร่วมในองค์กรอาชญากรรมข้ามชาติ','ฟอกเงิน'],
+           prove:['<b>พฤติการณ์ถูกจำกัดเสรีภาพ</b> — เหยื่อค้ามนุษย์/บังคับขู่เข็ญ','ขาดเจตนาโดยสมบูรณ์'],
+           evidence:['ประวัติเดินทาง · ตราประทับหนังสือเดินทาง · ตั๋ว','แชตประวัติถูกล่อลวง/ติดต่อ "นายหน้า"','ใบแจ้งความที่สถานทูต/ตำรวจหลังหนีรอด','ประวัติการรักษาตัว (ร่างกาย/จิตใจ)','รูปถ่าย/วิดีโอจากที่ถูกกักขัง (ถ้ามี)'],
+           questions:['เดินทางข้ามแดนด้วยวิธีใด?','ใครเป็นผู้ควบคุม?','ได้รับเงินค่าตอบแทนสแกนใบหน้าหรือไม่?'],
+           warn:'เคสนี้อยู่นอกขอบเขตที่ Foothold ช่วยเองได้ — ควรติดต่อทนายและองค์กรที่ทำงานเหยื่อค้ามนุษย์<b>ทันที</b>'},
+  loan:   {icon:'💳', label:'ถูกหลอกทำสัญญากู้เงินออนไลน์',
+           lead:'ยื่นกู้ผ่านแอป/เพจปลอม → ถูกหลอกให้เปิดบัญชี/ให้สิทธิ์ควบคุมแอป/รหัส OTP อ้างเพื่อ "สร้างประวัติทางการเงิน"',
+           charges:['พ.ร.ก.เทคโนโลยี ม.9','ร่วมฉ้อโกงประชาชน'],
+           prove:['มีเจตนาขอกู้เงินจริง','ถูกล่อลวงให้ส่งข้อมูลรหัสความปลอดภัย "โดยสำคัญผิด" ว่าธนาคารกำหนด'],
+           evidence:['หน้าเพจ/แอปกู้เงิน (screenshot)','แชตประวัติขอกู้','ภาพถ่ายหน้าจอขั้นตอนกู้เงิน','ประวัติการแจ้งระงับบัญชีหลังรู้ตัวว่าถูกหลอก'],
+           questions:['ทำไมยอมส่งรหัส OTP/สิทธิ์ควบคุมแอปให้คนอื่น?','ได้รับเงินกู้จริงตามสัญญาหรือไม่?']},
+  other:  {icon:'❓', label:'ไม่ตรงกับรูปแบบข้างต้น / ไม่แน่ใจ',
+           lead:'รูปแบบเรื่องของคุณไม่เข้าใน 7 รูปแบบมาตรฐาน — ใช้แนวทางทั่วไปและ<b>ปรึกษาทนาย</b>',
+           charges:['อาจเป็น ม.9 พ.ร.ก.เทคโนโลยี และ/หรือ ความผิดอื่นตามพฤติการณ์'],
+           prove:['ใช้ "เงื่อนไขหลุดคดี 3 ข้อ" เป็น anchor: (1) ไม่ได้ผลประโยชน์ (2) รีบแจ้งระงับเมื่อรู้ตัว (3) ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย'],
+           evidence:['เก็บทุกหลักฐานเกี่ยวกับเหตุการณ์ — แชต ภาพ คลิป ใบเสร็จ ใบแจ้งความ','รายการเดินบัญชีย้อนหลัง'],
+           questions:['เหตุการณ์เกิดขึ้นอย่างไร? เมื่อใด? เกี่ยวข้องกับใครบ้าง?']}
+};
+
+/* เงื่อนไขหลุดคดี 3 ข้อ (anchor) — ใช้ใน screenPattern */
+const ESCAPE_ANCHORS = [
+  {n:1, t:'ไม่มีพฤติการณ์แสวงหาประโยชน์', d:'พิสูจน์ได้ว่า<b>ไม่เคยได้</b>ค่าจ้าง/เปอร์เซ็นต์/ส่วนแบ่ง/ของขวัญ จากธุรกรรมในบัญชี'},
+  {n:2, t:'รีบแจ้งระงับทันทีที่รู้ตัว',  d:'มีหลักฐานเชิงประจักษ์ว่าได้แจ้งระงับบัญชี/แจ้งความ <b>"ก่อน" บัญชีจะถูกใช้โกงผู้อื่น</b> หรือทันทีที่ตรวจพบความผิดปกติ'},
+  {n:3, t:'ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย', d:'มีหลักฐานว่าสมุดบัญชี/มือถือ/ข้อมูลส่วนตัว <b>หลุดจากการครอบครอง</b> (ใบแจ้งของหาย ใบรับซ่อมโทรศัพท์ ฯลฯ)'}
+];
+
+function screenPattern(){
+  // เก็บ pattern ที่เลือกใน state
+  if(!state.pattern) state.pattern=null;
+  const pid = state.pattern;
+  // หน้าเลือก pattern
+  if(!pid){
+    const cards = Object.entries(PATTERNS).map(([k,p])=>`<button class="opt" onclick="state.pattern='${k}';markDone('pattern');render()" style="flex-wrap:wrap">
+      <span class="swatch" style="background:#faf6ec;display:flex;align-items:center;justify-content:center;font-size:18px">${p.icon}</span>
+      <span style="flex:1;min-width:0"><span class="ttl">${p.label}</span><span class="sub">${p.lead}</span></span>
+    </button>`).join('');
+    return `<div class="screen">
+      <div class="eyebrow">ขั้น 3 · เหตุการณ์</div>
+      <h1 class="q">เลือกรูปแบบที่<u>ใกล้เคียง</u>เรื่องของคุณที่สุด</h1>
+      <p class="lead">7 รูปแบบนี้ครอบคลุมเคสบัญชีม้าส่วนใหญ่ที่พบในไทย — เลือกอันที่ใกล้ที่สุด ระบบจะบอกข้อหาที่มักถูกตั้ง จุดที่ต้องพิสูจน์ และหลักฐานที่ควรเตรียม</p>
+      <div class="note">${iInfo}<div class="t"><b>การเลือกรูปแบบ ≠ คำตัดสินว่าคุณผิด</b> — แต่ละรูปแบบมีทั้งคนที่ถูกหลอกจริงและคนที่รู้ตัว เครื่องมือนี้ช่วยจัดระเบียบเรื่อง เพื่อพิสูจน์ <b>ข้อเท็จจริงเฉพาะของคุณ</b></div></div>
+      <div class="spectrum" style="margin-top:20px">${cards}</div>
+      <div class="btn-row"><button class="btn btn-ghost" onclick="go('orient')">ย้อนกลับ</button></div>
+    </div>`;
+  }
+  // หน้าผลของ pattern ที่เลือก
+  const p = PATTERNS[pid];
+  const charges = p.charges.map(c=>`<li>${c}</li>`).join('');
+  const prove   = p.prove.map(c=>`<li>${c}</li>`).join('');
+  const ev      = p.evidence.map(c=>`<li>${c}</li>`).join('');
+  const qs      = p.questions.map(c=>`<li>${c}</li>`).join('');
+  const anchors = ESCAPE_ANCHORS.map(a=>`<div class="law"><span class="tag">หลักฐานชุดที่ ${a.n}</span><h4>${a.t}</h4><p>${a.d}</p></div>`).join('');
+  const warn = p.warn?`<div class="note warn">${iWarn}<div class="t">${p.warn}</div></div>`:'';
+  return `<div class="screen">
+    <div class="eyebrow">ขั้น 3 · เหตุการณ์ที่เลือก</div>
+    <h1 class="q">${p.icon} ${p.label}</h1>
+    <div class="card pad" style="margin-top:16px"><p style="margin:0;font-size:15px;line-height:1.7">${p.lead}</p></div>
+    ${warn}
+    <h2 class="q">ข้อหาที่มักถูกตั้งในเคสรูปแบบนี้</h2>
+    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${charges}</ul></div>
+    <h2 class="q">จุดที่กฎหมายต้องพิสูจน์ "รู้ / ควรรู้"</h2>
+    <p class="lead" style="margin-bottom:0">คำถามเหล่านี้คือสิ่งที่ศาลและพนักงานสอบสวนจะใช้พิจารณา — เตรียมคำตอบให้พร้อม</p>
+    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${prove}</ul></div>
+    <h2 class="q">หลักฐานสำคัญที่ควรเก็บ/รวบรวม</h2>
+    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${ev}</ul></div>
+    <h2 class="q">คำถามที่พนักงานสอบสวนมักถาม</h2>
+    <p class="lead" style="margin-bottom:0">ซ้อมตอบตามความจริง — คำตอบไม่สอดคล้องกับหลักฐานคือจุดอ่อนที่สุด</p>
+    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${qs}</ul></div>
+    <h2 class="q">เงื่อนไข 3 ข้อที่ทำให้คดีบัญชีม้า "หลุด" หรือ "ลดโทษ"</h2>
+    <p class="lead" style="margin-bottom:0">จากแนวคำพิพากษา/อัยการสั่งไม่ฟ้อง — ยิ่งมีหลักฐานครบทั้ง 3 ข้อ ยิ่งดี</p>
+    ${anchors}
+    <div class="note calm">${iCheck}<div class="t"><b>ฎีกาที่ 4920/2567:</b> ศาลฎีกาวินิจฉัยว่า "รับจ้างเปิดบัญชีแล้วมอบสมุด/ATM ให้คนอื่น" เป็นเรื่องผิดปกติวิสัย — อ้าง "ถูกหลอก" ไม่ฟัง แม้จำเลยอายุ 17 ปี → <b>เคสที่ "รับค่าจ้างเปิดบัญชี" จะถูกตีว่า "ควรรู้" เสมอ</b></div></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="state.pattern=null;render()">เลือกรูปแบบใหม่</button>
       <button class="btn btn-primary" onclick="go('facts')">เก็บข้อเท็จจริงของคุณ ${arrow}</button>
     </div>
   </div>`;
@@ -453,7 +570,7 @@ function screenFacts(){
       ${!isCase?`<div class="field"><label>ติดต่อธนาคารทำ EDD แล้วหรือยัง ผลเป็นอย่างไร</label><textarea id="fed" placeholder="เช่น ไปสาขาแล้ว ธนาคารให้มาพบตำรวจ / ยังไม่ได้ไป / ธนาคารกำลังตรวจสอบ">${esc(f.edd)}</textarea></div>`:`<input type="hidden" id="fed">`}
     </div>
     <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('orient')">ย้อนกลับ</button>
+      <button class="btn btn-ghost" onclick="go('${isCase?'pattern':'orient'}')">ย้อนกลับ</button>
       <button class="btn btn-primary" onclick="markDone('facts');go('timeline')">สร้างไทม์ไลน์ ${arrow}</button>
     </div>
   </div>`;
@@ -461,6 +578,7 @@ function screenFacts(){
 
 function buildTimeline(){
   const f=state.facts; const ev=[];
+  if(state.pattern && PATTERNS[state.pattern]) ev.push({d:'รูปแบบเหตุการณ์', e:PATTERNS[state.pattern].label+' — '+PATTERNS[state.pattern].lead});
   if(f.frozenWhen||f.frozenHow) ev.push({d:f.frozenWhen||'(ระบุวันที่)', e:'บัญชีถูกระงับ — '+(f.frozenHow||'ทราบว่าทำธุรกรรมไม่ได้')});
   if(f.involve) ev.push({d:'ความเกี่ยวข้อง', e:f.involve});
   if(f.edd) ev.push({d:'การติดต่อธนาคาร (EDD)', e:f.edd});
@@ -591,7 +709,7 @@ function screenNext(){
 /* ===================== router ===================== */
 function render(){
   renderNav();
-  const map={entry:screenEntry,triage:screenTriage,orient:screenOrient,facts:screenFacts,
+  const map={entry:screenEntry,triage:screenTriage,orient:screenOrient,pattern:screenPattern,facts:screenFacts,
              timeline:screenTimeline,docs:screenDocs,petition:screenPetition,next:screenNext};
   screenEl.innerHTML=(map[state.step]||screenEntry)();
 }
