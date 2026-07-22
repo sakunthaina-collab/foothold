@@ -77,14 +77,29 @@ These statements describe work visible in the repository history and source code
 
 ## Screenshots
 
-No screenshot files are currently committed. Do not add broken image links to the README.
+Screenshot capture is pending because a live demo URL and browser rendering environment were not available during this pass. No fabricated images or broken image links are included.
 
-Planned files for visual QA:
+Planned files to capture from the real application:
 
-- `docs/screenshots/homepage.png` — homepage / situation introduction
-- `docs/screenshots/status-result.png` — status or route-result screen; the repository does not contain a separate search-results page
-- `docs/screenshots/mobile-view.png` — mobile-width view of the main flow
+- `docs/screenshots/home.png` — homepage / situation introduction
+- `docs/screenshots/search.png` — status or route-result screen; the app has no separate search page
+- `docs/screenshots/mobile.png` — mobile-width view of the main flow
 
+After capture, add them to this section using:
+
+~~~markdown
+### Home
+
+![Home](docs/screenshots/home.png)
+
+### Search
+
+![Search](docs/screenshots/search.png)
+
+### Mobile
+
+![Mobile](docs/screenshots/mobile.png)
+~~~
 ## Installation
 
 ### Prerequisites
@@ -131,3 +146,33 @@ A local HTTP server is recommended so relative document downloads behave consist
 ## License
 
 No explicit license was confirmed during the repository review. Add a license before presenting this as reusable open-source software.
+## Architecture
+
+The current implementation is a static, client-side prototype. User-entered facts remain in the page state during the demonstration; there is no backend API or external persistence layer.
+
+~~~mermaid
+flowchart TD
+    User[User] --> Browser[Browser]
+    Browser --> FoodHole[FoodHole static HTML CSS JavaScript]
+    FoodHole --> State[In-memory JavaScript state]
+    FoodHole --> Templates[Bundled DOCX and PDF templates]
+~~~
+
+## Lessons Learned
+
+- UX matters more than adding features when users are dealing with a stressful process.
+- A clear workflow reduces user confusion and makes the next action easier to understand.
+- Progressive disclosure helps users provide complex facts without facing one large form.
+- Static applications can still be structured professionally with explicit scope, privacy boundaries, and maintainable flows.
+- Content accuracy and source verification are product requirements when an interface points users toward public agencies.
+
+## Future Roadmap
+
+- [ ] Authentication
+- [ ] Admin dashboard
+- [ ] Database-backed content management
+- [ ] REST API
+- [ ] Privacy-preserving analytics with explicit consent
+- [ ] Mobile PWA
+- [ ] Automated content and link verification
+- [ ] Browser-based visual regression testing
