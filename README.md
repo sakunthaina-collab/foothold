@@ -77,17 +77,8 @@ These statements describe work visible in the repository history and source code
 
 ## Screenshots
 
-Screenshot capture is pending because a live demo URL and browser rendering environment were not available during this pass. No fabricated images or broken image links are included.
+The following images are cropped from the provided FoodHole demonstration capture. They document the current interface without changing application features.
 
-Planned files to capture from the real application:
-
-- `docs/screenshots/home.png` — homepage / situation introduction
-- `docs/screenshots/search.png` — status or route-result screen; the app has no separate search page
-- `docs/screenshots/mobile.png` — mobile-width view of the main flow
-
-After capture, add them to this section using:
-
-~~~markdown
 ### Home
 
 ![Home](docs/screenshots/home.png)
@@ -99,7 +90,7 @@ After capture, add them to this section using:
 ### Mobile
 
 ![Mobile](docs/screenshots/mobile.png)
-~~~
+
 ## Installation
 
 ### Prerequisites
