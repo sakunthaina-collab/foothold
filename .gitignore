@@ -1,0 +1,41 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials/
+secrets/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors and local tooling
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local exports and potentially sensitive test data
+*.local
+docs/private/
+docs/screenshots/private/
+screenshots/private/
+test-data/private/
