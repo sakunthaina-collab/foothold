@@ -476,29 +476,146 @@ function screenEntry(){
 
 function screenTriage(){
   const order = ['brown_light', 'brown_dark', 'grey_light', 'grey_dark', 'black'];
+  
+  if (!state.triageTab) state.triageTab = 'quiz';
+  if (!state.quiz) state.quiz = { q1: null, q2: null };
+
+  const tab = state.triageTab;
+
+  let tabContent = '';
+
+  if (tab === 'quiz') {
+    // Render Triage Quiz
+    tabContent = `
+      <div class="card pad" style="margin-top:10px">
+        <h3 style="font-size:16px;margin:0 0 12px;font-family:var(--serif);color:var(--navy)">ระบบตอบคำถามประเมินสถานะอัตโนมัติ (Triage Quiz)</h3>
+        
+        <!-- Question 1 -->
+        <div style="margin-bottom:20px">
+          <p style="font-weight:600;margin:0 0 8px">๑. บัญชีธนาคารอื่น ๆ และ E-Wallet ทั้งหมดของคุณถูกระงับพร้อมกันด้วยหรือไม่?</p>
+          <label style="display:block;margin-bottom:8px">
+            <input type="radio" name="q1" value="yes" ${state.quiz.q1 === 'yes' ? 'checked' : ''} onclick="state.quiz.q1='yes';state.quiz.q2=null;render()">
+            <span style="margin-left:8px"><b>ใช่</b> (โดนระงับพร้อมกันทุกธนาคารและ E-Wallet/ShopeePay ทั้งหมด ธุรกรรมออนไลน์ใช้ไม่ได้เลย)</span>
+          </label>
+          <label style="display:block">
+            <input type="radio" name="q1" value="no" ${state.quiz.q1 === 'no' ? 'checked' : ''} onclick="state.quiz.q1='no';render()">
+            <span style="margin-left:8px"><b>ไม่ใช่</b> (ระงับเฉพาะบางบัญชี หรือเฉพาะบัญชีธนาคารที่เกิดเรื่อง บัญชีธนาคารอื่นยังใช้งานได้ปกติ)</span>
+          </label>
+        </div>
+
+        <!-- Question 2 -->
+        ${state.quiz.q1 === 'no' ? `
+        <div style="margin-bottom:20px;padding-top:15px;border-top:1px dashed var(--card-line)">
+          <p style="font-weight:600;margin:0 0 8px">๒. มีคดีอาญาหรือเลขรับแจ้งความในระบบตำรวจ (Case ID ขึ้นต้นด้วย L68...) หรือไม่?</p>
+          <label style="display:block;margin-bottom:8px">
+            <input type="radio" name="q2" value="case_active" ${state.quiz.q2 === 'case_active' ? 'checked' : ''} onclick="state.quiz.q2='case_active';render()">
+            <span style="margin-left:8px"><b>มีแล้ว</b> (ตำรวจสั่งอายัดโดยตรง / มีผู้เสียหายแจ้งความดำเนินคดี / มีเลข Case ID หรือใบหมายเรียก)</span>
+          </label>
+          <label style="display:block;margin-bottom:8px">
+            <input type="radio" name="q2" value="cfr_warn" ${state.quiz.q2 === 'cfr_warn' ? 'checked' : ''} onclick="state.quiz.q2='cfr_warn';render()">
+            <span style="margin-left:8px"><b>เป็นเส้นทางการเงิน (CFR)</b> (ธนาคารแจ้งว่ามีประวัติเส้นเงินพ่วงกับบัญชีทุจริตในระบบ CFR แต่ยังไม่มีตำรวจดำเนินคดีกับเราโดยตรง)</span>
+          </label>
+          <label style="display:block">
+            <input type="radio" name="q2" value="internal_warn" ${state.quiz.q2 === 'internal_warn' ? 'checked' : ''} onclick="state.quiz.q2='internal_warn';render()">
+            <span style="margin-left:8px"><b>ยังไม่มีคดี/เป็นรหัสเฝ้าระวังธนาคาร</b> (ระงับชั่วคราวรหัส FR01/FR02 เนื่องจากระบบความเสี่ยงธนาคารตรวจจับพฤติกรรมเอง)</span>
+          </label>
+        </div>
+        ` : ''}
+
+        <!-- Quiz Result -->
+        ${(state.quiz.q1 === 'yes' || (state.quiz.q1 === 'no' && state.quiz.q2)) ? (() => {
+          let evalStatus = '';
+          if (state.quiz.q1 === 'yes') evalStatus = 'black';
+          else if (state.quiz.q2 === 'case_active') evalStatus = 'grey_dark';
+          else if (state.quiz.q2 === 'cfr_warn') evalStatus = 'grey_light';
+          else evalStatus = 'brown_dark';
+
+          const s = STATUS[evalStatus];
+          return `
+            <div style="background:var(--notebg);border-left:4px solid var(--gold);padding:15px;border-radius:6px;margin-top:20px">
+              <h4 style="margin:0 0 6px;color:var(--navy)">🎯 ผลการประเมินเบื้องต้น: คุณเข้าข่ายกลุ่ม "${s.label}"</h4>
+              <p style="margin:0 0 10px;font-size:14px;color:var(--ink2)">${s.short}</p>
+              <p style="margin:0 0 12px;font-size:13px;line-height:1.5;color:var(--mut)">${s.meaning}</p>
+              <button class="btn btn-primary btn-sm" onclick="setStatus('${evalStatus}')">ใช้สถานะนี้และไปต่อ ${arrow}</button>
+            </div>
+          `;
+        })() : ''}
+      </div>
+    `;
+  } else if (tab === 'direct') {
+    // Original list of 5 colors
+    tabContent = `
+      <div class="spectrum" style="margin-top:10px">
+      ${order.map(k=>{const s=STATUS[k];const door=s.door==='bank'
+        ?'<span class="door bank">🏦 ปลดที่ธนาคาร</span>'
+        :'<span class="door case">⚖️ ผ่านคดี/ตำรวจ</span>';
+        return `<button class="opt" onclick="setStatus('${k}')">
+          <span class="swatch" style="background:${s.sw}"></span>
+          <span style="flex:1;min-width:0"><span class="ttl">${s.label}</span><span class="sub">${s.short}</span></span>
+          ${door}
+        </button>`;}).join('')}
+      </div>
+    `;
+  } else {
+    // Help guide for bank inquiries
+    tabContent = `
+      <div class="card pad" style="margin-top:10px">
+        <h3 style="font-size:16px;margin:0 0 12px;font-family:var(--serif);color:var(--warn)">💡 วิธีเช็คสถานะบัญชีที่โดนระงับ (หากยังไม่ทราบรหัส)</h3>
+        <p style="margin:0 0 12px;line-height:1.6">เมื่อไปติดต่อสาขาธนาคารที่บัญชีโดนระงับ หรือโทรคุยกับ Call Center ให้ถามคำถามสำคัญ 3 ข้อนี้กับเจ้าหน้าที่ เพื่อให้ได้ข้อมูลที่ถูกต้องสำหรับนำมากรอกในระบบ:</p>
+        
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.6;margin-bottom:15px">
+          <thead>
+            <tr style="border-bottom:1.5px solid var(--card-line);background:#f5efe2">
+              <th style="padding:8px;text-align:left;width:40%">คำถามสำคัญที่ต้องถาม</th>
+              <th style="padding:8px;text-align:left">เหตุผลทางคดี</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--card-line)">
+              <td style="padding:8px;font-weight:600">"บัญชีนี้ถูกระงับด้วยรหัสใด?" (FR01, FR02, CFR หรือ HR-03)</td>
+              <td style="padding:8px;color:var(--mut)">ช่วยจำแนกกลุ่มความเสี่ยงและแยกประตูทางออก (ธนาคาร หรือ ตำรวจ)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--card-line)">
+              <td style="padding:8px;font-weight:600">"เลขอ้างอิงคดีคืออะไร?" (ขอเลข Bank Case ID หรือ Police Case ID)</td>
+              <td style="padding:8px;color:var(--mut)">ใช้สำหรับยื่นคำร้องประสานงานหรือปลดบัญชีในระบบ Prasan / 1441</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--card-line)">
+              <td style="padding:8px;font-weight:600">"สถานีตำรวจใดเป็นผู้สั่งอายัด และใครเป็นพนักงานสอบสวน?"</td>
+              <td style="padding:8px;color:var(--mut)">ชี้เป้า สน./สภ. ที่เราต้องส่งจดหมายชี้แจงเพื่อป้องกันหมายจับ</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div style="background:var(--notebg);border-left:4px solid var(--navy);padding:12px;border-radius:6px;font-size:13.5px;line-height:1.6">
+          <b>🗣️ บทพูดแนะนำเมื่อคุยกับพนักงานธนาคาร:</b><br>
+          <i>"สวัสดีครับ ผมได้รับแจ้งว่าบัญชีเงินฝากถูกระงับครับ รบกวนช่วยตรวจสอบข้อมูลรหัสระงับในระบบให้หน่อยครับว่าเป็นรหัสกลุ่มใด (FR01/CFR/HR-03) และเป็นคำสั่งอายัดของสถานีตำรวจใด พร้อมขอเลขอ้างอิง Case ID เพื่อติดต่อชี้แจงด้วยครับ"</i>
+        </div>
+      </div>
+    `;
+  }
+
   return `<div class="screen">
-    <div class="eyebrow">ขั้น 1 · คุณอยู่ตรงไหน</div>
-    <h1 class="q">บัญชีของคุณถูกจัดเป็น "สีม้า" อะไร?</h1>
-    <p class="lead">ธนาคารหรือหน่วยงานรัฐระบุประเภทสีตามระดับความเสี่ยงของระบบ Prasan ทางการ — หากไม่แน่ใจ เลือกที่ใกล้เคียงที่สุด</p>
+    <div class="eyebrow">ขั้น 1 · คัดกรอง</div>
+    <h1 class="q">บัญชีของคุณอยู่ในสถานะใด?</h1>
+    <p class="lead">ระบบคัดกรองสถานะตามเกณฑ์มาตรฐานทางการ เพื่อวิเคราะห์ทางเลือกในการดำเนินการปลดล็อกอย่างถูกต้อง</p>
     
-    <div class="note warn" style="margin-bottom:15px">${iWarn}
+    <!-- Tab Controls -->
+    <div style="display:flex;gap:5px;border-bottom:2px solid var(--card-line);padding-bottom:5px;margin-bottom:15px" class="no-print">
+      <button class="btn btn-sm ${tab === 'quiz' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='quiz';render()" style="padding:8px 12px;font-size:13.5px">🎯 ประเมินสถานะ (Triage Quiz)</button>
+      <button class="btn btn-sm ${tab === 'direct' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='direct';render()" style="padding:8px 12px;font-size:13.5px">🎨 เลือกสีม้าโดยตรง</button>
+      <button class="btn btn-sm ${tab === 'help' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='help';render()" style="padding:8px 12px;font-size:13.5px">💡 วิธีสอบถามธนาคาร</button>
+    </div>
+
+    <!-- Tab Content -->
+    ${tabContent}
+
+    <div class="note warn" style="margin-top:20px">${iWarn}
       <div class="t">
         <b>ความหมายของรหัสเฝ้าระวังของธนาคาร (Fraud Code):</b><br>
         • <b>FR01</b> = บัญชีต้องสงสัยระดับต้น (เทียบเท่า ม้าน้ำตาลอ่อน/เข้ม) มีเหตุสั่งจับตา<br>
         • <b>FR02</b> = บัญชีพัวพันธุรกรรมทุจริตรุนแรง เสี่ยงถูกดำเนินคดีสูงมาก<br>
         • <b>CFR (Case Fraud Report)</b> = จุดเริ่มต้นคดี มีการรับเรื่องระงับธุรกรรม (ระงับด่วน 72 ชม. แรก)
       </div>
-    </div>
-
-    <div class="spectrum">
-    ${order.map(k=>{const s=STATUS[k];const door=s.door==='bank'
-      ?'<span class="door bank">🏦 ปลดที่ธนาคาร</span>'
-      :'<span class="door case">⚖️ ผ่านคดี/ตำรวจ</span>';
-      return `<button class="opt" onclick="setStatus('${k}')">
-        <span class="swatch" style="background:${s.sw}"></span>
-        <span style="flex:1;min-width:0"><span class="ttl">${s.label}</span><span class="sub">${s.short}</span></span>
-        ${door}
-      </button>`;}).join('')}
     </div>
     
     <div class="note">${iInfo}
@@ -1109,7 +1226,7 @@ function screenDownload(){
   const ev = buildTimeline();
   
   // Format timeline events for the statement attachment
-  const timelineStatements = ev.map((x, i) => `   - ${x.d}: ${x.e}`).join('\\n');
+  const timelineStatements = ev.map((x, i) => `   - ${x.d}: ${x.e}`).join('\n');
   
   const factStatement = `บันทึกชี้แจงพฤติการณ์แห่งคดี (แนบท้ายหนังสือร้องเรียน)
 
@@ -1142,6 +1259,15 @@ ${timelineStatements || '   (ยังไม่มีข้อมูลไทม
       <p style="color:var(--mut)">เอกสารชี้แจงรายละเอียดตามหลักกฎหมายไทยที่สร้างอัตโนมัติจากข้อเท็จจริงของคุณ:</p>
       <textarea readonly style="width:100%;height:220px;font-family:monospace;font-size:12.5px;padding:10px;background:#f9f9f9;border:1.5px solid var(--card-line);border-radius:8px;resize:vertical;line-height:1.5" onclick="this.select()">${esc(factStatement)}</textarea>
       <p style="font-size:11.5px;color:var(--mut);margin-top:5px">💡 คลิกที่กล่องด้านบนเพื่อเลือกทั้งหมด แล้วกด Copy ไปวางในโปรแกรม Word หรือส่งในแชตได้ทันที</p>
+    </div>
+
+    <!-- Official AMLO HR-03 Guideline Download -->
+    <div class="card pad" style="margin-top:18px; border-left: 4px solid var(--navy)">
+      <h3>🔑 เอกสารระเบียบราชการที่ต้องพกไปธนาคาร</h3>
+      <p style="color:var(--mut);margin-bottom:10px">พิมพ์ระเบียบ ปปง. (HR-03) เพื่อประกอบการเจรจาต่อหน้าเคาน์เตอร์กับเจ้าหน้าที่ที่ปัดความรับผิดชอบ:</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="forms/amlo-hr03-guideline.pdf" target="_blank" style="text-decoration:none">📥 ดาวน์โหลดแนวทางปฏิบัติ ปปง. รหัส HR-03 (PDF)</a>
+      </div>
     </div>
 
     <div class="card pad" style="margin-top:18px">
