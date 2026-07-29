@@ -443,6 +443,12 @@ function screenEntry(){
     <div class="eyebrow">ตั้งหลัก · เข้าใจ · ไปต่อ</div>
     <h1 class="q hero-h">ได้ข้อความว่าบัญชี<span class="hl">ถูกระงับ</span>? ตั้งหลักที่นี่</h1>
     <p class="lead">เครื่องมือช่วยคุณเข้าใจว่าเกิดอะไรขึ้น แยกแยะสถานะตัวเอง เตรียมข้อเท็จจริงและเอกสารให้ครบ แล้วพาไปยังธนาคารหรือทนายที่ช่วยได้จริง — เป็นภาษาที่คนทั่วไปเข้าใจ ไม่ใช่คำแนะนำทางกฎหมายแทนทนายความ</p>
+    
+    <div style="display:flex;gap:10px;margin:14px 0 20px;flex-wrap:wrap">
+      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ไม่มีค่าใช้จ่าย</div>
+      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ (Client Local Only)</div>
+      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ใช้เวลาประมาณ 8–10 นาที</div>
+    </div>
 
     <div class="btn-row">
       <button class="btn btn-primary" onclick="go('triage')">เริ่มทีละขั้น ${arrow}</button>
@@ -829,7 +835,7 @@ function screenFacts(){
       </div>
 
       <div class="two">
-        <div class="field"><label>เลขรับแจ้งความ (Case ID) <span class="hint">ถ้ามี</span></label><input id="fci" value="${esc(f.caseId)}" placeholder="ถ้ายังไม่มี เว้นไว้"></div>
+        <div class="field"><label>เลขรับแจ้งความ (Case ID) <span class="hint">ถ้ามี</span></label><input id="fci" value="${esc(f.caseId)}" placeholder="ถ้ายังไม่มี เว้นไว้"><div style="margin-top:4px"><span style="cursor:pointer;font-size:11.5px;color:var(--gold);text-decoration:underline" onclick="document.getElementById('fci').value='ไม่มีเลขคดีในมือขณะนี้';bind('fci','facts.caseId')">💡 ไม่มีเลขคดีอยู่ในมือขณะนี้ (คลิกเพื่อระบุ)</span></div></div>
         <div class="field"><label>เลขอ้างอิงธนาคาร (Bank Ref) <span class="hint">ถ้ามี</span></label><input id="fbr" value="${esc(f.bankRef)}" placeholder=""></div>
       </div>
       ${isCase?`<div class="two">
@@ -838,7 +844,14 @@ function screenFacts(){
       </div>`:`<input type="hidden" id="fof"><input type="hidden" id="fst">`}
       <div class="field"><label>บัญชีถูกระงับเมื่อไหร่ <span class="hint">วัน/เดือน/ปี ที่รู้ว่าใช้ไม่ได้</span></label><input id="ffw" value="${esc(f.frozenWhen)}" placeholder="เช่น 20 มิ.ย. 2569"></div>
       <div class="field"><label>รู้ได้อย่างไรว่าถูกระงับ</label><textarea id="ffh" placeholder="เช่น ได้ SMS จากธนาคาร / โอนเงินไม่ได้ / ธนาคารโทรแจ้ง">${esc(f.frozenHow)}</textarea></div>
-      <div class="field"><label>คุณเข้าไปเกี่ยวข้องกับเรื่องนี้ได้อย่างไร <span class="hint">เล่าตามจริง — นี่คือหัวใจของคำชี้แจง</span></label><textarea id="fiv" placeholder="เช่น เปิดบัญชีรับเงินค่าขายของออนไลน์ / ถูกหลอกให้เปิดบัญชีผ่านแอปหางาน / ขายของแล้วลูกค้าโอนมา">${esc(f.involve)}</textarea></div>
+      <div class="field"><label>คุณเข้าไปเกี่ยวข้องกับเรื่องนี้ได้อย่างไร <span class="hint">เล่าตามจริง — นี่คือหัวใจของคำชี้แจง</span></label><textarea id="fiv" placeholder="เช่น เปิดบัญชีรับเงินค่าขายของออนไลน์ / ถูกหลอกให้เปิดบัญชีผ่านแอปหางาน / ขายของแล้วลูกค้าโอนมา">${esc(f.involve)}</textarea>
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-size:11px;color:var(--mut);align-self:center">คำถามช่วยเรียบเรียง:</span>
+          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [เกิดเหตุเมื่อวันที่ ...]';bind('fiv','facts.involve')">+ เกิดเหตุเมื่อไร</span>
+          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [ธนาคารที่เกี่ยวข้องคือ ...]';bind('fiv','facts.involve')">+ ธนาคารใด</span>
+          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [มีการติดต่อกลับพนักงานสอบสวนเมื่อ ...]';bind('fiv','facts.involve')">+ การติดต่อกลับ</span>
+        </div>
+      </div>
       ${!isCase?`<div class="field"><label>ติดต่อธนาคารทำ EDD แล้วหรือยัง ผลเป็นอย่างไร</label><textarea id="fed" placeholder="เช่น ไปสาขาแล้ว ธนาคารให้มาพบตำรวจ / ยังไม่ได้ไป / ธนาคารกำลังตรวจสอบ">${esc(f.edd)}</textarea></div>`:`<input type="hidden" id="fed">`}
     </div>
     <div class="btn-row">
@@ -881,7 +894,29 @@ function screenTimeline(){
     
     ${cctvWarn}
 
-    ${ev.length? `<div class="card pad" style="margin-top:18px"><div class="tl">${ev.map(x=>`<div class="tl-item"><div class="d">${esc(x.d)}</div><div class="e">${esc(x.e)}</div></div>`).join('')}</div></div>`
+    
+    <div class="card pad" style="margin-top:14px">
+      <h3 style="margin:0 0 10px;font-size:15px;font-family:var(--serif)">🗓️ กรอบเวลาดำเนินการทางคดี (Timeline Milestones)</h3>
+      <div style="display:flex;gap:10px;overflow-x:auto;padding-top:5px;padding-bottom:5px">
+        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--gold)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold)">วันนี้</div>
+          <div style="font-size:11.5px;color:var(--ink2);margin-top:2px">รวบรวมข้อเท็จจริง และยื่นคำร้อง EDD/1441</div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--gold)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold)">วันที่ 7</div>
+          <div style="font-size:11.5px;color:var(--ink2);margin-top:2px">ติดตามผลการสอบทาน / การส่งเรื่องเข้า Prasan</div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--card-line)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--mut)">วันที่ 15</div>
+          <div style="font-size:11.5px;color:var(--mut);margin-top:2px">ธนาคารสรุปรายงาน ปปง. (ตามเกณฑ์ 15 วัน)</div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--card-line)">
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--mut)">วันที่ 30</div>
+          <div style="font-size:11.5px;color:var(--mut);margin-top:2px">ครบกำหนดสรุปผลเพิกถอนชื่อ หรือยื่นขอความเป็นธรรม</div>
+        </div>
+      </div>
+    </div>
+    ${ev.length? `<div class="card pad" style="margin-top:14px"><div class="tl">${ev.map(x=>`<div class="tl-item"><div class="d">${esc(x.d)}</div><div class="e">${esc(x.e)}</div></div>`).join('')}</div></div>`
       : `<div class="note">${iInfo}<div class="t">ยังไม่มีข้อมูลพอจะสร้างไทม์ไลน์ — ลองย้อนไปกรอกข้อเท็จจริงเพิ่ม</div></div>`}
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="go('facts')">แก้ข้อเท็จจริง</button>
@@ -1215,6 +1250,24 @@ function screenNext(){
       <button class="btn btn-primary" onclick="window.print()">พิมพ์ชุดเอกสาร</button>
     </div>
 
+    <div class="card pad" style="margin-top:20px;border-left:4px solid var(--navy)">
+      <h3 style="font-size:15px;margin:0 0 10px;font-family:var(--serif)">📋 สรุปรายการปฏิบัติและติดตามผล (Actionable Checklist)</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5">
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <span style="color:#3f6d5f;font-weight:bold">✓</span>
+          <div><b>เอกสารพร้อมแล้ว:</b> ตรวจสอบและดาวน์โหลดแบบฟอร์มคำร้อง หรือคัดลอกบันทึกพฤติการณ์แห่งคดีเก็บไว้เป็นหลักฐาน</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <span style="color:#3f6d5f;font-weight:bold">✓</span>
+          <div><b>ยื่นเรื่องภายในกรอบเวลา:</b> เดินทางไปสาขาธนาคารเพื่อทำ EDD หรือเข้าพบพนักงานสอบสวนตาม สน./สภ. ทันที</div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px">
+          <span style="color:var(--gold);font-weight:bold">⏳</span>
+          <div><b>ติดตามสถานะคดี:</b> ใช้ Bank Case ID หรือ Police Case ID ติดตามผลผ่าน Call Center 1441 กด 2 หรือระบบ Prasan</div>
+        </div>
+      </div>
+    </div>
+    
     <div class="disclaimer">ตั้งหลัก (Foothold) เป็นเครื่องมือให้ข้อมูลและช่วยจัดเตรียมเอกสารเบื้องต้นเท่านั้น ไม่ใช่คำแนะนำทางกฎหมายและไม่แทนทนายความ · ข้อมูลกฎหมายอ้างอิง พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 และฉบับที่ 2 พ.ศ. 2568 ควรยืนยันฉบับล่าสุดกับทนายก่อนใช้จริง</div>
   </div>`;
 }
