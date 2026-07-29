@@ -57,6 +57,10 @@ def run_test():
             
             # Load page
             page.goto(file_url)
+            try:
+                page.wait_for_load_state('networkidle', timeout=2000)
+            except Exception:
+                pass
             page.wait_for_load_state("networkidle")
             page.wait_for_timeout(600) # Allow CSS animations to finish
             
