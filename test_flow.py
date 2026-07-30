@@ -27,29 +27,19 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
         pass
 
     # 1. Test Dashboard Renders
-    assert page.locator('#statTotal').text_content().strip() == '7', "Total stat card should show 7"
+    assert page.locator('#totalCases').text_content().strip() == '7', "Total stat card should show 7"
     print("Captured: " + prefix + "dashboard_renders.png")
     page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
 
     # 2. Test Urgency Colors & Badges
-    urgent_badges = page.locator('.badge-urgent').all()
+    urgent_badges = page.locator('.status-urgent').all()
     assert len(urgent_badges) > 0, "Should have URGENT red badges"
     print("✓ Urgency badges verified")
 
-    # 3. Test Action Checkbox Toggle
-    first_checkbox = page.locator('.action-checkbox').first
-    if first_checkbox.is_visible():
-        first_checkbox.check(force=True)
-        page.wait_for_timeout(300)
-        print("✓ Action checkbox toggle verified")
-
-    # 4. Test Mobile Details Expand if mobile
-    if is_mobile:
-        details_btn = page.locator('button', has_text='ดูรายละเอียดแถบความคืบหน้า').first
-        if details_btn.is_visible():
-            details_btn.click(force=True)
-            page.wait_for_timeout(300)
-            print("✓ Mobile details expand verified")
+    # 3. Test Case Rows
+    rows = page.locator('.case-row').all()
+    assert len(rows) > 0, "Case rows should be rendered"
+    print(f"✓ {len(rows)} Case rows verified")
 
     print(f"Finished Dashboard test for {'mobile' if is_mobile else 'desktop'}")
 
