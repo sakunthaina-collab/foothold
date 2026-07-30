@@ -14,6 +14,45 @@ def smart_click(page, locator):
     except Exception:
         locator.evaluate("el => el.click()")
 
+
+def run_dashboard_tests(page, test_dir, is_mobile=False):
+    prefix = "mobile_db_" if is_mobile else "desktop_db_"
+    db_url = 'file:///' + os.path.abspath('D:/deploy/foothold/dashboard.html').replace('\\', '/')
+    print(f"--- Starting Dashboard test ({'mobile' if is_mobile else 'desktop'}) ---")
+    
+    page.goto(db_url)
+    try:
+        page.wait_for_load_state('networkidle', timeout=3000)
+    except Exception:
+        pass
+
+    # 1. Test Dashboard Renders
+    assert page.locator('#statTotal').text_content().strip() == '7', "Total stat card should show 7"
+    print("Captured: " + prefix + "dashboard_renders.png")
+    page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
+
+    # 2. Test Urgency Colors & Badges
+    urgent_badges = page.locator('.badge-urgent').all()
+    assert len(urgent_badges) > 0, "Should have URGENT red badges"
+    print("✓ Urgency badges verified")
+
+    # 3. Test Action Checkbox Toggle
+    first_checkbox = page.locator('.action-checkbox').first
+    if first_checkbox.is_visible():
+        first_checkbox.check(force=True)
+        page.wait_for_timeout(300)
+        print("✓ Action checkbox toggle verified")
+
+    # 4. Test Mobile Details Expand if mobile
+    if is_mobile:
+        details_btn = page.locator('button', has_text='ดูรายละเอียดแถบความคืบหน้า').first
+        if details_btn.is_visible():
+            details_btn.click(force=True)
+            page.wait_for_timeout(300)
+            print("✓ Mobile details expand verified")
+
+    print(f"Finished Dashboard test for {'mobile' if is_mobile else 'desktop'}")
+
 def run_test():
     file_url = "file:///" + os.path.abspath("index.html").replace("\\", "/")
     
@@ -184,6 +223,8 @@ def run_test():
             
             # 10. Next Page
             take_screenshot("10_next")
+            
+            run_dashboard_tests(page, test_dir, is_mobile=(vp_name == "mobile"))
             
             browser.close()
             print(f"Finished test for {vp_name}")

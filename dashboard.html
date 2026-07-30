@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Safeguard v4.0 — Multi-Case Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark-bg: #0f1419;
+    --dark-card: #1f2937;
+    --dark-border: #374151;
+    --dark-text-primary: #f3f4f6;
+    --dark-text-secondary: #d1d5db;
+    --dark-text-muted: #9ca3af;
+    --accent-amber: #fcd34d; /* WCAG AA 7.2:1 contrast on #1f2937 */
+    --accent-amber-hover: #fbbf24;
+    --accent-red: #fecaca;
+    --accent-red-bg: rgba(239, 68, 68, 0.2);
+    --accent-yellow: #fde047;
+    --accent-yellow-bg: rgba(234, 179, 8, 0.2);
+    --accent-green: #86efac;
+    --accent-green-bg: rgba(34, 197, 94, 0.2);
+    --font-sans: 'IBM Plex Sans Thai', sans-serif;
+    --font-serif: 'Noto Serif Thai', serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--dark-bg); color: var(--dark-text-primary); font-family: var(--font-sans); min-height: 100vh; }
+  
+  .header {
+    background: #111827;
+    border-bottom: 1px solid var(--dark-border);
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand-title { display: flex; align-items: center; gap: 14px; }
+  .brand-badge {
+    background: var(--dark-card);
+    border: 1px solid var(--accent-amber);
+    color: var(--accent-amber);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .brand-text h1 { margin: 0; font-size: 22px; font-family: var(--font-serif); color: var(--dark-text-primary); letter-spacing: 0.3px; }
+  .brand-text p { margin: 4px 0 0; font-size: 12px; color: var(--dark-text-muted); }
+
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-link {
+    color: var(--dark-text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 8px 14px;
+    border: 1px solid var(--dark-border);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: var(--dark-card);
+  }
+  .btn-link:hover { border-color: var(--accent-amber); color: var(--accent-amber); }
+
+  .container { max-width: 1320px; margin: 0 auto; padding: 28px 24px; }
+
+  /* Stats Row */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--dark-border);
+  }
+  .stat-card.urgent::before { background: #ef4444; }
+  .stat-card.at-risk::before { background: #eab308; }
+  .stat-card.on-track::before { background: #22c55e; }
+  .stat-card.active::before { background: var(--accent-amber); }
+
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--dark-text-muted); font-weight: 600; margin-bottom: 8px; }
+  .stat-num { font-family: var(--font-mono); font-size: 32px; font-weight: 700; color: var(--accent-amber); }
+  .stat-card.urgent .stat-num { color: var(--accent-red); }
+  .stat-card.at-risk .stat-num { color: var(--accent-yellow); }
+  .stat-card.on-track .stat-num { color: var(--accent-green); }
+  .stat-desc { font-size: 12px; color: var(--dark-text-muted); margin-top: 6px; }
+
+  /* Main Grid Section */
+  .section-card {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .section-title { margin: 0; font-size: 18px; font-family: var(--font-serif); color: var(--dark-text-primary); display: flex; align-items: center; gap: 10px; }
+  .section-title .badge { font-size: 11px; font-family: var(--font-mono); background: rgba(252, 211, 77, 0.15); color: var(--accent-amber); border: 1px solid rgba(252, 211, 77, 0.3); padding: 2px 8px; border-radius: 10px; }
+
+  /* Desktop Table Style */
+  .table-responsive { overflow-x: auto; }
+  table.cases-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13px;
+  }
+  table.cases-table th {
+    background: #111827;
+    color: var(--dark-text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--dark-border);
+  }
+  table.cases-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--dark-border);
+    color: var(--dark-text-secondary);
+    vertical-align: middle;
+  }
+  table.cases-table tr:last-child td { border-bottom: none; }
+  table.cases-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+  .case-id { font-family: var(--font-mono); font-size: 13px; color: var(--accent-amber); font-weight: 600; }
+  .case-name { font-weight: 600; color: var(--dark-text-primary); }
+  .case-type {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #374151;
+    color: var(--dark-text-secondary);
+  }
+
+  .badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  .badge-urgent { background: var(--accent-red-bg); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-at_risk { background: var(--accent-yellow-bg); color: var(--accent-yellow); border: 1px solid rgba(234, 179, 8, 0.3); }
+  .badge-on_track { background: var(--accent-green-bg); color: var(--accent-green); border: 1px solid rgba(34, 197, 94, 0.3); }
+
+  .priority-high { color: var(--accent-red); font-weight: 600; }
+  .priority-medium { color: var(--accent-yellow); }
+  .priority-low { color: var(--dark-text-muted); }
+
+  /* Progress Stack */
+  .progress-group { display: flex; flex-direction: column; gap: 4px; width: 140px; }
+  .progress-bar-container { display: flex; align-items: center; gap: 8px; font-size: 10.5px; color: var(--dark-text-muted); }
+  .progress-bar-bg { flex: 1; height: 5px; background: #374151; border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--accent-amber); border-radius: 3px; }
+
+  /* Mobile Stack Layout (max-width: 768px) */
+  .mobile-case-list { display: none; flex-direction: column; gap: 12px; }
+  .mobile-case-card {
+    background: #111827;
+    border: 1px solid var(--dark-border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .mobile-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .mobile-card-details {
+    display: none;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--dark-border);
+    font-size: 12.5px;
+  }
+  .mobile-card-details.open { display: block; }
+
+  /* Action Checklist Section */
+  .actions-list { display: flex; flex-direction: column; gap: 10px; }
+  .action-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #111827;
+    border: 1px solid var(--dark-border);
+    padding: 14px 18px;
+    border-radius: 6px;
+    gap: 12px;
+  }
+  .action-left { display: flex; align-items: center; gap: 12px; }
+  .action-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-amber); }
+  .action-task { font-size: 13.5px; color: var(--dark-text-primary); }
+  .action-task.completed { text-decoration: line-through; color: var(--dark-text-muted); }
+  .action-due { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent-amber); }
+
+  /* Toolbar Controls */
+  .toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .btn {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    color: var(--dark-text-primary);
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn:hover { border-color: var(--accent-amber); color: var(--accent-amber); }
+  .btn-primary { background: var(--accent-amber); color: #000; border-color: var(--accent-amber); font-weight: 600; }
+  .btn-primary:hover { background: var(--accent-amber-hover); border-color: var(--accent-amber-hover); color: #000; }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--dark-card);
+    border: 1px solid var(--accent-amber);
+    color: var(--dark-text-primary);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 100;
+  }
+
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .table-responsive { display: none; }
+    .mobile-case-list { display: flex; }
+    .header { padding: 16px 20px; }
+    .container { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand-title">
+    <div class="brand-badge">v4.0</div>
+    <div class="brand-text">
+      <h1>Legal Safeguard — แดชบอร์ดติดตามหลายคดี</h1>
+      <p>Multi-Case AMLO / Prasan / EDD Legal Tracking Engine</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="index.html" class="btn-link">⚙️ เครื่องมือตั้งหลัก (Foothold Single-Case)</a>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Stats Row -->
+  <section class="stats-grid">
+    <div class="stat-card active">
+      <div class="stat-label">คดีทั้งหมด (Total Active)</div>
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-desc">อยู่ในระบบติดตาม localStorage</div>
+    </div>
+    <div class="stat-card urgent">
+      <div class="stat-label">🔴 เร่งด่วน (Urgent &le; 7 วัน)</div>
+      <div class="stat-num" id="statUrgent">0</div>
+      <div class="stat-desc">ต้องยื่นคำร้อง/เอกสารด่วนที่สุด</div>
+    </div>
+    <div class="stat-card at-risk">
+      <div class="stat-label">🟡 เฝ้าระวัง (At Risk &le; 15 วัน)</div>
+      <div class="stat-num" id="statAtRisk">0</div>
+      <div class="stat-desc">ต้องติดตามความคืบหน้าสัปดาห์นี้</div>
+    </div>
+    <div class="stat-card on-track">
+      <div class="stat-label">✓ ตามแผน (On Track &gt; 15 วัน)</div>
+      <div class="stat-num" id="statOnTrack">0</div>
+      <div class="stat-desc">อยู่ในกรอบระยะเวลาตามระเบียบ</div>
+    </div>
+  </section>
+
+  <!-- Case Queue Table Section -->
+  <section class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        📂 ตารางรายการคดีทั้งหมด (Case Queue)
+        <span class="badge" id="casesBadge">0 คดี</span>
+      </h2>
+      <div style="font-size: 12px; color: var(--dark-text-muted);">
+        *เรียงลำดับตาม: ครบกำหนดด่วนที่สุด (ASC) &rarr; ความสำคัญ (DESC)
+      </div>
+    </div>
+
+    <!-- Desktop Table -->
+    <div class="table-responsive">
+      <table class="cases-table" id="casesTable">
+        <thead>
+          <tr>
+            <th>รหัสคดี (Case ID)</th>
+            <th>ชื่อคดี / บุคคล</th>
+            <th>ประเภท</th>
+            <th>วันครบกำหนด (Deadline)</th>
+            <th>ความคืบหน้า (Evidence / Petition / Timeline)</th>
+            <th>ระดับความสำคัญ</th>
+            <th>สถานะความเร่งด่วน</th>
+            <th>งานถัดไป (Next Action)</th>
+          </tr>
+        </thead>
+        <tbody id="casesTbody">
+          <!-- Rendered via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Stacked Card List -->
+    <div class="mobile-case-list" id="mobileCaseList">
+      <!-- Rendered via JS for mobile 390px layout -->
+    </div>
+  </section>
+
+  <!-- Action Checklist Section -->
+  <section class="section-card">
+    <div class="section-header">
+      <h2 class="section-title">
+        ⚡ งานที่ต้องทำสัปดาห์นี้ (Action Checklist)
+        <span class="badge" id="actionsBadge">0 งาน</span>
+      </h2>
+      <div style="font-size: 12px; color: var(--dark-text-muted);">
+        ฟิลเตอร์เฉพาะรายการที่ครบกำหนดภายใน 7 วัน
+      </div>
+    </div>
+    <div class="actions-list" id="actionsList">
+      <!-- Rendered via JS -->
+    </div>
+  </section>
+
+  <!-- Controls & Toolbar Section -->
+  <section class="section-card" style="margin-bottom: 0;">
+    <h3 style="margin: 0 0 14px; font-size: 15px; font-family: var(--font-serif);">🛠️ การจัดการและเครื่องมือเพิ่มเติม</h3>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="handleNewCase()">+ เพิ่มคดีใหม่ (New Case)</button>
+      <button class="btn" onclick="exportCSV()">📥 ส่งออกข้อมูล CSV (Export)</button>
+      <button class="btn" onclick="resetDemoData()">🔄 รีเซ็ตข้อมูลตัวอย่าง (Seed Demo Data)</button>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Seed Data (7 Cases & 4 Action Items)
+const DEMO_CASES = [
+  {
+    id: "ปปง. 1-00847-2569",
+    name: "นายสมชาย อายัดบัญชี (AMLO HR-03)",
+    type: "AMLO",
+    deadline: "2026-08-05",
+    created: "2026-07-15",
+    evidencePercent: 85,
+    petitionPercent: 67,
+    timelinePercent: 92,
+    priority: "high",
+    documents: ["FRO1.pdf", "CFR_v1.2.docx"],
+    nextAction: "ยื่นหนังสือ FRO1 ต่อ ปปง. ภายใน 5 ส.ค."
+  },
+  {
+    id: "ปปง. 1-00923-2569",
+    name: "นางสาวสมหญิง ถูกแอบอ้างสแกนหน้า",
+    type: "Prasan",
+    deadline: "2026-08-03",
+    created: "2026-07-18",
+    evidencePercent: 90,
+    petitionPercent: 80,
+    timelinePercent: 88,
+    priority: "high",
+    documents: ["CFR_Report.pdf"],
+    nextAction: "ยื่นหลักฐาน CCTV สภ.เมือง ภายใน 3 ส.ค."
+  },
+  {
+    id: "ปปง. 1-00756-2569",
+    name: "บริษัท เอสเอ็มอี บัญชีรับโอน",
+    type: "EDD",
+    deadline: "2026-08-12",
+    created: "2026-07-20",
+    evidencePercent: 60,
+    petitionPercent: 40,
+    timelinePercent: 70,
+    priority: "medium",
+    documents: ["EDD_Form.docx"],
+    nextAction: "เข้าทำ EDD ยืนยันตัวตนสาขาธนาคาร"
+  },
+  {
+    id: "ปปง. 1-00612-2569",
+    name: "นายวิชัย เคสยืมบัญชีเพื่อน",
+    type: "Prasan",
+    deadline: "2026-08-14",
+    created: "2026-07-10",
+    evidencePercent: 75,
+    petitionPercent: 50,
+    timelinePercent: 60,
+    priority: "medium",
+    documents: ["Fairness_Letter.pdf"],
+    nextAction: "ส่งจดหมายขอความเป็นธรรมถึง พงส."
+  },
+  {
+    id: "ปปง. 1-00511-2569",
+    name: "นายอนันต์ ร้านค้าออนไลน์สามเหลี่ยม",
+    type: "EDD",
+    deadline: "2026-08-25",
+    created: "2026-07-01",
+    evidencePercent: 95,
+    petitionPercent: 90,
+    timelinePercent: 95,
+    priority: "low",
+    documents: ["Shop_Receipts.pdf"],
+    nextAction: "รอผลการเพิกถอนชื่อจาก ปปง."
+  },
+  {
+    id: "ปปง. 1-00430-2569",
+    name: "นางนภา ขอใช้บัญชีดำรงชีพ",
+    type: "Prasan",
+    deadline: "2026-08-28",
+    created: "2026-07-05",
+    evidencePercent: 50,
+    petitionPercent: 30,
+    timelinePercent: 40,
+    priority: "low",
+    documents: ["Livelihood_Request.docx"],
+    nextAction: "ยื่นขออนุมัติบัญชีดำรงชีพต่อ พงส."
+  },
+  {
+    id: "ปปง. 1-00301-2569",
+    name: "นายสุรชัย บัญชีม้าน้ำตาล",
+    type: "EDD",
+    deadline: "2026-09-02",
+    created: "2026-06-25",
+    evidencePercent: 100,
+    petitionPercent: 100,
+    timelinePercent: 100,
+    priority: "low",
+    documents: ["Unfreeze_Done.pdf"],
+    nextAction: "ปลดอายัดสำเร็จแล้ว"
+  }
+];
+
+const DEMO_ACTIONS = [
+  { id: "action_1", caseId: "ปปง. 1-00847-2569", task: "ยื่นหนังสือ FRO1 ต่อ ปปง. ภายใน 5 ส.ค.", done: false, dueDate: "2026-08-05" },
+  { id: "action_2", caseId: "ปปง. 1-00923-2569", task: "ยื่นหลักฐาน CCTV สภ.เมือง ภายใน 3 ส.ค.", done: false, dueDate: "2026-08-03" },
+  { id: "action_3", caseId: "ปปง. 1-00756-2569", task: "เข้าทำ EDD ยืนยันตัวตนสาขาธนาคาร", done: false, dueDate: "2026-08-12" },
+  { id: "action_4", caseId: "ปปง. 1-00612-2569", task: "ส่งจดหมายขอความเป็นธรรมถึง พงส.", done: true, dueDate: "2026-08-14" }
+];
+
+// Initialize localStorage
+function initDashboard() {
+  if (!localStorage.getItem('cases')) {
+    localStorage.setItem('cases', JSON.stringify(DEMO_CASES));
+    localStorage.setItem('actionItems', JSON.stringify(DEMO_ACTIONS));
+  }
+  renderDashboard();
+}
+
+function getCases() {
+  try { return JSON.parse(localStorage.getItem('cases')) || []; }
+  catch(e) { return DEMO_CASES; }
+}
+
+function getActions() {
+  try { return JSON.parse(localStorage.getItem('actionItems')) || []; }
+  catch(e) { return DEMO_ACTIONS; }
+}
+
+// Urgency Calculator Rules
+function getUrgencyInfo(deadlineStr) {
+  const deadline = new Date(deadlineStr);
+  const now = new Date();
+  const diffTime = deadline - now;
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (daysLeft <= 7) {
+    return { status: 'urgent', badgeClass: 'badge-urgent', text: '🔴 URGENT (' + (daysLeft <= 0 ? 'วันนี้' : daysLeft + ' วัน') + ')' };
+  } else if (daysLeft <= 15) {
+    return { status: 'at_risk', badgeClass: 'badge-at_risk', text: '🟡 AT RISK (' + daysLeft + ' วัน)' };
+  } else {
+    return { status: 'on_track', badgeClass: 'badge-on_track', text: '✓ ON TRACK (' + daysLeft + ' วัน)' };
+  }
+}
+
+function priorityVal(p) {
+  if (p === 'high') return 3;
+  if (p === 'medium') return 2;
+  return 1;
+}
+
+// Main Render Function
+function renderDashboard() {
+  const cases = getCases();
+  const actions = getActions();
+
+  // Sorting: Deadline ASC -> Priority DESC
+  cases.sort((a, b) => {
+    const d1 = new Date(a.deadline), d2 = new Date(b.deadline);
+    if (d1 - d2 !== 0) return d1 - d2;
+    return priorityVal(b.priority) - priorityVal(a.priority);
+  });
+
+  // Calculate Stats
+  let urgentCount = 0, atRiskCount = 0, onTrackCount = 0;
+  cases.forEach(c => {
+    const info = getUrgencyInfo(c.deadline);
+    if (info.status === 'urgent') urgentCount++;
+    else if (info.status === 'at_risk') atRiskCount++;
+    else onTrackCount++;
+  });
+
+  document.getElementById('statTotal').textContent = cases.length;
+  document.getElementById('statUrgent').textContent = urgentCount;
+  document.getElementById('statAtRisk').textContent = atRiskCount;
+  document.getElementById('statOnTrack').textContent = onTrackCount;
+  document.getElementById('casesBadge').textContent = cases.length + ' คดี';
+
+  // Render Desktop Table
+  const tbody = document.getElementById('casesTbody');
+  tbody.innerHTML = cases.map(c => {
+    const u = getUrgencyInfo(c.deadline);
+    const pClass = 'priority-' + c.priority;
+    const pText = c.priority === 'high' ? 'สูง (High)' : (c.priority === 'medium' ? 'ปานกลาง' : 'ต่ำ');
+    
+    return `
+      <tr>
+        <td class="case-id">${esc(c.id)}</td>
+        <td class="case-name">${esc(c.name)}</td>
+        <td><span class="case-type">${esc(c.type)}</span></td>
+        <td><span style="font-family:var(--font-mono);">${c.deadline}</span></td>
+        <td>
+          <div class="progress-group">
+            <div class="progress-bar-container">
+              <span>พยาน:</span>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${c.evidencePercent}%"></div></div>
+              <span>${c.evidencePercent}%</span>
+            </div>
+            <div class="progress-bar-container">
+              <span>คำร้อง:</span>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${c.petitionPercent}%;background:#60a5fa"></div></div>
+              <span>${c.petitionPercent}%</span>
+            </div>
+          </div>
+        </td>
+        <td><span class="${pClass}">${pText}</span></td>
+        <td><span class="badge-status ${u.badgeClass}">${u.text}</span></td>
+        <td style="font-size:12.5px;">${esc(c.nextAction)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  // Render Mobile Stacked Layout (390px strategy)
+  const mobileList = document.getElementById('mobileCaseList');
+  mobileList.innerHTML = cases.map((c, idx) => {
+    const u = getUrgencyInfo(c.deadline);
+    return `
+      <div class="mobile-case-card">
+        <div class="mobile-card-top">
+          <div>
+            <div class="case-id">${esc(c.id)}</div>
+            <div class="case-name" style="font-size:14px;margin-top:2px">${esc(c.name)}</div>
+            <div style="margin-top:4px"><span class="case-type">${esc(c.type)}</span></div>
+          </div>
+          <div>
+            <span class="badge-status ${u.badgeClass}">${u.text}</span>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--dark-text-muted);">
+          <b>งานถัดไป:</b> ${esc(c.nextAction)}
+        </div>
+        <button onclick="toggleMobileDetails(${idx})" style="background:none;border:none;color:var(--accent-amber);font-size:11.5px;padding:6px 0 0;cursor:pointer;text-decoration:underline;">
+          ดูรายละเอียดแถบความคืบหน้า &darr;
+        </button>
+        <div class="mobile-card-details" id="mobileDetails_${idx}">
+          <div style="margin-bottom:6px"><b>วันครบกำหนด:</b> <span style="font-family:var(--font-mono);">${c.deadline}</span></div>
+          <div class="progress-group" style="width:100%">
+            <div class="progress-bar-container">
+              <span>พยานหลักฐาน:</span>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${c.evidencePercent}%"></div></div>
+              <span>${c.evidencePercent}%</span>
+            </div>
+            <div class="progress-bar-container">
+              <span>คำร้อง/จดหมาย:</span>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${c.petitionPercent}%;background:#60a5fa"></div></div>
+              <span>${c.petitionPercent}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Render Action Checklist (Tasks due within 7 days)
+  const oneWeek = Date.now() + 7 * 86400000;
+  const filteredActions = actions.filter(a => new Date(a.dueDate) <= oneWeek);
+  
+  document.getElementById('actionsBadge').textContent = filteredActions.length + ' งานสัปดาห์นี้';
+  const actionsList = document.getElementById('actionsList');
+  
+  if (filteredActions.length === 0) {
+    actionsList.innerHTML = '<div style="color:var(--dark-text-muted);font-size:13px;padding:10px;">ไม่มีงานที่ต้องทำภายใน 7 วันนี้</div>';
+  } else {
+    actionsList.innerHTML = filteredActions.map(a => `
+      <div class="action-item">
+        <div class="action-left">
+          <input type="checkbox" class="action-checkbox" ${a.done ? 'checked' : ''} onchange="toggleActionDone('${a.id}')">
+          <div>
+            <div class="action-task ${a.done ? 'completed' : ''}">${esc(a.task)}</div>
+            <div style="font-size:11.5px;color:var(--dark-text-muted);">รหัสคดี: ${esc(a.caseId)}</div>
+          </div>
+        </div>
+        <div class="action-due">${a.dueDate}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function toggleMobileDetails(idx) {
+  const el = document.getElementById('mobileDetails_' + idx);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleActionDone(id) {
+  const actions = getActions();
+  const target = actions.find(a => a.id === id);
+  if (target) {
+    target.done = !target.done;
+    localStorage.setItem('actionItems', JSON.stringify(actions));
+    renderDashboard();
+    showToast('อัปเดตสถานะงานเรียบร้อยแล้ว');
+  }
+}
+
+function handleNewCase() {
+  showToast('📌 ปุ่มเพิ่มคดีใหม่ (New Case Modal) จะเปิดใช้งานในเวอร์ชัน Phase 1.5');
+}
+
+function exportCSV() {
+  const cases = getCases();
+  let csv = 'Case ID,Name,Type,Deadline,Evidence %,Petition %,Timeline %,Priority,Next Action\n';
+  cases.forEach(c => {
+    csv += `"${c.id}","${c.name}","${c.type}","${c.deadline}",${c.evidencePercent},${c.petitionPercent},${c.timelinePercent},"${c.priority}","${c.nextAction}"\n`;
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'Legal_Safeguard_Cases.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast('📥 ดาวน์โหลดไฟล์ CSV เรียบร้อยแล้ว');
+}
+
+function resetDemoData() {
+  localStorage.setItem('cases', JSON.stringify(DEMO_CASES));
+  localStorage.setItem('actionItems', JSON.stringify(DEMO_ACTIONS));
+  renderDashboard();
+  showToast('🔄 รีเซ็ตข้อมูลตัวอย่าง 7 คดีสำเร็จ');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3500);
+}
+
+function esc(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+document.addEventListener('DOMContentLoaded', initDashboard);
+</script>
+</body>
+</html>
