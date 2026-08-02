@@ -26,20 +26,41 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
     except Exception:
         pass
 
-    # 1. Test Dashboard Renders
-    assert page.locator('#totalCases').text_content().strip() == '7', "Total stat card should show 7"
-    print("Captured: " + prefix + "dashboard_renders.png")
-    page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
+    # 1. Test Dashboard Renders (4 Stat Cards)
+    total_val = page.locator('#totalCases').text_content().strip()
+    urgent_val = page.locator('#urgentCount').text_content().strip()
+    at_risk_val = page.locator('#atRiskCount').text_content().strip()
+    on_track_val = page.locator('#onTrackCount').text_content().strip()
+    assert total_val == '7', "Total stat card should show 7"
+    assert urgent_val.isdigit() and int(urgent_val) > 0, "Urgent stat card should be a positive number"
+    assert at_risk_val.isdigit(), "At risk stat card should be a number"
+    assert on_track_val.isdigit(), "On track stat card should be a number"
+    print(f"✓ 1. Stat cards rendered (Total: {total_val}, Urgent: {urgent_val}, At Risk: {at_risk_val}, On Track: {on_track_val})")
 
-    # 2. Test Urgency Colors & Badges
-    urgent_badges = page.locator('.status-urgent').all()
-    assert len(urgent_badges) > 0, "Should have URGENT red badges"
-    print("✓ Urgency badges verified")
+    # 2. Test Urgency Color Badges (Red / Amber / Green)
+    assert len(page.locator('.status-urgent').all()) > 0, "Should have 🔴 URGENT red badges"
+    assert len(page.locator('.status-at-risk').all()) > 0, "Should have 🟡 AT RISK amber badges"
+    assert len(page.locator('.status-on-track').all()) > 0, "Should have ✓ ON TRACK green badges"
+    print("✓ 2. Urgency color badges verified (Red, Amber, Green)")
 
-    # 3. Test Case Rows
+    # 3. Test Case Queue Sorting & Rows
     rows = page.locator('.case-row').all()
-    assert len(rows) > 0, "Case rows should be rendered"
-    print(f"✓ {len(rows)} Case rows verified")
+    assert len(rows) == 7, "Case queue should render 7 rows"
+    print("✓ 3. Case queue 7 rows verified")
+
+    # 4. Test Next Actions Checklist
+    action_items = page.locator('#actionList > div').all()
+    assert len(action_items) > 0, "Next actions list should render active tasks"
+    print(f"✓ 4. Next actions ({len(action_items)} items) verified")
+
+    # 5. Test Back Button Link
+    back_btn = page.locator('.back-btn')
+    assert back_btn.is_visible(), "Back link should be visible"
+    print("✓ 5. Back link to single-case tool verified")
+
+    # 6. Capture Screenshot
+    page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
+    print("Captured: " + prefix + "dashboard_renders.png")
 
     print(f"Finished Dashboard test for {'mobile' if is_mobile else 'desktop'}")
 
