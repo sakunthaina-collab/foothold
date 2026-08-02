@@ -87,7 +87,34 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
     assert len(page.locator('.type-amlo').all()) > 0, "Should have AMLO type badges"
     print("✓ 7. Type badge colors verified (AMLO/Prasan/EDD)")
 
-    # 8. Capture Screenshot
+    # 8. Test Status Update Form & Save
+    freshness_badges = page.locator('.freshness-badge').all()
+    assert len(freshness_badges) > 0, "Should render freshness badges"
+    print(f"✓ 8a. Freshness badges ({len(freshness_badges)}) verified")
+
+    update_btn = page.locator('.btn-mini', has_text='อัปเดตสถานะ').first
+    if update_btn.is_visible():
+        update_btn.click()
+        page.wait_for_timeout(300)
+        status_ta = page.locator('.status-form textarea').first
+        assert status_ta.is_visible(), "Status update textarea should be visible"
+        status_ta.fill("Playwright test update note")
+        page.locator('.status-form-actions .btn-mini', has_text='บันทึก').first.click()
+        page.wait_for_timeout(500)
+        print("✓ 8b. Status update saved successfully")
+
+    # 9. Test Status History Modal
+    history_btn = page.locator('.btn-mini-ghost', has_text='ประวัติ').first
+    if history_btn.is_visible():
+        history_btn.click()
+        page.wait_for_timeout(300)
+        hist_modal = page.locator('#historyModal')
+        assert hist_modal.is_visible(), "History modal should be visible"
+        print("✓ 9. Status history modal verified")
+        page.locator('#historyModal .modal-close').click()
+        page.wait_for_timeout(200)
+
+    # 10. Capture Screenshot
     page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
     print("Captured: " + prefix + "dashboard_renders.png")
 

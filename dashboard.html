@@ -42,6 +42,35 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
 .btn-delete:hover { color: #fecaca; background: #7f1d1d; }
 .back-btn { font-size: 12px; color: #fcd34d; text-decoration: none; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 6px; }
 
+/* Status Update & Freshness Indicator Styles */
+.case-row-wrapper { background: #1f2937; border: 0.5px solid #374151; border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+.case-row-wrapper:hover { border-color: #4b5563; }
+.case-row-wrapper .case-row { background: transparent; border: none; margin-bottom: 0; }
+
+.status-update-section { display: flex; align-items: center; gap: 8px; padding: 8px 16px 12px; border-top: 1px dashed #374151; flex-wrap: wrap; }
+.freshness-badge { font-size: 10.5px; padding: 3px 8px; border-radius: 10px; font-family: 'IBM Plex Mono', monospace; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; }
+.freshness-fresh { background: #14532d; color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+.freshness-aging { background: #78350f; color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+.freshness-stale { background: #7f1d1d; color: #fecaca; border: 1px solid rgba(239, 68, 68, 0.3); }
+.freshness-none { background: #374151; color: #9ca3af; }
+
+.btn-mini { font-size: 11px; padding: 5px 10px; background: #fcd34d; color: #0f1419; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; transition: background 0.15s ease; }
+.btn-mini:hover { background: #fde047; }
+.btn-mini-ghost { font-size: 11px; padding: 5px 10px; background: none; color: #9ca3af; border: 1px solid #374151; border-radius: 4px; cursor: pointer; transition: all 0.15s ease; }
+.btn-mini-ghost:hover { color: #f3f4f6; border-color: #4b5563; }
+.cta-call-link { font-size: 11px; color: #fecaca; text-decoration: underline; margin-left: 4px; font-weight: 500; }
+.cta-call-link:hover { color: #ef4444; }
+
+.status-form { margin: 8px 16px 12px; padding: 12px; background: #0f1419; border: 1px solid #374151; border-radius: 6px; }
+.status-form textarea { width: 100%; min-height: 60px; background: #1f2937; border: 1px solid #374151; color: #e5e7eb; border-radius: 4px; padding: 8px; font-size: 12px; font-family: inherit; resize: vertical; outline: none; }
+.status-form textarea:focus { border-color: #fcd34d; }
+.status-form-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+.status-history { max-height: 280px; overflow-y: auto; margin-top: 8px; padding-right: 4px; }
+.status-history-item { padding: 10px 12px; border-left: 3px solid #fcd34d; margin-bottom: 8px; background: #111827; border-radius: 0 6px 6px 0; font-size: 12px; }
+.status-history-date { color: #fcd34d; font-family: 'IBM Plex Mono', monospace; font-size: 11px; margin-bottom: 4px; }
+.status-history-note { color: #d1d5db; line-height: 1.4; }
+
 /* Modal Overlay */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
 .modal-overlay.open { display: flex; }
@@ -178,6 +207,23 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
       <button class="btn btn-primary" onclick="submitNewCase()">บันทึกคดีใหม่</button>
+</div>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🕐 ประวัติการอัปเดตสถานะคดี</h2>
+      <button class="modal-close" onclick="closeHistoryModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="historyCaseInfo" style="font-size:13px;color:#fcd34d;font-family:'IBM Plex Mono',monospace;margin-bottom:12px;font-weight:600;"></div>
+      <div class="status-history" id="historyContent"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeHistoryModal()">ปิด</button>
     </div>
   </div>
 </div>
@@ -185,13 +231,62 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
 <div class="toast" id="toast"></div>
 <script>
 const DEMO_CASES = [
-  { id: "ปปง. 1-00847-2569", name: "M.P. Account Freeze", type: "AMLO", deadline: "2026-08-05", evidencePercent: 85, petitionPercent: 67, priority: "high", nextAction: "Submit FRO1 by Aug 5" },
-  { id: "ปปง. 1-00923-2569", name: "Khlong Toei Co., Ltd", type: "Prasan", deadline: "2026-08-08", evidencePercent: 72, petitionPercent: 50, priority: "high", nextAction: "Deliver CFR to Prasan" },
-  { id: "ปปง. 1-00756-2569", name: "P.K. Sole Proprietor", type: "EDD", deadline: "2026-08-15", evidencePercent: 58, petitionPercent: 40, priority: "medium", nextAction: "Confirm EDD status via 1441" },
-  { id: "ปปง. 1-00615-2569", name: "A.S. Joint Liability", type: "AMLO", deadline: "2026-08-19", evidencePercent: 45, petitionPercent: 25, priority: "medium", nextAction: "Collect 3 supporting docs" },
-  { id: "ปปง. 1-00521-2569", name: "S.N. Unauthorized Use", type: "Prasan", deadline: "2026-08-23", evidencePercent: 62, petitionPercent: 25, priority: "medium", nextAction: "Await legal review" },
-  { id: "ปปง. 1-00489-2569", name: "B.K. Dormant Account", type: "EDD", deadline: "2026-08-30", evidencePercent: 30, petitionPercent: 15, priority: "low", nextAction: "Start initial draft" },
-  { id: "ปปง. 1-00421-2569", name: "T.M. Clearance", type: "AMLO", deadline: "2026-08-08", evidencePercent: 100, petitionPercent: 100, priority: "low", nextAction: "Closed - Account unfrozen" }
+  { 
+    id: "ปปง. 1-00847-2569", 
+    name: "M.P. Account Freeze", 
+    type: "AMLO", 
+    deadline: "2026-08-05", 
+    evidencePercent: 85, 
+    petitionPercent: 67, 
+    priority: "high", 
+    nextAction: "Submit FRO1 by Aug 5",
+    statusLog: [
+      { date: "2026-08-01T14:30:00.000Z", note: "โทรสอบถาม 1441 — เจ้าหน้าที่แจ้งว่าอยู่ระหว่างพิจารณา คาดว่าทราบผลภายใน 5 วัน", updatedBy: "manual" },
+      { date: "2026-07-25T10:15:00.000Z", note: "ยื่นเอกสารหลักฐานเพิ่มเติมที่สำนักงาน ปปง.", updatedBy: "manual" }
+    ]
+  },
+  { 
+    id: "ปปง. 1-00923-2569", 
+    name: "Khlong Toei Co., Ltd", 
+    type: "Prasan", 
+    deadline: "2026-08-08", 
+    evidencePercent: 72, 
+    petitionPercent: 50, 
+    priority: "high", 
+    nextAction: "Deliver CFR to Prasan",
+    statusLog: [
+      { date: "2026-07-27T09:00:00.000Z", note: "เข้าพบพนักงานสอบสวน สภ.คลองเตย ยื่นหนังสือขอความเป็นธรรม", updatedBy: "manual" }
+    ]
+  },
+  { 
+    id: "ปปง. 1-00756-2569", 
+    name: "P.K. Sole Proprietor", 
+    type: "EDD", 
+    deadline: "2026-08-15", 
+    evidencePercent: 58, 
+    petitionPercent: 40, 
+    priority: "medium", 
+    nextAction: "Confirm EDD status via 1441",
+    statusLog: [
+      { date: "2026-07-20T11:20:00.000Z", note: "ยื่นเรื่องทำ EDD กับสาขาธนาคารกรุงเทพ", updatedBy: "manual" }
+    ]
+  },
+  { id: "ปปง. 1-00615-2569", name: "A.S. Joint Liability", type: "AMLO", deadline: "2026-08-19", evidencePercent: 45, petitionPercent: 25, priority: "medium", nextAction: "Collect 3 supporting docs", statusLog: [] },
+  { id: "ปปง. 1-00521-2569", name: "S.N. Unauthorized Use", type: "Prasan", deadline: "2026-08-23", evidencePercent: 62, petitionPercent: 25, priority: "medium", nextAction: "Await legal review", statusLog: [] },
+  { id: "ปปง. 1-00489-2569", name: "B.K. Dormant Account", type: "EDD", deadline: "2026-08-30", evidencePercent: 30, petitionPercent: 15, priority: "low", nextAction: "Start initial draft", statusLog: [] },
+  { 
+    id: "ปปง. 1-00421-2569", 
+    name: "T.M. Clearance", 
+    type: "AMLO", 
+    deadline: "2026-08-08", 
+    evidencePercent: 100, 
+    petitionPercent: 100, 
+    priority: "low", 
+    nextAction: "Closed - Account unfrozen",
+    statusLog: [
+      { date: "2026-07-30T16:00:00.000Z", note: "ธนาคารแจ้งปลดอายัดเรียบร้อยแล้ว บัญชีใช้งานได้ปกติ", updatedBy: "manual" }
+    ]
+  }
 ];
 
 function initDashboard() {
@@ -206,6 +301,22 @@ function getStatus(deadline) {
   if (days <= 7) return { status: 'urgent', badge: '🔴 URGENT', class: 'status-urgent' };
   if (days <= 15) return { status: 'at_risk', badge: '🟡 AT RISK', class: 'status-at-risk' };
   return { status: 'on_track', badge: '✓ ON TRACK', class: 'status-on-track' };
+}
+
+function getFreshness(statusLog) {
+  if (!statusLog || statusLog.length === 0) {
+    return { class: 'freshness-none', label: '⚪ ยังไม่มีการอัปเดต', isStale: false };
+  }
+  const latest = new Date(statusLog[statusLog.length - 1].date);
+  const daysSince = Math.max(0, Math.floor((Date.now() - latest.getTime()) / 86400000));
+
+  if (daysSince <= 3) {
+    return { class: 'freshness-fresh', label: `🟢 อัปเดตเมื่อ ${daysSince === 0 ? 'วันนี้' : daysSince + ' วันก่อน'}`, isStale: false };
+  }
+  if (daysSince <= 7) {
+    return { class: 'freshness-aging', label: `🟡 อัปเดตเมื่อ ${daysSince} วันก่อน`, isStale: false };
+  }
+  return { class: 'freshness-stale', label: `🔴 ไม่มีอัปเดต ${daysSince} วันแล้ว — ควรตรวจสอบซ้ำ`, isStale: true };
 }
 
 function renderDashboard() {
@@ -223,14 +334,35 @@ function renderDashboard() {
   let html = '';
   sorted.forEach((c, idx) => {
     const status = getStatus(c.deadline);
+    const freshness = getFreshness(c.statusLog);
     const typeClass = c.type === 'AMLO' ? 'type-amlo' : (c.type === 'Prasan' ? 'type-prasan' : 'type-edd');
-    html += `<div class="case-row">
-      <div><div class="case-id">${esc(c.id)}</div><div class="case-name">${esc(c.name)}</div></div>
-      <div><span class="type-badge ${typeClass}">${esc(c.type)}</span></div>
-      <span class="deadline">${new Date(c.deadline).toLocaleDateString('th-TH')}</span>
-      <span class="status-badge ${status.class}">${status.badge}</span>
-      <div><div class="progress-bar"><div class="progress-fill" style="width: ${c.evidencePercent}%"></div></div><small style="color: #9ca3af; font-size: 10px;">${c.evidencePercent}% evidence</small></div>
-      <button class="btn-delete" onclick="deleteCase(${idx})" title="ลบคดีนี้">✕</button>
+    const safeId = esc(c.id);
+    
+    html += `
+    <div class="case-row-wrapper">
+      <div class="case-row">
+        <div><div class="case-id">${safeId}</div><div class="case-name">${esc(c.name)}</div></div>
+        <div><span class="type-badge ${typeClass}">${esc(c.type)}</span></div>
+        <span class="deadline">${new Date(c.deadline).toLocaleDateString('th-TH')}</span>
+        <span class="status-badge ${status.class}">${status.badge}</span>
+        <div><div class="progress-bar"><div class="progress-fill" style="width: ${c.evidencePercent}%"></div></div><small style="color: #9ca3af; font-size: 10px;">${c.evidencePercent}% evidence</small></div>
+        <button class="btn-delete" onclick="deleteCase(${idx})" title="ลบคดีนี้">✕</button>
+      </div>
+
+      <div class="status-update-section" data-case-id="${safeId}">
+        <span class="freshness-badge ${freshness.class}" id="freshness-${safeId}">${freshness.label}</span>
+        ${freshness.isStale ? '<a href="tel:1441" class="cta-call-link">📞 โทร 1441</a>' : ''}
+        <button class="btn-mini" onclick="openStatusForm('${safeId}')">📞 อัปเดตสถานะ</button>
+        <button class="btn-mini-ghost" onclick="viewStatusHistory('${safeId}')">🕐 ประวัติ (${(c.statusLog || []).length})</button>
+      </div>
+
+      <div class="status-form" id="statusForm-${safeId}" style="display:none;">
+        <textarea id="statusNote-${safeId}" placeholder="เช่น: โทร 1441 เจ้าหน้าที่แจ้งว่าอยู่ระหว่างพิจารณา..." maxlength="200"></textarea>
+        <div class="status-form-actions">
+          <button class="btn-mini" onclick="saveStatusUpdate('${safeId}')">บันทึก</button>
+          <button class="btn-mini-ghost" onclick="closeStatusForm('${safeId}')">ยกเลิก</button>
+        </div>
+      </div>
     </div>`;
   });
   document.getElementById('caseList').innerHTML = html;
@@ -358,9 +490,76 @@ function showToast(msg) {
   setTimeout(() => { t.style.display = 'none'; }, 3500);
 }
 
+// Status Update & Freshness Logic
+function openStatusForm(caseId) {
+  const form = document.getElementById(`statusForm-${caseId}`);
+  if (form) form.style.display = 'block';
+}
+
+function closeStatusForm(caseId) {
+  const form = document.getElementById(`statusForm-${caseId}`);
+  if (form) form.style.display = 'none';
+  const ta = document.getElementById(`statusNote-${caseId}`);
+  if (ta) ta.value = '';
+}
+
+function saveStatusUpdate(caseId) {
+  const ta = document.getElementById(`statusNote-${caseId}`);
+  const note = ta ? ta.value.trim() : '';
+  if (!note) {
+    showToast('กรุณากรอกบันทึกสถานะก่อนบันทึก');
+    return;
+  }
+
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  const idx = cases.findIndex(c => c.id === caseId);
+  if (idx === -1) return;
+
+  if (!cases[idx].statusLog) cases[idx].statusLog = [];
+  cases[idx].statusLog.push({
+    date: new Date().toISOString(),
+    note: note,
+    updatedBy: 'manual'
+  });
+
+  localStorage.setItem('cases', JSON.stringify(cases));
+  closeStatusForm(caseId);
+  renderDashboard();
+  showToast('✓ บันทึกสถานะคดีเรียบร้อย');
+}
+
+function viewStatusHistory(caseId) {
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  const c = cases.find(x => x.id === caseId);
+  const log = (c && c.statusLog) || [];
+
+  document.getElementById('historyCaseInfo').textContent = `รหัสคดี: ${c ? c.id : caseId} (${c ? c.name : ''})`;
+
+  let html = log.length === 0
+    ? '<p style="color:#9ca3af;font-size:12px;padding:12px 0;">ยังไม่มีประวัติการอัปเดตสถานะในคดีนี้</p>'
+    : log.slice().reverse().map(entry => `
+        <div class="status-history-item">
+          <div class="status-history-date">${new Date(entry.date).toLocaleString('th-TH')}</div>
+          <div class="status-history-note">${esc(entry.note)}</div>
+        </div>
+      `).join('');
+
+  document.getElementById('historyContent').innerHTML = html;
+  document.getElementById('historyModal').classList.add('open');
+}
+
+function closeHistoryModal() {
+  document.getElementById('historyModal').classList.remove('open');
+}
+
 // Close modal on Escape key or overlay click
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-document.addEventListener('click', e => { if (e.target.id === 'newCaseModal') closeModal(); });
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') { closeModal(); closeHistoryModal(); } 
+});
+document.addEventListener('click', e => { 
+  if (e.target.id === 'newCaseModal') closeModal(); 
+  if (e.target.id === 'historyModal') closeHistoryModal(); 
+});
 
 document.addEventListener('DOMContentLoaded', initDashboard);
 </script>
