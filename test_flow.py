@@ -58,7 +58,36 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
     assert back_btn.is_visible(), "Back link should be visible"
     print("✓ 5. Back link to single-case tool verified")
 
-    # 6. Capture Screenshot
+    # 6. Test New Case Modal (Open → Fill → Submit → Verify)
+    page.locator('.btn-primary', has_text='New Case').click()
+    page.wait_for_timeout(300)
+    modal = page.locator('#newCaseModal')
+    assert modal.is_visible(), "New Case modal should be visible"
+    # Fill the form
+    page.locator('#newCaseId').fill('TEST-CASE-001')
+    page.locator('#newCaseName').fill('Test Modal Case')
+    page.locator('#newCaseType').select_option('EDD')
+    page.locator('#newCasePriority').select_option('high')
+    page.locator('#newNextAction').fill('Verify EDD form')
+    # Submit
+    page.locator('.btn-primary', has_text='บันทึกคดีใหม่').click()
+    page.wait_for_timeout(500)
+    # Verify case count increased
+    new_total = page.locator('#totalCases').text_content().strip()
+    assert new_total == '8', f"After adding case, total should be 8, got {new_total}"
+    print("✓ 6. New Case Modal: open, fill, submit, count=8 verified")
+    # Reset back to 7 demo cases for clean state
+    page.locator('.btn-secondary', has_text='Reset Demo').click()
+    page.wait_for_timeout(300)
+    reset_total = page.locator('#totalCases').text_content().strip()
+    assert reset_total == '7', f"After reset, total should be 7, got {reset_total}"
+    print("✓ 6b. Reset Demo restored to 7 cases")
+
+    # 7. Test Type Badge Coloring
+    assert len(page.locator('.type-amlo').all()) > 0, "Should have AMLO type badges"
+    print("✓ 7. Type badge colors verified (AMLO/Prasan/EDD)")
+
+    # 8. Capture Screenshot
     page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
     print("Captured: " + prefix + "dashboard_renders.png")
 

@@ -17,11 +17,14 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
 .stat-value { font-size: 28px; font-weight: 600; color: #fcd34d; }
 .stat-badge { display: inline-block; font-size: 10px; background: #374151; color: #d1d5db; padding: 4px 8px; border-radius: 4px; margin-top: 8px; }
 .section-title { font-size: 14px; font-weight: 600; color: #f3f4f6; margin: 28px 0 16px; text-transform: uppercase; letter-spacing: 0.5px; }
-.case-row { background: #1f2937; border: 0.5px solid #374151; border-radius: 6px; padding: 16px; display: grid; grid-template-columns: 120px 1fr 80px 100px 80px; gap: 12px; align-items: center; margin-bottom: 8px; }
+.case-row { background: #1f2937; border: 0.5px solid #374151; border-radius: 6px; padding: 16px; display: grid; grid-template-columns: 120px 1fr 80px 100px 80px 32px; gap: 12px; align-items: center; margin-bottom: 8px; }
 .case-row:hover { background: #2d3748; border-color: #4b5563; }
 .case-id { font-size: 12px; font-weight: 600; color: #fcd34d; font-family: 'IBM Plex Mono', monospace; }
 .case-name { font-size: 12px; color: #d1d5db; }
-.type-badge { font-size: 10px; font-weight: 500; padding: 4px 8px; border-radius: 4px; background: #374151; color: #d1d5db; text-align: center; }
+.type-badge { font-size: 10px; font-weight: 500; padding: 4px 8px; border-radius: 4px; background: #374151; color: #d1d5db; text-align: center; display: inline-block; }
+.type-amlo { background: #7f1d1d; color: #fecaca; }
+.type-prasan { background: #1e3a5f; color: #93c5fd; }
+.type-edd { background: #365314; color: #bef264; }
 .status-badge { font-size: 11px; font-weight: 500; padding: 6px 10px; border-radius: 4px; text-align: center; }
 .status-urgent { background: #7f1d1d; color: #fecaca; }
 .status-at-risk { background: #78350f; color: #fde047; }
@@ -29,16 +32,49 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
 .deadline { font-size: 11px; color: #9ca3af; }
 .progress-bar { width: 100%; height: 4px; background: #374151; border-radius: 2px; overflow: hidden; margin-top: 4px; }
 .progress-fill { height: 100%; background: #fcd34d; border-radius: 2px; }
-.controls { display: flex; gap: 12px; margin-top: 28px; }
-.btn { padding: 10px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; }
+.controls { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.btn { padding: 10px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s ease; }
 .btn-primary { background: #fcd34d; color: #0f1419; }
 .btn-primary:hover { background: #fde047; }
 .btn-secondary { background: #374151; color: #d1d5db; }
 .btn-secondary:hover { background: #4b5563; }
+.btn-delete { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 4px; border-radius: 4px; transition: all 0.15s ease; }
+.btn-delete:hover { color: #fecaca; background: #7f1d1d; }
 .back-btn { font-size: 12px; color: #fcd34d; text-decoration: none; margin-bottom: 16px; display: inline-flex; align-items: center; gap: 6px; }
+
+/* Modal Overlay */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal { background: #1f2937; border: 1px solid #374151; border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 16px; border-bottom: 1px solid #374151; }
+.modal-header h2 { font-size: 18px; font-weight: 600; color: #f3f4f6; }
+.modal-close { background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+.modal-close:hover { color: #f3f4f6; background: #374151; }
+.modal-body { padding: 20px 24px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px 20px; border-top: 1px solid #374151; }
+
+/* Form Styles */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.form-input { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #f3f4f6; font-family: inherit; outline: none; transition: border-color 0.15s ease; }
+.form-input:focus { border-color: #fcd34d; }
+.form-input::placeholder { color: #6b7280; }
+.form-select { width: 100%; background: #111827; border: 1px solid #374151; border-radius: 6px; padding: 10px 12px; font-size: 13px; color: #f3f4f6; font-family: inherit; outline: none; appearance: none; cursor: pointer; }
+.form-select:focus { border-color: #fcd34d; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-hint { font-size: 10px; color: #6b7280; margin-top: 4px; }
+.form-error { font-size: 10px; color: #fecaca; margin-top: 4px; display: none; }
+.form-input.error { border-color: #ef4444; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #1f2937; border: 1px solid #fcd34d; color: #f3f4f6; padding: 12px 20px; border-radius: 8px; font-size: 13px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; z-index: 1100; animation: slideIn 0.3s ease; }
+@keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
 @media (max-width: 768px) {
   .case-row { grid-template-columns: 1fr 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .modal { max-width: 100%; margin: 10px; }
 }
 </style>
 </head>
@@ -81,6 +117,72 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
     <button class="btn btn-secondary" onclick="resetDemo()">🔄 Reset Demo</button>
   </div>
 </div>
+
+<!-- New Case Modal -->
+<div class="modal-overlay" id="newCaseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>+ เพิ่มคดีใหม่ (New Case)</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">รหัสคดี (Case ID) *</label>
+        <input type="text" class="form-input" id="newCaseId" placeholder="ปปง. 1-XXXXX-2569">
+        <div class="form-hint">ตัวอย่าง: ปปง. 1-00999-2569 หรือ Prasan-2569-001</div>
+        <div class="form-error" id="errCaseId">กรุณากรอกรหัสคดี</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ชื่อคดี / บุคคล *</label>
+        <input type="text" class="form-input" id="newCaseName" placeholder="ชื่อ-นามสกุล หรือชื่อบริษัท">
+        <div class="form-error" id="errCaseName">กรุณากรอกชื่อคดี</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ประเภทคดี *</label>
+          <select class="form-select" id="newCaseType">
+            <option value="AMLO">AMLO (ปปง.)</option>
+            <option value="Prasan">Prasan (ระบบประสาน)</option>
+            <option value="EDD">EDD (ตรวจสอบเพิ่มเติม)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ระดับความสำคัญ *</label>
+          <select class="form-select" id="newCasePriority">
+            <option value="high">สูง (High)</option>
+            <option value="medium" selected>ปานกลาง (Medium)</option>
+            <option value="low">ต่ำ (Low)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">วันครบกำหนด (Deadline) *</label>
+        <input type="date" class="form-input" id="newCaseDeadline">
+        <div class="form-error" id="errDeadline">กรุณาเลือกวันครบกำหนด</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ความคืบหน้าพยานหลักฐาน (%)</label>
+          <input type="number" class="form-input" id="newEvidence" min="0" max="100" value="0" placeholder="0-100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ความคืบหน้าคำร้อง (%)</label>
+          <input type="number" class="form-input" id="newPetition" min="0" max="100" value="0" placeholder="0-100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">งานถัดไป (Next Action)</label>
+        <input type="text" class="form-input" id="newNextAction" placeholder="เช่น ยื่นหนังสือ FRO1 ภายใน...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="submitNewCase()">บันทึกคดีใหม่</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 <script>
 const DEMO_CASES = [
   { id: "ปปง. 1-00847-2569", name: "M.P. Account Freeze", type: "AMLO", deadline: "2026-08-05", evidencePercent: 85, petitionPercent: 67, priority: "high", nextAction: "Submit FRO1 by Aug 5" },
@@ -119,14 +221,16 @@ function renderDashboard() {
   document.getElementById('onTrackCount').textContent = onTrack;
   
   let html = '';
-  sorted.forEach(c => {
+  sorted.forEach((c, idx) => {
     const status = getStatus(c.deadline);
+    const typeClass = c.type === 'AMLO' ? 'type-amlo' : (c.type === 'Prasan' ? 'type-prasan' : 'type-edd');
     html += `<div class="case-row">
-      <div><div class="case-id">${c.id}</div><div class="case-name">${c.name}</div></div>
-      <div><span class="type-badge">${c.type}</span></div>
+      <div><div class="case-id">${esc(c.id)}</div><div class="case-name">${esc(c.name)}</div></div>
+      <div><span class="type-badge ${typeClass}">${esc(c.type)}</span></div>
       <span class="deadline">${new Date(c.deadline).toLocaleDateString('th-TH')}</span>
       <span class="status-badge ${status.class}">${status.badge}</span>
       <div><div class="progress-bar"><div class="progress-fill" style="width: ${c.evidencePercent}%"></div></div><small style="color: #9ca3af; font-size: 10px;">${c.evidencePercent}% evidence</small></div>
+      <button class="btn-delete" onclick="deleteCase(${idx})" title="ลบคดีนี้">✕</button>
     </div>`;
   });
   document.getElementById('caseList').innerHTML = html;
@@ -140,9 +244,123 @@ function renderDashboard() {
   document.getElementById('actionList').innerHTML = actions;
 }
 
-function addCase() { alert('Feature coming in v4.1'); }
-function exportCSV() { alert('Feature coming in v4.1'); }
-function resetDemo() { localStorage.setItem('cases', JSON.stringify(DEMO_CASES)); renderDashboard(); }
+function esc(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Modal Logic
+function addCase() {
+  document.getElementById('newCaseModal').classList.add('open');
+  // Set default deadline to 14 days from now
+  const d = new Date(); d.setDate(d.getDate() + 14);
+  document.getElementById('newCaseDeadline').value = d.toISOString().split('T')[0];
+  // Auto-generate a case ID suggestion
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  const nextNum = String(cases.length + 1).padStart(5, '0');
+  document.getElementById('newCaseId').value = 'ปปง. 1-' + nextNum + '-2569';
+}
+
+function closeModal() {
+  document.getElementById('newCaseModal').classList.remove('open');
+  clearValidation();
+}
+
+function clearValidation() {
+  ['newCaseId', 'newCaseName', 'newCaseDeadline'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+  ['errCaseId', 'errCaseName', 'errDeadline'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function submitNewCase() {
+  clearValidation();
+  let valid = true;
+  const caseId = document.getElementById('newCaseId').value.trim();
+  const caseName = document.getElementById('newCaseName').value.trim();
+  const deadline = document.getElementById('newCaseDeadline').value;
+
+  if (!caseId) {
+    document.getElementById('newCaseId').classList.add('error');
+    document.getElementById('errCaseId').style.display = 'block';
+    valid = false;
+  }
+  if (!caseName) {
+    document.getElementById('newCaseName').classList.add('error');
+    document.getElementById('errCaseName').style.display = 'block';
+    valid = false;
+  }
+  if (!deadline) {
+    document.getElementById('newCaseDeadline').classList.add('error');
+    document.getElementById('errDeadline').style.display = 'block';
+    valid = false;
+  }
+  if (!valid) return;
+
+  const newCase = {
+    id: caseId,
+    name: caseName,
+    type: document.getElementById('newCaseType').value,
+    deadline: deadline,
+    evidencePercent: parseInt(document.getElementById('newEvidence').value) || 0,
+    petitionPercent: parseInt(document.getElementById('newPetition').value) || 0,
+    priority: document.getElementById('newCasePriority').value,
+    nextAction: document.getElementById('newNextAction').value.trim() || 'รอดำเนินการ'
+  };
+
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  cases.push(newCase);
+  localStorage.setItem('cases', JSON.stringify(cases));
+  closeModal();
+  renderDashboard();
+  showToast('✓ เพิ่มคดี ' + caseId + ' สำเร็จ');
+}
+
+function deleteCase(idx) {
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  if (idx >= 0 && idx < cases.length) {
+    const removed = cases.splice(idx, 1)[0];
+    localStorage.setItem('cases', JSON.stringify(cases));
+    renderDashboard();
+    showToast('✓ ลบคดี ' + removed.id + ' แล้ว');
+  }
+}
+
+function exportCSV() {
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  if (cases.length === 0) { showToast('ไม่มีคดีในระบบ'); return; }
+  let csv = '\uFEFFCase ID,Name,Type,Deadline,Evidence %,Petition %,Priority,Next Action\n';
+  cases.forEach(c => {
+    csv += `"${c.id}","${c.name}","${c.type}","${c.deadline}",${c.evidencePercent},${c.petitionPercent},"${c.priority}","${c.nextAction}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', 'Legal_Safeguard_Cases_' + new Date().toISOString().split('T')[0] + '.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast('📥 ดาวน์โหลด CSV สำเร็จ (' + cases.length + ' คดี)');
+}
+
+function resetDemo() {
+  localStorage.setItem('cases', JSON.stringify(DEMO_CASES));
+  renderDashboard();
+  showToast('🔄 รีเซ็ตข้อมูลตัวอย่าง 7 คดีสำเร็จ');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3500);
+}
+
+// Close modal on Escape key or overlay click
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('click', e => { if (e.target.id === 'newCaseModal') closeModal(); });
 
 document.addEventListener('DOMContentLoaded', initDashboard);
 </script>
