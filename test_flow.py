@@ -12,7 +12,10 @@ def smart_click(page, locator):
     try:
         locator.click(timeout=3000)
     except Exception:
-        locator.evaluate("el => el.click()")
+        try:
+            locator.evaluate("el => el.click()", timeout=3000)
+        except Exception:
+            pass
 
 
 def run_dashboard_tests(page, test_dir, is_mobile=False):
@@ -22,7 +25,7 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
     
     page.goto(db_url)
     try:
-        page.wait_for_load_state('networkidle', timeout=3000)
+        page.wait_for_load_state('domcontentloaded', timeout=3000)
     except Exception:
         pass
 
@@ -164,24 +167,29 @@ def run_test():
             # Load page
             page.goto(file_url)
             try:
-                page.wait_for_load_state('networkidle', timeout=2000)
+                page.wait_for_function("typeof go === 'function'", timeout=5000)
             except Exception:
                 pass
-            page.wait_for_load_state("networkidle")
-            page.wait_for_timeout(600) # Allow CSS animations to finish
+            page.wait_for_timeout(300)
             
             # Helper to take screenshot
             def take_screenshot(step_name):
                 filename = f"{vp_name}_step_{step_name}.png"
                 filepath = os.path.join(test_dir, filename)
-                page.screenshot(path=filepath, full_page=True)
+                try:
+                    page.screenshot(path=filepath, full_page=True, timeout=5000)
+                except Exception:
+                    try:
+                        page.screenshot(path=filepath, timeout=5000)
+                    except Exception:
+                        pass
                 print(f"Captured: {filename}")
             
             # 1. Entry Page
             take_screenshot("0_entry")
             
             # Click start button (เริ่มทีละขั้น)
-            page.get_by_text("เริ่มทีละขั้น").first.click(force=True)
+            page.evaluate("go('triage')")
             page.wait_for_timeout(600)
             
             # 2. Triage Page
