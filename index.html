@@ -4,922 +4,652 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตั้งหลัก (Foothold) - คู่มือปฏิบัติตนและระบบนำทางกฎหมายบัญชีม้าสำหรับประชาชน</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts: Prompt & IBM Plex Sans Thai -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        foothold: {
-                            navy: '#0F172A',
-                            surface: '#1E293B',
-                            card: '#334155',
-                            border: '#475569',
-                            gold: '#F6C445',
-                            goldHover: '#EAB308',
-                            emerald: '#10B981',
-                            emeraldBg: '#064E3B',
-                            red: '#EF4444',
-                            redBg: '#7F1D1D'
-                        }
-                    },
-                    fontFamily: {
-                        prompt: ['Prompt', 'sans-serif'],
-                        sans: ['"IBM Plex Sans Thai"', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: 'IBM Plex Sans Thai', sans-serif;
-            background-color: #0F172A;
-            color: #F8FAFC;
+        /* Quiet Civic Trust Design Tokens & Styles */
+        :root { 
+            --navy: #101923; 
+            --navy-2: #172431; 
+            --charcoal: #1f2d39; 
+            --line: #2d3d49; 
+            --ink: #f6f4ee; 
+            --muted: #a8b2b7; 
+            --gold: #f6c445; 
+            --gold-deep: #d9a915; 
+            --sage: #8dd6a7; 
+            --red: #e85d52; 
+            --red-dark: #74302f; 
+            --blue: #79b5e4; 
+            --background: #101923; 
+            --foreground: #f6f4ee; 
+            --radius: 1rem; 
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            margin: 0; 
+            background: var(--navy); 
+            color: var(--ink); 
+            font-family: 'IBM Plex Thai', sans-serif; 
+            font-size: 16px; 
+            line-height: 1.55; 
         }
         h1, h2, h3, h4, .font-heading {
             font-family: 'Prompt', sans-serif;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 250px;
-            max-height: 300px;
+        button, a { font: inherit; }
+        button { cursor: pointer; }
+        a { color: inherit; text-decoration: none; }
+        button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+        
+        .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+        .app-frame { min-height: 100vh; overflow-x: hidden; background: radial-gradient(circle at 80% 8%, rgba(246,196,69,.09), transparent 29rem), var(--navy); }
+        
+        /* Header */
+        .site-header { height: 92px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(141,214,167,.12); }
+        .brand-lockup { display: flex; align-items: center; gap: 11px; min-width: 170px; cursor: pointer; }
+        .brand-mark { width: 28px; height: 34px; display: flex; align-items: flex-end; gap: 4px; }
+        .brand-mark span { display: block; width: 6px; border-radius: 4px 4px 1px 1px; background: var(--gold); }
+        .brand-mark span:nth-child(1) { height: 19px; opacity: .65; }
+        .brand-mark span:nth-child(2) { height: 30px; }
+        .brand-mark span:nth-child(3) { height: 23px; opacity: .85; }
+        .brand-lockup strong { display: block; font: 700 23px/1 'Prompt', sans-serif; letter-spacing: -.04em; color: var(--ink); }
+        .brand-lockup small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; letter-spacing: .25em; font-family: monospace; }
+        .site-header nav { display: flex; align-items: center; gap: 24px; color: var(--muted); font-size: 14px; }
+        .site-header nav a:hover { color: var(--ink); }
+        
+        .text-button { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); background: transparent; border: 0; font-weight: 600; }
+        .mobile-menu { display: none; background: transparent; color: var(--ink); border: 0; }
+        
+        /* Hero Section */
+        .hero { min-height: 560px; display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(400px, 1.05fr); gap: 48px; align-items: center; padding: 48px 0 56px; }
+        .hero-copy { max-width: 555px; }
+        .emergency-rail { 
+            max-width: 520px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 14px; 
+            margin-bottom: 22px; 
+            border-left: 3px solid var(--red); 
+            border-top: 1px solid rgba(232,93,82,.36); 
+            border-right: 1px solid rgba(232,93,82,.2); 
+            border-bottom: 1px solid rgba(232,93,82,.36); 
+            background: rgba(116,48,47,.22); 
+            color: #ff9b92; 
+            border-radius: 8px;
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 280px;
-            }
+        .emergency-rail div { min-width: 0; flex: 1; }
+        .emergency-rail strong, .emergency-rail span { display: block; }
+        .emergency-rail strong { font-size: 13px; color: #ffb1aa; font-family: 'Prompt', sans-serif; }
+        .emergency-rail span { font-size: 12px; color: #dbaba5; }
+        
+        .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+        .signal-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 5px rgba(141,214,167,.12); }
+        .hero h1 { margin: 18px 0 16px; font: 700 clamp(2.4rem, 5vw, 4.2rem)/1.08 'Prompt', sans-serif; letter-spacing: -.05em; color: var(--ink); }
+        .hero h1 em { color: var(--gold); font-style: normal; }
+        .hero-copy > p { max-width: 480px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+        .hero-actions { display: flex; align-items: center; gap: 16px; margin: 28px 0 24px; flex-wrap: wrap; }
+        
+        .primary-button { 
+            min-height: 50px; 
+            padding: 0 22px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            border: 0; 
+            border-radius: 12px; 
+            background: var(--gold); 
+            color: #19222a; 
+            font-family: 'Prompt', sans-serif;
+            font-weight: 700; 
+            font-size: 15px;
+            transition: transform .16s ease-out, background .2s ease, box-shadow .2s ease; 
+            box-shadow: 0 10px 25px rgba(246,196,69,.16); 
         }
-        /* Quiet Civic Trust transitions & reduced-motion support */
-        .smooth-transition {
-            transition: all 200ms ease-in-out;
+        .primary-button:hover { background: #ffd45c; box-shadow: 0 14px 32px rgba(246,196,69,.23); }
+        .primary-button:active { transform: scale(.97); }
+        .quiet-link { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 14px; }
+        .quiet-link:hover { color: var(--ink); }
+        
+        .privacy-signal { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            max-width: 450px; 
+            padding: 12px 15px; 
+            border: 1px solid rgba(141,214,167,.35); 
+            border-radius: 12px; 
+            background: rgba(141,214,167,.07); 
+            color: var(--sage); 
         }
-        @media (prefers-reduced-motion: reduce) {
-            .smooth-transition, .animate-ping, .transition {
-                transition: none !important;
-                animation: none !important;
-            }
+        .privacy-signal div { min-width: 0; flex: 1; }
+        .privacy-signal strong, .privacy-signal span { display: block; }
+        .privacy-signal strong { font-size: 13px; font-family: 'Prompt', sans-serif; }
+        .privacy-signal span { color: #b3c5bb; font-size: 12px; }
+        
+        /* Hero Art / Progress Spine */
+        .hero-art { position: relative; min-height: 440px; isolation: isolate; }
+        .hero-art::before { content: ''; position: absolute; top: 8%; bottom: 8%; left: 29%; width: 1px; background: linear-gradient(to bottom, transparent, rgba(246,196,69,.5), rgba(141,214,167,.4), transparent); }
+        .path-spine { position: absolute; top: 13%; bottom: 14%; left: calc(29% - 4px); width: 9px; border: 1px solid rgba(246,196,69,.45); border-radius: 10px; background: repeating-linear-gradient(to bottom, var(--gold) 0 11px, transparent 11px 26px); opacity: .85; }
+        .art-beacon { position: absolute; left: 42%; top: 35%; width: 110px; height: 110px; display: grid; place-items: center; border: 1px solid rgba(141,214,167,.5); border-radius: 28px; color: var(--sage); background: rgba(141,214,167,.08); box-shadow: 0 0 0 18px rgba(141,214,167,.035), 0 0 70px rgba(141,214,167,.12); }
+        .art-step { position: absolute; min-width: 200px; display: grid; gap: 3px; padding: 12px 16px; border-radius: 11px; background: rgba(31,45,57,.95); border: 1px solid var(--line); box-shadow: 0 14px 28px rgba(0,0,0,.18); }
+        .art-step::before { content: ''; position: absolute; left: -8px; top: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 5px rgba(246,196,69,.12); }
+        .art-step span { color: var(--gold); font: 700 12px 'Prompt'; }
+        .art-step strong { font-size: 14px; color: var(--ink); }
+        .art-step small { color: var(--muted); font-size: 11px; }
+        .step-a { top: 10%; left: 35%; }
+        .step-b { top: 42%; left: 35%; }
+        .step-b::before { background: var(--red); box-shadow: 0 0 0 5px rgba(232,93,82,.12); }
+        .step-c { bottom: 8%; left: 35%; }
+        .step-c::before { background: var(--sage); box-shadow: 0 0 0 5px rgba(141,214,167,.12); }
+        
+        /* Trust Strip */
+        .trust-strip { border-top: 1px solid rgba(141,214,167,.12); border-bottom: 1px solid rgba(141,214,167,.12); background: rgba(31,45,57,.35); margin-top: 20px; }
+        .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+        .trust-grid > div { min-height: 100px; display: grid; grid-template-columns: 28px 1fr; grid-template-rows: auto auto; column-gap: 13px; align-content: center; padding: 18px 24px; border-right: 1px solid rgba(141,214,167,.12); }
+        .trust-grid > div:first-child { border-left: 1px solid rgba(141,214,167,.12); }
+        .trust-grid svg { grid-row: 1 / span 2; color: var(--sage); margin-top: 4px; }
+        .trust-grid strong { font-size: 14px; color: var(--ink); font-family: 'Prompt', sans-serif; }
+        .trust-grid span { color: var(--muted); font-size: 12px; }
+
+        /* How Section & Modules */
+        .section-box { padding: 48px 0; }
+        .card-panel { background: var(--navy-2); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+        
+        /* Category Selector Buttons */
+        .cat-btn { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--charcoal); color: var(--ink); text-align: left; transition: all .16s ease; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+        .cat-btn:hover { border-color: var(--gold); background: #253645; }
+        .cat-btn.active { border: 2px solid var(--gold); background: #233443; box-shadow: 0 4px 16px rgba(246,196,69,.12); }
+
+        /* Modal Backdrop & Wizard Shell */
+        .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(4,10,15,.82); backdrop-filter: blur(10px); animation: fade-in .2s ease-out; }
+        .wizard-shell { width: min(100%, 540px); max-height: min(850px, calc(100vh - 40px)); overflow-y: auto; background: var(--navy); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 25px 80px rgba(0,0,0,.5); animation: lift-in .24s cubic-bezier(.23,1,.32,1); }
+        .wizard-topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 10px; border-bottom: 1px solid var(--line); }
+        .icon-button { width: 38px; height: 38px; display: grid; place-items: center; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; }
+        .icon-button:hover { color: var(--ink); border-color: var(--gold); }
+        
+        .wizard-content { padding: 20px 24px 28px; }
+        .wizard-content h2 { margin: 0 0 6px; font: 600 24px/1.2 'Prompt', sans-serif; color: var(--ink); }
+        
+        /* Animations */
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } } 
+        @keyframes lift-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        
+        /* Chart Canvas Container */
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin: 0 auto; height: 230px; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 840px) {
+            .container { width: min(100% - 32px, 620px); }
+            .site-header { height: 78px; }
+            .site-header nav { display: none; }
+            .hero { display: block; min-height: auto; padding: 40px 0 32px; }
+            .hero-art { min-height: 340px; margin-top: 36px; transform: scale(.92); }
+            .trust-grid { grid-template-columns: 1fr; }
+            .trust-grid > div, .trust-grid > div:first-child { min-height: 76px; border-left: 1px solid rgba(141,214,167,.12); border-right: 1px solid rgba(141,214,167,.12); border-bottom: 1px solid rgba(141,214,167,.12); }
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0F172A;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+        @media (max-width: 520px) {
+            .container { width: calc(100% - 24px); }
+            .hero-actions { align-items: stretch; flex-direction: column; gap: 10px; }
+            .hero-actions .primary-button { width: 100%; }
+            .modal-backdrop { padding: 0; align-items: flex-end; }
+            .wizard-shell { width: 100%; max-height: 94vh; border-radius: 22px 22px 0 0; }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased bg-foothold-navy text-slate-100">
-
-    <!-- 1. EMERGENCY RAIL (Above Fold Signature Element) -->
-    <div class="bg-gradient-to-r from-red-950 via-red-900 to-red-950 border-b border-red-800 text-white py-2 px-4 shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2 text-xs sm:text-sm">
-            <div class="flex items-center space-x-2">
-                <span class="flex h-2.5 w-2.5 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                </span>
-                <span class="font-heading font-bold text-red-200">🚨 เพิ่งถูกระงับบัญชี? โทร 1441 ทันที</span>
-                <span class="hidden md:inline text-red-300">— คุณไม่ต้องจัดการเรื่องนี้คนเดียว</span>
+<body>
+    <div class="app-frame">
+        
+        <!-- SITE HEADER -->
+        <header class="site-header container">
+            <!-- Signature Logo & Wordmark (3 Rising Pillars + Gold Dot) -->
+            <div class="brand-lockup" onclick="switchSection('main-wizard')">
+                <div class="brand-mark">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div>
+                    <strong>ตั้งหลัก</strong>
+                    <small>FOOTHOLD LEGAL TECH</small>
+                </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <a href="tel:1441" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg font-heading font-bold text-xs shadow flex items-center space-x-1 active:scale-95 smooth-transition">
-                    <span>📞 โทร 1441 (สายด่วน AOC 24 ชม.)</span>
+
+            <!-- Navigation Links -->
+            <nav>
+                <a href="javascript:void(0)" onclick="switchSection('main-wizard')">ประเมินความเสี่ยง</a>
+                <a href="javascript:void(0)" onclick="switchSection('emergency-mode')">🚨 3 ขั้นตอนเร่งด่วน</a>
+                <a href="javascript:void(0)" onclick="switchSection('generator-mode')">สร้างหนังสือชี้แจง</a>
+                <a href="javascript:void(0)" onclick="switchSection('flowchart-mode')">แผนผังคดี</a>
+                <a href="dashboard.html" class="text-button">
+                    <span>📊 แดชบอร์ดหลายคดี (v4.2)</span>
                 </a>
-                <button onclick="switchSection('emergency-mode')" class="text-red-200 hover:text-white underline text-xs font-medium">
-                    ดู 3 ขั้นตอนด่วน ➔
+            </nav>
+        </header>
+
+        <!-- MAIN CONTAINER -->
+        <main class="container">
+
+            <!-- HERO SECTION (Quiet Civic Trust Layout) -->
+            <section id="sec-main-wizard" class="page-section">
+                <div class="hero">
+                    
+                    <!-- Left Column: Copy & Actions -->
+                    <div class="hero-copy">
+                        <!-- Emergency Rail (Above Fold Callout) -->
+                        <div class="emergency-rail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <div>
+                                <strong>🚨 โทร 1441 ทันที</strong>
+                                <span>ถูกระงับบัญชีสดๆ ร้อนๆ? คุณไม่ได้ตัวคนเดียว</span>
+                            </div>
+                            <button onclick="switchSection('emergency-mode')" class="text-button" style="font-size:12px;">ดู 3 ขั้น ➔</button>
+                        </div>
+
+                        <div class="eyebrow">
+                            <span class="signal-dot"></span>
+                            <span>ระบบนำทางกฎหมายสำหรับประชาชน</span>
+                        </div>
+
+                        <h1>คุณไม่ต้องจัดการ<em>เรื่องนี้คนเดียว</em></h1>
+                        <p>ตั้งหลักให้มั่น เมื่อถูกระงับบัญชีหรือถูกกล่าวหาเรื่องบัญชีม้า ประเมินประเภทความเสี่ยง รวบรวมหลักฐาน และแสดงความบริสุทธิ์ใจอย่างถูกวิธี</p>
+
+                        <div class="hero-actions">
+                            <button onclick="openWizardModal()" class="primary-button">
+                                <span>เริ่มประเมินเส้นทางด่วน ➔</span>
+                            </button>
+                            <a href="javascript:void(0)" onclick="switchSection('generator-mode')" class="quiet-link">
+                                <span>📝 สร้างหนังสือชี้แจง</span>
+                            </a>
+                        </div>
+
+                        <!-- Privacy Signal -->
+                        <div class="privacy-signal">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <div>
+                                <strong>🛡️ บันทึกลงในอุปกรณ์นี้เท่านั้น</strong>
+                                <span>ประมวลผลในเครื่อง 100% ไม่มีการส่งข้อมูลขึ้นเซิร์ฟเวอร์</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Progress Spine & Art Beacon -->
+                    <div class="hero-art">
+                        <div class="path-spine"></div>
+                        <div class="art-beacon">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                        </div>
+                        
+                        <!-- Step A -->
+                        <div class="art-step step-a">
+                            <span>ขั้นที่ 1: โทรก่อน</span>
+                            <strong>โทร 1441 & ธนาคาร</strong>
+                            <small>ขอเลขคำสั่งอายัด (AOC ID)</small>
+                        </div>
+
+                        <!-- Step B -->
+                        <div class="art-step step-b">
+                            <span>ขั้นที่ 2: หลักฐานภายหลัง</span>
+                            <strong>แคปแชท / สลิปโอน</strong>
+                            <small>ขอ Statement ย้อนหลัง 6 เดือน</small>
+                        </div>
+
+                        <!-- Step C -->
+                        <div class="art-step step-c">
+                            <span>ขั้นที่ 3: บันทึกและไปต่อ</span>
+                            <strong>ยื่นพนักงานสอบสวน</strong>
+                            <small>รับสำเนาบันทึกประจำวัน</small>
+                        </div>
+
+                        <div class="art-caption">
+                            <span class="signal-dot"></span>
+                            <span>เส้นทางสิทธิบริสุทธิ์ใจ 3 ขั้น</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- TRUST STRIP -->
+            <div class="trust-strip">
+                <div class="trust-grid">
+                    <div>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <strong>No-Server Privacy</strong>
+                        <span>ข้อมูลทั้งหมดบันทึกลงในเครื่องของคุณเท่านั้น</span>
+                    </div>
+                    <div>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <strong>สายด่วน 1441 AOC</strong>
+                        <span>ศูนย์ปฏิบัติการอาชญากรรมออนไลน์ 24 ชม.</span>
+                    </div>
+                    <div>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        <strong>ร่างหนังสืออัตโนมัติ</strong>
+                        <span>สร้างหนังสือชี้แจงความบริสุทธิ์ใจยื่นตำรวจได้ทันที</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: ACCOUNT CLASSIFIER & ANALYSIS -->
+            <section class="section-box">
+                <div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: 32px;" class="classifier-layout">
+                    
+                    <!-- Left: Category Buttons -->
+                    <div class="card-panel">
+                        <h2 style="font-size:20px; margin-top:0;">🏷️ คัดแยกประเภทบัญชี (เลือก 1 ข้อ)</h2>
+                        <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">คลิกประเภทที่ตรงกับข้อเท็จจริงของคุณเพื่อดูแนวทางทางกฎหมาย</p>
+
+                        <button onclick="selectCategory('lightGray')" id="cat-btn-lightGray" class="cat-btn active">
+                            <div>
+                                <strong style="color:var(--ink);">⚪ 1. เทาอ่อน - ไม่รู้ตัว (เหยื่อ)</strong>
+                                <div style="font-size:12px; color:var(--muted); margin-top:4px;">ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยไม่ยินยอม</div>
+                            </div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(141,214,167,.15); color:var(--sage);">เสี่ยงต่ำ</span>
+                        </button>
+
+                        <button onclick="selectCategory('lightBrown')" id="cat-btn-lightBrown" class="cat-btn">
+                            <div>
+                                <strong style="color:var(--gold);">🟤 2. น้ำตาลอ่อน - รู้ตัวแต่ให้ใช้</strong>
+                                <div style="font-size:12px; color:var(--muted); margin-top:4px;">ยินยอมให้ผู้อื่นใช้บัญชี โดยรับค่าตอบแทน</div>
+                            </div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(246,196,69,.15); color:var(--gold);">เสี่ยงปานกลาง</span>
+                        </button>
+
+                        <button onclick="selectCategory('darkGray')" id="cat-btn-darkGray" class="cat-btn">
+                            <div>
+                                <strong style="color:#cbd5e1;">🩶 3. เทาเข้ม - ไม่รู้ตัวแต่ควรระวัง</strong>
+                                <div style="font-size:12px; color:var(--muted); margin-top:4px;">ให้เพื่อน/ญาติยืมบัญชี โดยถูกหลอกวัตถุประสงค์</div>
+                            </div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(203,213,225,.15); color:#cbd5e1;">พิสูจน์เจตนา</span>
+                        </button>
+
+                        <button onclick="selectCategory('darkBrown')" id="cat-btn-darkBrown" class="cat-btn">
+                            <div>
+                                <strong style="color:#f97316;">🟤 4. น้ำตาลเข้ม - รู้ตัวและใช้เอง</strong>
+                                <div style="font-size:12px; color:var(--muted); margin-top:4px;">กดเงินสด / โอนเงินให้ผู้อื่นด้วยตนเองตามสั่ง</div>
+                            </div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(249,115,22,.15); color:#f97316;">เสี่ยงสูง</span>
+                        </button>
+
+                        <button onclick="selectCategory('black')" id="cat-btn-black" class="cat-btn">
+                            <div>
+                                <strong style="color:var(--red);">🖤 5. ดำ - เกี่ยวข้องกับขบวนการ</strong>
+                                <div style="font-size:12px; color:var(--muted); margin-top:4px;">เปิดบัญชีม้าเป็นอาชีพ / แก๊งคอลเซ็นเตอร์</div>
+                            </div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(232,93,82,.15); color:var(--red);">เสี่ยงวิกฤต</span>
+                        </button>
+                    </div>
+
+                    <!-- Right: Dynamic Analysis & Chart -->
+                    <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; justify-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:14px;">
+                                <span style="font-size:12px; color:var(--muted); font-family:monospace;">บทวิเคราะห์ทางกฎหมายเฉพาะคุณ</span>
+                                <span id="analysis-category-tag" style="font-size:12px; padding:2px 10px; border-radius:12px; background:rgba(141,214,167,.15); color:var(--sage); font-weight:600;">⚪ เทาอ่อน - ไม่รู้ตัว</span>
+                            </div>
+
+                            <h3 id="analysis-title" style="color:var(--gold); font-size:18px; margin-top:0;">ผู้เสียหายที่ถูกแอบอ้างนำข้อมูลไปเปิดบัญชี (ไม่มีเจตนา)</h3>
+                            <p id="analysis-desc" style="color:var(--muted); font-size:13px; line-height:1.6;">
+                                คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชีหรือทำธุรกรรมนั้นๆ
+                            </p>
+
+                            <!-- Risk Gauge Chart -->
+                            <div style="background:var(--navy); padding:12px; border-radius:12px; border:1px solid var(--line); margin:14px 0;">
+                                <div style="font-size:11px; color:var(--muted); text-align:center; margin-bottom:6px;">ระดับภาระการพิสูจน์เจตนา vs ความเสี่ยงรับโทษทางอาญา</div>
+                                <div class="chart-container">
+                                    <canvas id="riskGaugeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Do's and Don'ts -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+                            <div style="background:rgba(141,214,167,.08); border:1px solid rgba(141,214,167,.3); padding:12px; border-radius:10px;">
+                                <strong style="color:var(--sage); font-size:12px; display:block; margin-bottom:4px;">✅ สิ่งที่ต้องทำทันที:</strong>
+                                <ul id="analysis-dos" style="margin:0; padding-left:16px; font-size:11px; color:var(--ink);">
+                                    <li>แจ้งความลงบันทึกประจำวันว่าถูกแอบอ้าง</li>
+                                    <li>ขออายัดบัญชีและขอเลข AOC ID</li>
+                                </ul>
+                            </div>
+                            <div style="background:rgba(232,93,82,.08); border:1px solid rgba(232,93,82,.3); padding:12px; border-radius:10px;">
+                                <strong style="color:var(--red); font-size:12px; display:block; margin-bottom:4px;">❌ สิ่งที่ห้ามทำเด็ดขาด:</strong>
+                                <ul id="analysis-donts" style="margin:0; padding-left:16px; font-size:11px; color:var(--ink);">
+                                    <li>ห้ามลบแชท หรือประวัติการคุย</li>
+                                    <li>ห้ามหลบหนีหมายเรียกตำรวจ</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 2: EMERGENCY MODE -->
+            <section id="sec-emergency-mode" class="page-section hidden">
+                <div class="card-panel" style="border:2px solid var(--red); background:rgba(116,48,47,.25);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                        <div>
+                            <span class="eyebrow danger">🚨 โหมดเร่งด่วน 24 ชั่วโมง</span>
+                            <h2 style="font-size:26px; margin:6px 0 0; color:var(--ink);">ถูกระงับบัญชีสดๆ ร้อนๆ? ทำ 3 สิ่งนี้ทันที</h2>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+                        <div style="background:var(--navy-2); padding:18px; border-radius:12px; border:1px solid var(--line);">
+                            <span style="display:inline-block; width:28px; height:28px; background:var(--red); color:white; border-radius:50%; text-align:center; line-height:28px; font-weight:700; font-size:14px; margin-bottom:8px;">1</span>
+                            <h3 style="margin:4px 0 6px; font-size:16px; color:var(--ink);">โทรหาธนาคารทันที</h3>
+                            <p style="color:var(--muted); font-size:12px; margin:0;">โทรศูนย์รับแจ้งเหตุภัยทางการเงินของธนาคาร ถามเหตุผลและขอ <strong>"เลขคำสั่งอายัด (AOC ID)"</strong></p>
+                        </div>
+
+                        <div style="background:var(--navy-2); padding:18px; border-radius:12px; border:1px solid var(--line);">
+                            <span style="display:inline-block; width:28px; height:28px; background:var(--red); color:white; border-radius:50%; text-align:center; line-height:28px; font-weight:700; font-size:14px; margin-bottom:8px;">2</span>
+                            <h3 style="margin:4px 0 6px; font-size:16px; color:var(--ink);">โทร 1441 สายด่วน AOC</h3>
+                            <p style="color:var(--muted); font-size:12px; margin:0;">โทรแจ้งศูนย์ปฏิบัติการอาชญากรรมออนไลน์ เพื่อลงทะเบียนและตรวจสอบพนักงานสอบสวนเจ้าของคดี</p>
+                        </div>
+
+                        <div style="background:var(--navy-2); padding:18px; border-radius:12px; border:1px solid var(--line);">
+                            <span style="display:inline-block; width:28px; height:28px; background:var(--red); color:white; border-radius:50%; text-align:center; line-height:28px; font-weight:700; font-size:14px; margin-bottom:8px;">3</span>
+                            <h3 style="margin:4px 0 6px; font-size:16px; color:var(--ink);">แคปหลักฐาน ห้ามลบแชท!</h3>
+                            <p style="color:var(--muted); font-size:12px; margin:0;">แคปรูปโปรไฟล์ แชทสนทนา สลิปโอนเงิน และโพสต์ว่าจ้างไว้ทั้งหมดเพื่อพิสูจน์เจตนาบริสุทธิ์</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: STATEMENT GENERATOR -->
+            <section id="sec-generator-mode" class="page-section hidden">
+                <div class="card-panel">
+                    <h2 style="font-size:22px; margin-top:0;">📝 เครื่องมือสร้างหนังสือชี้แจงความบริสุทธิ์ใจ (อัตโนมัติ)</h2>
+                    <p style="color:var(--muted); font-size:13px;">กรอกข้อมูลเพื่อสร้างร่างหนังสือสำหรับนำไปยื่นต่อพนักงานสอบสวนหรือธนาคาร</p>
+
+                    <div style="display:grid; grid-template-columns:1fr 1.2fr; gap:24px; margin-top:20px;">
+                        <!-- Input Form -->
+                        <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line);">
+                            <div style="display:flex; flex-direction:column; gap:12px; font-size:12px;">
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ชื่อ-นามสกุล:</label>
+                                    <input type="text" id="stmt-name" oninput="generateStatementText()" placeholder="นายสมชาย ใจบริสุทธิ์" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">หมายเลขบัตรประชาชน:</label>
+                                    <input type="text" id="stmt-idcard" oninput="generateStatementText()" placeholder="1-XXXX-XXXXX-XX-X" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-family:monospace;">
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ธนาคารและเลขบัญชี:</label>
+                                    <input type="text" id="stmt-bank" oninput="generateStatementText()" placeholder="ธ.กสิกรไทย 012-3-45678-9" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ข้อเท็จจริงย่อ:</label>
+                                    <textarea id="stmt-reason" oninput="generateStatementText()" rows="3" placeholder="ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generated Text Output -->
+                        <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line); display:flex; flex-direction:column; justify-space-between;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span style="font-size:12px; color:var(--muted);">ตัวอย่างหนังสือชี้แจง</span>
+                                    <button onclick="copyStatementToClipboard()" class="primary-button" style="min-height:36px; padding:0 14px; font-size:12px;">📋 คัดลอกข้อความ</button>
+                                </div>
+                                <div id="statement-output" style="background:#090e14; padding:14px; border-radius:8px; font-family:monospace; font-size:11px; color:#d1d5db; white-space:pre-wrap; max-height:320px; overflow-y:auto;"></div>
+                            </div>
+                            <div style="font-size:11px; color:var(--sage); margin-top:10px;">🛡️ ข้อมูลจะถูกบันทึกลงในอุปกรณ์นี้เท่านั้น</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FLOWCHART -->
+            <section id="sec-flowchart-mode" class="page-section hidden">
+                <div class="card-panel">
+                    <h2 style="font-size:22px; margin-top:0;">🗺️ แผนผังเส้นทางคดี & สิทธิทางกฎหมาย</h2>
+                    <p style="color:var(--muted); font-size:13px;">เส้นทางการดำเนินเรื่องจากธนาคารสู่พนักงานสอบสวนเพื่อขอปลดอายัดบัญชี</p>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px;">
+                        <div style="background:var(--navy); padding:16px; border-radius:12px; border:1px solid rgba(141,214,167,.3);">
+                            <h3 style="color:var(--sage); margin-top:0;">🏦 ติดต่อธนาคารเจ้าของบัญชี</h3>
+                            <ul style="font-size:12px; color:var(--muted); padding-left:18px; line-height:1.7;">
+                                <li>ขออายัดบัญชีและขอเลข AOC ID</li>
+                                <li>ขอ Statement ย้อนหลัง 6 เดือน</li>
+                                <li>ขอชื่อพนักงานสอบสวนเจ้าของคดี</li>
+                            </ul>
+                        </div>
+
+                        <div style="background:var(--navy); padding:16px; border-radius:12px; border:1px solid rgba(121,181,228,.3);">
+                            <h3 style="color:var(--blue); margin-top:0;">👮 ติดต่อพนักงานสอบสวน</h3>
+                            <ul style="font-size:12px; color:var(--muted); padding-left:18px; line-height:1.7;">
+                                <li>ยื่นหนังสือชี้แจงความบริสุทธิ์ใจ</li>
+                                <li>ให้การตามจริงเพื่อขอรับบันทึกประจำวัน</li>
+                                <li>ติดตามผลคดีเพื่อขอปลดอายัดบัญชี</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer container">
+            <div class="brand-lockup">
+                <div class="brand-mark"><span></span><span></span><span></span></div>
+                <div><strong>ตั้งหลัก</strong><small>FOOTHOLD</small></div>
+            </div>
+            <div>
+                Foothold (ตั้งหลัก) &copy; 2026 Nakarin Sakunthai. Released under the <a href="LICENSE" target="_blank">MIT License</a>.
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- MODAL WIZARD (Quiet Civic Trust Popup) -->
+    <div id="wizardModal" class="modal-backdrop" style="display:none;">
+        <div class="wizard-shell">
+            <div class="wizard-topbar">
+                <div class="brand-lockup">
+                    <div class="brand-mark"><span></span><span></span><span></span></div>
+                    <div><strong>ตั้งหลัก</strong><small>FOOTHOLD</small></div>
+                </div>
+                <button onclick="closeWizardModal()" class="icon-button">✕</button>
+            </div>
+            <div class="wizard-content">
+                <h2>เริ่มประเมินเส้นทางด่วน 3 ขั้น</h2>
+                <p class="lead">ระบบนำทางจะช่วยสรุปสถานการณ์และสร้างเอกสารแสดงความบริสุทธิ์ใจ</p>
+                <button onclick="switchSection('main-wizard'); closeWizardModal();" class="primary-button" style="width:100%;">
+                    เข้าสู่การประเมินม้า 5 สี ➔
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 2. HEADER NAVIGATION & WORDMARK -->
-    <header class="bg-foothold-surface/90 backdrop-blur border-b border-slate-700/80 sticky top-10 z-40 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Signature Logo & Wordmark (3 Rising Pillars + Gold Dot) -->
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSection('main-wizard')">
-                    <div class="flex items-end space-x-1 h-8 px-1.5 py-1 bg-slate-900 rounded-lg border border-slate-700">
-                        <div class="w-1.5 h-3 bg-foothold-gold/60 rounded-sm"></div>
-                        <div class="w-1.5 h-5 bg-foothold-gold/80 rounded-sm"></div>
-                        <div class="w-1.5 h-7 bg-foothold-gold rounded-sm relative">
-                            <span class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-foothold-gold rounded-full shadow-glow"></span>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <span class="font-heading font-bold text-xl text-white tracking-tight">ตั้งหลัก</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-foothold-gold/20 text-foothold-gold border border-foothold-gold/40 font-mono">Foothold v4.2</span>
-                        </div>
-                        <p class="text-[11px] text-slate-400 hidden sm:block">คู่มือปฏิบัติตนและระบบนำทางกฎหมายบัญชีม้าสำหรับประชาชน</p>
-                    </div>
-                </div>
-
-                <!-- Header Actions -->
-                <div class="flex items-center space-x-2">
-                    <a href="dashboard.html" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-slate-800 hover:bg-slate-700 text-foothold-gold border border-slate-700 transition active:scale-95">
-                        <span>📊 แดชบอร์ดหลายคดี</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- 3. SUB-HEADER NAVIGATION TABS -->
-    <div class="bg-slate-900/90 border-b border-slate-800 sticky top-[104px] z-30 shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 overflow-x-auto py-2 scrollbar-none">
-            <button id="nav-btn-wizard" onclick="switchSection('main-wizard')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading transition whitespace-nowrap bg-foothold-gold text-slate-950 font-bold shadow">
-                📱 ประเมิน & ไทม์ไลน์
-            </button>
-            <button id="nav-btn-emergency" onclick="switchSection('emergency-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading transition whitespace-nowrap text-red-400 bg-slate-800 hover:bg-slate-700 border border-slate-700">
-                🚨 3 ขั้นตอนเร่งด่วน
-            </button>
-            <button id="nav-btn-generator" onclick="switchSection('generator-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading transition whitespace-nowrap text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700">
-                📝 สร้างหนังสือชี้แจงบริสุทธิ์ใจ
-            </button>
-            <button id="nav-btn-flowchart" onclick="switchSection('flowchart-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading transition whitespace-nowrap text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700">
-                🗺️ แผนผังคดี & สายด่วน
-            </button>
-        </div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-
-        <!-- SECTION 1: MAIN WIZARD & CLASSIFIER -->
-        <section id="sec-main-wizard" class="page-section space-y-6">
-            
-            <!-- Quiet Civic Hero Banner & Visible Privacy Signal -->
-            <div class="bg-slate-800/80 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
-                <div class="space-y-2 max-w-3xl z-10">
-                    <!-- Signature Privacy Signal Badge -->
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-400 text-xs font-medium border border-emerald-800/80">
-                        <span>🛡️</span>
-                        <span>ปลอดภัยสูงสุด: บันทึกลงในอุปกรณ์นี้เท่านั้น ไม่มีการส่งข้อมูลเข้าเซิร์ฟเวอร์</span>
-                    </div>
-                    <h1 class="text-2xl sm:text-3xl font-heading font-bold text-white leading-tight">
-                        คุณไม่ต้องจัดการเรื่องนี้คนเดียว
-                    </h1>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        ระบบนำทางทางกฎหมายและคู่มือปฏิบัติตนสำหรับผู้ถูกกล่าวหาเรื่องบัญชีม้า ประเมินความเสี่ยง เตรียมพยานหลักฐาน และแสดงความบริสุทธิ์ใจอย่างถูกวิธี
-                    </p>
-                </div>
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 z-10">
-                    <button onclick="switchSection('emergency-mode')" class="px-5 py-3 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center space-x-2">
-                        <span>🚨</span>
-                        <span>เพิ่งถูกอายัดสดๆ? คลิกที่นี่</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Asymmetric Split Grid: Left Column (Category Classifier) | Right Column (Timeline & Checklist) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- LEFT COLUMN: Account Category Classifier & Dynamic Advice -->
-                <div class="lg:col-span-5 space-y-6">
-                    
-                    <!-- 5 Account Category Selectors -->
-                    <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 shadow-sm space-y-4">
-                        <div>
-                            <div class="flex justify-between items-center">
-                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
-                                    <span>🏷️</span> คัดแยกประเภทบัญชี
-                                </h2>
-                                <span class="text-xs text-foothold-gold font-mono">เลือก 1 ข้อที่ตรงจริง</span>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-1">คลิกเลือกสถานะของคุณเพื่อดูวิเคราะห์ความเสี่ยงและข้อควรระวัง</p>
-                        </div>
-
-                        <div class="space-y-2.5">
-                            <!-- Category 1 (Default Selected: เทาอ่อน) -->
-                            <button onclick="selectCategory('lightGray')" id="cat-btn-lightGray" class="cat-btn w-full p-3.5 rounded-xl text-left border border-slate-600 bg-slate-900/90 hover:bg-slate-700/80 transition flex items-start justify-between gap-3 ring-2 ring-foothold-gold shadow-md">
-                                <div class="space-y-0.5">
-                                    <div class="font-heading font-bold text-slate-100 text-sm flex items-center gap-1.5">
-                                        <span>⚪</span>
-                                        <span>1. เทาอ่อน - ไม่รู้ตัว (ผู้บริสุทธิ์/เหยื่อ)</span>
-                                    </div>
-                                    <div class="text-xs text-slate-300 pl-5">ถูกแอบอ้าง/หลอกเอาข้อมูลเอกสารไปเปิดบัญชีโดยไม่ยินยอม</div>
-                                </div>
-                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-700 font-mono shrink-0">ความเสี่ยงต่ำ</span>
-                            </button>
-
-                            <!-- Category 2: น้ำตาลอ่อน -->
-                            <button onclick="selectCategory('lightBrown')" id="cat-btn-lightBrown" class="cat-btn w-full p-3.5 rounded-xl text-left border border-amber-900/60 bg-amber-950/30 hover:bg-amber-900/40 transition flex items-start justify-between gap-3">
-                                <div class="space-y-0.5">
-                                    <div class="font-heading font-bold text-amber-300 text-sm flex items-center gap-1.5">
-                                        <span>🟤</span>
-                                        <span>2. น้ำตาลอ่อน - รู้ตัวแต่ให้ใช้</span>
-                                    </div>
-                                    <div class="text-xs text-slate-400 pl-5">ให้ผู้อื่นนำบัญชีไปใช้ โดยได้รับเงินค่าตอบแทนหรือผลประโยชน์</div>
-                                </div>
-                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-amber-950 text-amber-300 border border-amber-800 font-mono shrink-0">เสี่ยงปานกลาง</span>
-                            </button>
-
-                            <!-- Category 3: เทาเข้ม -->
-                            <button onclick="selectCategory('darkGray')" id="cat-btn-darkGray" class="cat-btn w-full p-3.5 rounded-xl text-left border border-slate-700 bg-slate-900/80 hover:bg-slate-800 transition flex items-start justify-between gap-3">
-                                <div class="space-y-0.5">
-                                    <div class="font-heading font-bold text-slate-300 text-sm flex items-center gap-1.5">
-                                        <span>🩶</span>
-                                        <span>3. เทาเข้ม - ไม่รู้ตัวแต่ควรระวัง</span>
-                                    </div>
-                                    <div class="text-xs text-slate-400 pl-5">ให้เพื่อน/ญาติยืมบัญชี โดยไม่ทราบว่าจะนำไปรับเงินผิดกฎหมาย</div>
-                                </div>
-                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono shrink-0">ต้องพิสูจน์เจตนา</span>
-                            </button>
-
-                            <!-- Category 4: น้ำตาลเข้ม -->
-                            <button onclick="selectCategory('darkBrown')" id="cat-btn-darkBrown" class="cat-btn w-full p-3.5 rounded-xl text-left border border-amber-950 bg-amber-950/70 hover:bg-amber-900/50 transition flex items-start justify-between gap-3">
-                                <div class="space-y-0.5">
-                                    <div class="font-heading font-bold text-amber-400 text-sm flex items-center gap-1.5">
-                                        <span>🟤</span>
-                                        <span>4. น้ำตาลเข้ม - รู้ตัวและใช้เอง</span>
-                                    </div>
-                                    <div class="text-xs text-slate-400 pl-5">รู้ตัวและทำหน้าที่โอน/กดถอนเงินให้ผู้อื่นด้วยตนเองตามสั่ง</div>
-                                </div>
-                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-amber-950 text-amber-200 border border-amber-700 font-mono shrink-0">เสี่ยงสูง</span>
-                            </button>
-
-                            <!-- Category 5: ดำ -->
-                            <button onclick="selectCategory('black')" id="cat-btn-black" class="cat-btn w-full p-3.5 rounded-xl text-left border border-red-950 bg-red-950/30 hover:bg-red-900/30 transition flex items-start justify-between gap-3">
-                                <div class="space-y-0.5">
-                                    <div class="font-heading font-bold text-red-400 text-sm flex items-center gap-1.5">
-                                        <span>🖤</span>
-                                        <span>5. ดำ - เกี่ยวข้องกับขบวนการ</span>
-                                    </div>
-                                    <div class="text-xs text-slate-400 pl-5">เปิดบัญชีม้าเป็นอาชีพ / รับจ้างกลุ่มแก๊งคอลเซ็นเตอร์-เว็บพนัน</div>
-                                </div>
-                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-red-950 text-red-300 border border-red-800 font-mono shrink-0">เสี่ยงวิกฤต</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Legal Risk Analysis Box -->
-                    <div id="legal-analysis-box" class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-4 shadow-md">
-                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                            <span class="text-xs font-mono text-slate-400">บทวิเคราะห์ทางกฎหมายเฉพาะคุณ</span>
-                            <span id="analysis-category-tag" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">⚪ เทาอ่อน - ไม่รู้ตัว</span>
-                        </div>
-                        
-                        <div>
-                            <h3 id="analysis-title" class="font-heading font-bold text-foothold-gold text-base">ผู้เสียหายที่ถูกแอบอ้างนำข้อมูลไปเปิดบัญชี (ไม่มีเจตนา)</h3>
-                            <p id="analysis-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed mt-1">
-                                คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชีหรือทำธุรกรรมนั้นๆ
-                            </p>
-                        </div>
-
-                        <!-- Legal Exposure Chart -->
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
-                            <div class="text-xs text-slate-400 font-mono text-center">ระดับภาระการพิสูจน์เจตนา vs ความเสี่ยงรับโทษ</div>
-                            <div class="chart-container">
-                                <canvas id="riskGaugeChart"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Do's and Don'ts -->
-                        <div class="grid grid-cols-1 gap-3 pt-1">
-                            <div class="bg-emerald-950/40 border border-emerald-800/80 p-3.5 rounded-xl space-y-1">
-                                <div class="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                                    <span>✅</span> สิ่งที่ต้องทำทันที:
-                                </div>
-                                <ul id="analysis-dos" class="text-xs text-slate-300 space-y-1 list-disc pl-4 leading-relaxed">
-                                    <li>ไปแจ้งความลงบันทึกประจำวันระบุว่าถูกแอบอ้างนำข้อมูลไปเปิดบัญชี</li>
-                                    <li>ขอหนังสือรับรองและอายัดทุกบัญชีกับธนาคารเจ้าของบัญชี</li>
-                                    <li>ยื่นหนังสือบริสุทธิ์ใจต่อพนักงานสอบสวนพร้อมหลักฐาน</li>
-                                </ul>
-                            </div>
-
-                            <div class="bg-red-950/40 border border-red-800/80 p-3.5 rounded-xl space-y-1">
-                                <div class="text-xs font-bold text-red-400 flex items-center gap-1">
-                                    <span>❌</span> สิ่งที่ห้ามทำเด็ดขาด:
-                                </div>
-                                <ul id="analysis-donts" class="text-xs text-slate-300 space-y-1 list-disc pl-4 leading-relaxed">
-                                    <li>ห้ามลบแชท ประวัติการคุย หรือรีเซ็ตโทรศัพท์เด็ดขาด</li>
-                                    <li>ห้ามยินยอมรับเงินชดเชยเพื่อจบลับๆ โดยไม่ผ่านตำรวจ</li>
-                                    <li>ห้ามหลบหนีหรือปฏิเสธการเข้าพบพนักงานสอบสวนตามหมายเรียก</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <button onclick="switchSection('generator-mode')" class="w-full py-3 bg-foothold-gold hover:bg-foothold-goldHover text-slate-950 font-heading font-bold text-xs rounded-xl transition shadow active:scale-95 flex items-center justify-center gap-1.5">
-                            <span>📝</span>
-                            <span>เริ่มสร้างหนังสือชี้แจงความบริสุทธิ์ใจ</span>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- RIGHT COLUMN: Guided Step Sequence (โทรก่อน -> หลักฐานภายหลัง -> บันทึกและไปต่อ) -->
-                <div class="lg:col-span-7 space-y-6">
-                    
-                    <!-- Progress Spine & Guided Step Sequence -->
-                    <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700 shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                            <div>
-                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
-                                    <span>⏱️</span> ลำดับขั้นตอนการดำเนินการ (Action Plan)
-                                </h2>
-                                <p class="text-xs text-slate-400">ปฏิบัติตาม 3 ลำดับหลัก: โทรก่อน ➔ หลักฐาน ➔ บันทึกยื่นเรื่อง</p>
-                            </div>
-                            <span class="text-xs px-3 py-1 rounded-full bg-foothold-gold/20 text-foothold-gold border border-foothold-gold/30 font-mono font-semibold">
-                                ลำดับความสำคัญสูงสุด
-                            </span>
-                        </div>
-
-                        <!-- Progress Spine Line Container -->
-                        <div class="relative space-y-4 pl-3">
-                            <div class="absolute left-7 top-4 bottom-4 w-0.5 bg-slate-700 -z-0"></div>
-
-                            <!-- Step 1: โทรก่อน -->
-                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 hover:border-foothold-gold transition flex gap-4 items-start relative z-10">
-                                <div class="w-9 h-9 rounded-full bg-red-600 text-white font-bold font-mono flex items-center justify-center shrink-0 text-sm shadow">1</div>
-                                <div class="flex-grow space-y-1">
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                        <h3 class="font-heading font-bold text-white text-base">ขั้นที่ 1: โทรก่อน (ภายใน 24 ชม.)</h3>
-                                        <span class="text-[11px] text-red-300 bg-red-950 px-2.5 py-0.5 rounded border border-red-800 font-mono w-fit font-semibold">จำเป็นเร่งด่วน</span>
-                                    </div>
-                                    <p class="text-xs text-slate-300 leading-relaxed">
-                                        โทรแจ้งศูนย์ภัยทางการเงินของธนาคารเพื่อขอ **"เลขคำสั่งอายัด (AOC ID)"** แล้วโทร 1441 แจ้งเหตุทันที
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Step 2: หลักฐานภายหลัง -->
-                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 hover:border-foothold-gold transition flex gap-4 items-start relative z-10">
-                                <div class="w-9 h-9 rounded-full bg-amber-500 text-slate-950 font-bold font-mono flex items-center justify-center shrink-0 text-sm shadow">2</div>
-                                <div class="flex-grow space-y-1">
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                        <h3 class="font-heading font-bold text-white text-base">ขั้นที่ 2: รวบรวมหลักฐานภายหลัง (1-3 วัน)</h3>
-                                        <span class="text-[11px] text-amber-300 bg-amber-950 px-2.5 py-0.5 rounded border border-amber-800 font-mono w-fit font-semibold">เตรียมความพร้อม</span>
-                                    </div>
-                                    <p class="text-xs text-slate-300 leading-relaxed">
-                                        แคปแชทสนทนา สลิปโอนเงิน โพสต์รับสมัครงาน และขอ Statement ย้อนหลัง 6 เดือนจากธนาคาร
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Step 3: บันทึกและไปต่อ -->
-                            <div class="p-4 rounded-xl bg-slate-900 border border-slate-700 hover:border-foothold-gold transition flex gap-4 items-start relative z-10">
-                                <div class="w-9 h-9 rounded-full bg-emerald-500 text-slate-950 font-bold font-mono flex items-center justify-center shrink-0 text-sm shadow">3</div>
-                                <div class="flex-grow space-y-1">
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                        <h3 class="font-heading font-bold text-white text-base">ขั้นที่ 3: บันทึกและไปต่อ (ยื่นพนักงานสอบสวน)</h3>
-                                        <span class="text-[11px] text-emerald-300 bg-emerald-950 px-2.5 py-0.5 rounded border border-emerald-800 font-mono w-fit font-semibold">พิสูจน์บริสุทธิ์ใจ</span>
-                                    </div>
-                                    <p class="text-xs text-slate-300 leading-relaxed">
-                                        สร้างร่างหนังสือชี้แจงความบริสุทธิ์ใจ แล้วนำไปยื่นต่อพนักงานสอบสวนเพื่อขอรับสำเนาบันทึกประจำวัน
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Interactive Document Checklist -->
-                    <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between flex-wrap gap-2">
-                            <div>
-                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
-                                    <span>📋</span> เช็กลิสต์เอกสารที่ต้องเตรียมยื่น
-                                </h2>
-                                <p class="text-xs text-slate-400">ทำเครื่องหมายเอกสารที่คุณเตรียมพร้อมแล้ว</p>
-                            </div>
-                            <span id="doc-counter" class="text-xs font-mono text-foothold-gold font-bold bg-slate-900 px-3 py-1 rounded-lg border border-slate-700">
-                                2 จาก 6 เอกสารพร้อมแล้ว
-                            </span>
-                        </div>
-
-                        <!-- Progress Bar Container -->
-                        <div class="space-y-1">
-                            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-700">
-                                <div id="doc-progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-3 rounded-full transition-all duration-300" style="width: 33%"></div>
-                            </div>
-                            <div class="flex justify-between text-[11px] font-mono text-slate-400">
-                                <span>ความพร้อมเอกสาร</span>
-                                <span id="doc-percent-text">33%</span>
-                            </div>
-                        </div>
-
-                        <!-- Checkbox Container -->
-                        <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" checked class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">สำเนาบัตรประชาชน</span>
-                                    <span class="text-[11px] text-slate-400 block">พร้อมเซ็นชื่อรับรองสำเนาถูกต้อง</span>
-                                </div>
-                            </label>
-
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" checked class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">สำเนาสมุดบัญชีธนาคาร</span>
-                                    <span class="text-[11px] text-slate-400 block">หน้าที่มีชื่อและเลขที่บัญชีชัดเจน</span>
-                                </div>
-                            </label>
-
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">รายการเดินบัญชีย้อนหลัง</span>
-                                    <span class="text-[11px] text-slate-400 block">Statement ย้อนหลัง 6 เดือนจากแอปธนาคาร</span>
-                                </div>
-                            </label>
-
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">หลักฐานสลิปโอน/รับเงิน</span>
-                                    <span class="text-[11px] text-slate-400 block">สลิปที่มีเลขที่อ้างอิงและเวลาตรงกัน</span>
-                                </div>
-                            </label>
-
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">ภาพแคปหน้าจอแชท/บทสนทนา</span>
-                                    <span class="text-[11px] text-slate-400 block">รวมโปรไฟล์ผู้ติดต่อ และข้อความชักชวน</span>
-                                </div>
-                            </label>
-
-                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-700 cursor-pointer hover:bg-slate-800 transition">
-                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-foothold-gold focus:ring-foothold-gold bg-slate-950 border-slate-600">
-                                <div class="space-y-0.5">
-                                    <span class="font-medium text-white block">บันทึกประจำวัน / ใบแจ้งความ</span>
-                                    <span class="text-[11px] text-slate-400 block">จากสถานีตำรวจท้องที่เกิดเหตุ</span>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="pt-3 border-t border-slate-700 flex justify-between items-center text-xs text-slate-400">
-                            <span>🛡️ ข้อมูลและสถานะเช็กลิสต์จะถูกบันทึกลงในอุปกรณ์นี้เท่านั้น</span>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- SECTION 2: URGENT EMERGENCY MODE (3 STEPS FOR 24 HRS) -->
-        <section id="sec-emergency-mode" class="page-section hidden space-y-6">
-            
-            <!-- Red High Urgency Header Box -->
-            <div class="bg-gradient-to-br from-red-950 via-red-900 to-slate-900 border-2 border-red-700 p-6 rounded-2xl shadow-2xl space-y-4">
-                <div class="flex items-start justify-between gap-4">
-                    <div class="space-y-1.5">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-900 text-red-200 text-xs font-bold font-mono border border-red-600">
-                            <span class="animate-ping w-2.5 h-2.5 rounded-full bg-red-400"></span>
-                            โหมดเร่งด่วน 24 ชม. (Urgent Action Plan)
-                        </div>
-                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">ถูกอายัดบัญชีสดๆ ร้อนๆ? โทร 1441 ก่อน!</h2>
-                        <p class="text-xs sm:text-sm text-red-200 leading-relaxed">
-                            อย่าพึ่งตื่นตระหนก! หากคุณเพิ่งทราบว่าบัญชีธนาคารถูกระงับหรือถูกแจ้งความปฏิบัติตาม 3 ขั้นตอนฉุกเฉินนี้ทันทีเพื่อป้องกันความเสียหายและคุ้มครองตัวคุณเอง
-                        </p>
-                    </div>
-                </div>
-
-                <!-- 3 Action Steps Cards Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-                    
-                    <!-- Card 1: Call Bank -->
-                    <div class="bg-slate-900/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="w-10 h-10 rounded-full bg-red-900 border border-red-500 text-red-200 flex items-center justify-center font-heading font-bold text-lg">
-                                1
-                            </div>
-                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">ขั้นแรกสุด</span>
-                        </div>
-                        <h3 class="font-heading font-bold text-base text-white">โทรหาธนาคารทันที</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            โทรเข้าศูนย์รับแจ้งเหตุภัยทางการเงินของธนาคารเจ้าของบัญชี ถามเหตุผลที่อายัด และขอ **"เลขที่คำสั่งอายัด (AOC ID)"**
-                        </p>
-                        
-                        <!-- Bank Hotline Directory -->
-                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-2 font-mono">
-                            <div class="text-foothold-gold font-sans text-xs font-bold">เบอร์โทรศูนย์แจ้งเหตุธนาคาร (24 ชม.):</div>
-                            <div class="grid grid-cols-1 gap-1.5 text-slate-300">
-                                <a href="tel:028888888" class="flex justify-between hover:text-foothold-gold"><span>• กสิกรไทย (KBank):</span> <span class="font-bold">02-888-8888 (กด 1)</span></a>
-                                <a href="tel:1333" class="flex justify-between hover:text-foothold-gold"><span>• กรุงเทพ (BBL):</span> <span class="font-bold">1333 (กด 9)</span></a>
-                                <a href="tel:027777777" class="flex justify-between hover:text-foothold-gold"><span>• ไทยพาณิชย์ (SCB):</span> <span class="font-bold">02-777-7777</span></a>
-                                <a href="tel:021111111" class="flex justify-between hover:text-foothold-gold"><span>• กรุงไทย (KTB):</span> <span class="font-bold">02-111-1111</span></a>
-                                <a href="tel:1428" class="flex justify-between hover:text-foothold-gold"><span>• ทีทีบี (ttb):</span> <span class="font-bold">1428 (กด 3)</span></a>
-                                <a href="tel:1115" class="flex justify-between hover:text-foothold-gold"><span>• ออมสิน (GSB):</span> <span class="font-bold">1115 (กด 6)</span></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Call 1441 -->
-                    <div class="bg-slate-900/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="w-10 h-10 rounded-full bg-red-900 border border-red-500 text-red-200 flex items-center justify-center font-heading font-bold text-lg">
-                                2
-                            </div>
-                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">ขั้นที่สอง</span>
-                        </div>
-                        <h3 class="font-heading font-bold text-base text-white">โทร 1441 สายด่วน AOC</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            โทรแจ้งศูนย์ปฏิบัติการแก้ไขปัญหาอาชญากรรมออนไลน์ (AOC 1441) เพื่อลงทะเบียนแจ้งเหตุและสอบถามสถานะคำสั่งอายัด
-                        </p>
-                        
-                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-3">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-white">สายด่วนตำรวจไซเบอร์:</span>
-                                <a href="tel:1441" class="font-mono text-lg font-bold text-foothold-gold bg-slate-900 px-3 py-1 rounded border border-foothold-gold/40">1441</a>
-                            </div>
-                            <p class="text-[11px] text-slate-400">
-                                ให้บริการตลอด 24 ชั่วโมง เพื่อให้ข้อมูล และประสานงานพนักงานสอบสวนทั่วประเทศ
-                            </p>
-                            <a href="https://www.thaipoliceonline.go.th" target="_blank" class="block text-center py-2 bg-slate-900 hover:bg-slate-800 text-foothold-gold text-xs rounded border border-slate-700 font-bold">
-                                🔗 เว็บไซต์แจ้งความออนไลน์ (thaipoliceonline.go.th)
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Preserve Evidence -->
-                    <div class="bg-slate-900/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="w-10 h-10 rounded-full bg-red-900 border border-red-500 text-red-200 flex items-center justify-center font-heading font-bold text-lg">
-                                3
-                            </div>
-                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">สำคัญที่สุด</span>
-                        </div>
-                        <h3 class="font-heading font-bold text-base text-white">แคปหลักฐาน ห้ามลบแชท!</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            บันทึกภาพหน้าจอหลักฐานทั้งหมดทันที การลบแชทจะทำให้คุณขาดพยานหลักฐานในการพิสูจน์เจตนาบริสุทธิ์ต่อตำรวจ
-                        </p>
-
-                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs space-y-1.5 text-slate-300">
-                            <div class="text-emerald-400 font-bold">ภาพที่ต้องแคปจอเก็บไว้:</div>
-                            <div class="text-[11px] text-slate-300">• โปรไฟล์และเบอร์โทรของผู้ติดต่อ/ว่าจ้าง</div>
-                            <div class="text-[11px] text-slate-300">• ข้อความสนทนาทั้งหมด (ตั้งแต่เริ่มต้น)</div>
-                            <div class="text-[11px] text-slate-300">• สลิปโอนเงิน / เลขบัญชีที่เกี่ยวข้องทั้งหมด</div>
-                            <div class="text-[11px] text-slate-300">• โพสต์ประกาศรับสมัครงาน / ข้อตกลง</div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="pt-4 text-center border-t border-red-900/80">
-                    <button onclick="switchSection('main-wizard')" class="px-6 py-2.5 bg-foothold-gold hover:bg-foothold-goldHover text-slate-950 font-heading font-bold rounded-xl shadow transition active:scale-95">
-                        เสร็จสิ้นขั้นตอนเร่งด่วน ➔ เข้าสู่ประเมินประเภทบัญชี & ไทม์ไลน์
-                    </button>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- SECTION 3: LEGAL STATEMENT DRAFT GENERATOR -->
-        <section id="sec-generator-mode" class="page-section hidden space-y-6">
-            
-            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-2">
-                <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
-                    <span>📝</span> เครื่องมือสร้าง "หนังสือชี้แจงความบริสุทธิ์ใจ" (อัตโนมัติ)
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-300">
-                    กรอกข้อมูลเบื้องต้นด้านล่างเพื่อสร้างร่างหนังสือชี้แจง สำหรับนำไปยื่นต่อพนักงานสอบสวนหรือธนาคารเจ้าของบัญชี
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Input Form Grid -->
-                <div class="lg:col-span-5 bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-4">
-                    <h3 class="font-heading font-bold text-sm text-foothold-gold border-b border-slate-700 pb-2">
-                        กรอกข้อมูลของคุณ (บันทึกลงอุปกรณ์นี้เท่านั้น)
-                    </h3>
-
-                    <div class="space-y-3 text-xs">
-                        <div>
-                            <label class="block text-slate-300 font-medium mb-1">ชื่อ-นามสกุล ของคุณ:</label>
-                            <input type="text" id="stmt-name" oninput="generateStatementText()" placeholder="เช่น นายสมชาย ใจบริสุทธิ์" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-foothold-gold">
-                        </div>
-
-                        <div>
-                            <label class="block text-slate-300 font-medium mb-1">หมายเลขบัตรประชาชน:</label>
-                            <input type="text" id="stmt-idcard" oninput="generateStatementText()" placeholder="1-XXXX-XXXXX-XX-X" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-foothold-gold font-mono">
-                        </div>
-
-                        <div>
-                            <label class="block text-slate-300 font-medium mb-1">ชื่อธนาคารและเลขบัญชีที่ถูกระงับ:</label>
-                            <input type="text" id="stmt-bank" oninput="generateStatementText()" placeholder="เช่น ธ.กสิกรไทย เลขที่ 012-3-45678-9" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-foothold-gold">
-                        </div>
-
-                        <div>
-                            <label class="block text-slate-300 font-medium mb-1">วันที่ทราบเรื่องถูกอายัด/ระงับ:</label>
-                            <input type="date" id="stmt-date" onchange="generateStatementText()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-foothold-gold">
-                        </div>
-
-                        <div>
-                            <label class="block text-slate-300 font-medium mb-1">เหตุผลและสรุปข้อเท็จจริง:</label>
-                            <textarea id="stmt-reason" oninput="generateStatementText()" rows="3" placeholder="เช่น ถูกผู้อื่นหลอกลวงเอาข้อมูลบัตรประชาชนไปเปิดบัญชีออนไลน์โดยข้าพเจ้าไม่มีส่วนรู้เห็น หรือ ถูกเพื่อนขอยืมบัญชีเพื่อรับเงินค่าสินค้า" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-foothold-gold"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Generated Document Output -->
-                <div class="lg:col-span-7 bg-slate-900 p-5 rounded-2xl border border-slate-700 space-y-4 shadow-xl">
-                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                        <span class="text-xs font-mono text-slate-400">ตัวอย่างเอกสารร่างชี้แจง</span>
-                        <button onclick="copyStatementToClipboard()" class="px-3.5 py-1.5 bg-foothold-gold hover:bg-foothold-goldHover text-slate-950 font-heading font-bold text-xs rounded-lg transition flex items-center gap-1 shadow active:scale-95">
-                            <span>📋</span>
-                            <span>คัดลอกข้อความ</span>
-                        </button>
-                    </div>
-
-                    <!-- Printed Document Box -->
-                    <div id="statement-output" class="bg-slate-950 p-5 rounded-xl border border-slate-800 text-xs leading-relaxed font-sans text-slate-200 whitespace-pre-wrap select-all font-mono">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <div class="flex items-center justify-between text-[11px] text-slate-400">
-                        <span>* สามารถคัดลอกข้อความนี้ไปปริ้นท์ใส่กระดาษ A4 เซ็นชื่อรับรอง แล้วยื่นประกอบบันทึกประจำวันได้ทันที</span>
-                        <span class="text-emerald-400 font-mono">🛡️ บันทึกลงอุปกรณ์นี้แล้ว</span>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- SECTION 4: PROCESS FLOWCHART & DIRECTORY -->
-        <section id="sec-flowchart-mode" class="page-section hidden space-y-6">
-            
-            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-2">
-                <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
-                    <span>🗺️</span> แผนผังเส้นทางการดำเนินคดี & สิทธิทางกฎหมาย
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-300">
-                    ทำความเข้าใจความเชื่อมโยงระหว่าง "ตัวคุณ" ➔ "ธนาคารเจ้าของบัญชี" ➔ "พนักงานสอบสวน"
-                </p>
-            </div>
-
-            <!-- Flowchart Container -->
-            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-6">
-                
-                <!-- Start Node -->
-                <div class="flex flex-col items-center">
-                    <div class="bg-slate-900 border-2 border-foothold-gold p-4 rounded-xl text-center w-full max-w-xs shadow-lg">
-                        <div class="text-2xl">👤</div>
-                        <div class="font-heading font-bold text-white text-sm mt-1">ประชาชนผู้ถูกระงับบัญชี</div>
-                        <div class="text-[11px] text-slate-400 mt-0.5">ถูกระงับธุรกรรมธนาคาร / มีหมายเรียก</div>
-                    </div>
-                    <div class="w-0.5 h-6 bg-foothold-gold"></div>
-                    <div class="text-foothold-gold text-xs">▼</div>
-                </div>
-
-                <!-- Decision Split -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-                    
-                    <!-- Route 1: Bank -->
-                    <div class="bg-slate-900 p-5 rounded-xl border border-emerald-800/80 space-y-3">
-                        <div class="flex items-center space-x-2 text-emerald-400 border-b border-slate-700 pb-2">
-                            <span class="text-xl">🏦</span>
-                            <span class="font-heading font-bold text-sm">เส้นทางที่ 1: ติดต่อธนาคาร</span>
-                        </div>
-                        <ul class="text-xs text-slate-300 space-y-2 list-disc pl-4 leading-relaxed">
-                            <li>ขออายัดและขอเลข AOC ID (กรณีถูกแจ้งอายัดสด)</li>
-                            <li>ขอเอกสาร Statement ย้อนหลังและหนังสือรับรองข้อมูลบัญชี</li>
-                            <li>ขอข้อมูลสถานีตำรวจและชื่อพนักงานสอบสวนเจ้าของคดี</li>
-                        </ul>
-                    </div>
-
-                    <!-- Route 2: Police -->
-                    <div class="bg-slate-900 p-5 rounded-xl border border-blue-800/80 space-y-3">
-                        <div class="flex items-center space-x-2 text-blue-400 border-b border-slate-700 pb-2">
-                            <span class="text-xl">👮</span>
-                            <span class="font-heading font-bold text-sm">เส้นทางที่ 2: ติดต่อพนักงานสอบสวน</span>
-                        </div>
-                        <ul class="text-xs text-slate-300 space-y-2 list-disc pl-4 leading-relaxed">
-                            <li>ยื่นหนังสือชี้แจงความบริสุทธิ์ใจพร้อมพยานหลักฐาน (แชท/สลิป)</li>
-                            <li>ให้การตามความจริงและขอรับ "สำเนาบันทึกประจำวัน / ใบแจ้งความ"</li>
-                            <li>ติดตามความคืบหน้าคดีเพื่อขอหนังสือปลดอายัดบัญชี</li>
-                        </ul>
-                    </div>
-
-                </div>
-
-                <!-- Final Outcome -->
-                <div class="flex flex-col items-center pt-2">
-                    <div class="w-0.5 h-6 bg-emerald-500"></div>
-                    <div class="text-emerald-500 text-xs">▼</div>
-                    <div class="bg-slate-900 border-2 border-emerald-500 p-4 rounded-xl text-center w-full max-w-sm shadow-xl">
-                        <div class="text-2xl">✅</div>
-                        <div class="font-heading font-bold text-emerald-400 text-sm mt-1">เป้าหมายสูงสุด (Final Goal)</div>
-                        <div class="text-[11px] text-slate-300 mt-1">
-                            พิสูจน์เจตนาบริสุทธิ์ ➔ ยุติการดำเนินคดีอาญา ➔ ปลดระงับบัญชีธนาคารสำเร็จ
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Law Reference Legend Box -->
-            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-3">
-                <h3 class="font-heading font-bold text-sm text-white flex items-center gap-2">
-                    <span>⚖️</span> เกร็ดกฎหมายน่ารู้: พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300 leading-relaxed">
-                    <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-1">
-                        <div class="font-bold text-amber-300">มาตรา 9 (กรณีเป็นบัญชีม้า/เปิดให้ผู้อื่นใช้):</div>
-                        <p class="text-[11px]">
-                            ผู้ใดเปิดหรือยินยอมให้บุคคลอื่นใช้บัญชีเงินฝาก บัตรอิเล็กทรอนิกส์ หรือบัญชีเงินอิเล็กทรอนิกส์ของตน โดยมิได้มีเจตนาใช้เพื่อตนหรือเพื่อกิจการที่ตนเกี่ยวข้อง มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท หรือทั้งจำทั้งปรับ
-                        </p>
-                    </div>
-
-                    <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-1">
-                        <div class="font-bold text-emerald-300">ความสำคัญของการพิสูจน์เจตนาบริสุทธิ์:</div>
-                        <p class="text-[11px]">
-                            หากคุณเป็นเหยื่อที่ถูกแอบอ้างข้อมูลโดยไม่ได้ยินยอม หรือถูกหลอกลวงโดยไม่มีเจตนาทุจริต การรีบแจ้งความลงบันทึกประจำวันและยื่นหลักฐานแชทจะถือเป็นพยานหลักฐานสำคัญในการหักล้างข้อกล่าวหาตามกฎหมาย
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- FOOTER CREDITS -->
-    <footer class="bg-slate-900 border-t border-slate-800 py-6 mt-10">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 space-y-2">
-            <div class="flex justify-center items-center space-x-2">
-                <span class="font-heading font-bold text-white text-sm">ตั้งหลัก (Foothold)</span>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">Quiet Civic Trust Edition</span>
-            </div>
-            <p>คู่มือทางกฎหมายและระบบนำทางขั้นตอนสำหรับประชาชนผู้ถูกกล่าวหาเรื่องบัญชีม้า</p>
-            <p class="text-[11px] text-slate-500">
-                Foothold (ตั้งหลัก) &copy; 2026 Nakarin Sakunthai. Released under the <a href="LICENSE" target="_blank" class="text-foothold-gold underline">MIT License</a>.
-            </p>
-        </div>
-    </footer>
-
-    <!-- APPLICATION SCRIPT -->
+    <!-- APPLICATION JAVASCRIPT -->
     <script>
-        // Data Store for Account Categories
         const categoryDetails = {
             lightGray: {
-                title: "⚪ เทาอ่อน - ไม่รู้ตัว (ผู้บริสุทธิ์/เหยื่อ)",
-                tagClass: "bg-emerald-950 text-emerald-300 border border-emerald-700",
+                title: "⚪ เทาอ่อน - ไม่รู้ตัว (เหยื่อ)",
+                tagClass: "background:rgba(141,214,167,.15); color:var(--sage);",
                 name: "ผู้เสียหายที่ถูกแอบอ้างนำข้อมูลไปเปิดบัญชี (ไม่มีเจตนา)",
-                desc: "คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชีหรือทำธุรกรรมนั้นๆ",
-                dos: [
-                    "ไปแจ้งความลงบันทึกประจำวันระบุว่าถูกแอบอ้างนำข้อมูลไปเปิดบัญชี",
-                    "ขอหนังสือรับรองและอายัดทุกบัญชีกับธนาคารเจ้าของบัญชี",
-                    "ยื่นหนังสือบริสุทธิ์ใจต่อพนักงานสอบสวนพร้อมหลักฐานเอกสาร"
-                ],
-                donts: [
-                    "ห้ามลบแชท ประวัติการคุย หรือรีเซ็ตโทรศัพท์เด็ดขาด",
-                    "ห้ามยินยอมรับเงินชดเชยเพื่อจบลับๆ โดยไม่ผ่านตำรวจ",
-                    "ห้ามหลบหนีหรือปฏิเสธการเข้าพบพนักงานสอบสวนตามหมายเรียก"
-                ],
-                chartData: [90, 10] // High innocence probability, low criminal risk
+                desc: "คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชี",
+                dos: ["แจ้งความลงบันทึกประจำวันว่าถูกแอบอ้าง", "ขออายัดบัญชีและขอเลข AOC ID"],
+                donts: ["ห้ามลบแชท หรือประวัติการคุย", "ห้ามหลบหนีหมายเรียกตำรวจ"],
+                chartData: [90, 10]
             },
             lightBrown: {
                 title: "🟤 น้ำตาลอ่อน - รู้ตัวแต่ให้ใช้",
-                tagClass: "bg-amber-950 text-amber-300 border border-amber-800",
+                tagClass: "background:rgba(246,196,69,.15); color:var(--gold);",
                 name: "ยินยอมให้ผู้อื่นใช้บัญชี (ได้รับค่าตอบแทน/มีประโยชน์)",
-                desc: "คุณเปิดบัญชีหรือมอบบัญชีให้ผู้อื่นนำไปใช้ โดยได้รับผลตอบแทน แม้ไม่ได้ร่วมกระทำความผิดในคดีฉ้อโกงหลัก แต่มีความเสี่ยงสูงที่จะตกเป็นผู้ต้องหาตาม พ.ร.ก. อาชญากรรมทางเทคโนโลยี มาตรา 9",
-                dos: [
-                    "เตรียมหลักฐานข้อความว่าจ้าง และสลิปโอนเงินค่าจ้างที่ได้รับ",
-                    "เข้าพบพนักงานสอบสวนเพื่อแสดงความบริสุทธิ์ใจว่าไม่ได้ร่วมฉ้อโกง",
-                    "ยินยอมให้ความร่วมมืออายัดและตรวจสอบบัญชี"
-                ],
-                donts: [
-                    "ห้ามโกหกหรือปิดบังพนักงานสอบสวนเรื่องเงินค่าตอบแทนที่ได้รับ",
-                    "ห้ามโอนย้ายเงินที่คงค้างในบัญชีออกไปเด็ดขาด",
-                    "ห้ามติดต่อผู้ว่าจ้างเพื่อทำลายหลักฐาน"
-                ],
-                chartData: [45, 55] // Medium innocence proof needed, moderate risk
+                desc: "คุณเปิดบัญชีหรือมอบบัญชีให้ผู้อื่นนำไปใช้ โดยได้รับผลตอบแทน แม้ไม่ได้ร่วมกระทำความผิดในคดีฉ้อโกงหลัก แต่มีความเสี่ยงตาม พ.ร.ก. อาชญากรรมทางเทคโนโลยี มาตรา 9",
+                dos: ["เตรียมหลักฐานข้อความว่าจ้าง และสลิปค่าจ้าง", "เข้าพบพนักงานสอบสวนเพื่อแสดงความบริสุทธิ์ใจ"],
+                donts: ["ห้ามโกหกเรื่องเงินค่าตอบแทนที่ได้รับ", "ห้ามโอนย้ายเงินค้างในบัญชีออก"],
+                chartData: [45, 55]
             },
             darkGray: {
                 title: "🩶 เทาเข้ม - ไม่รู้ตัวแต่ควรระวัง",
-                tagClass: "bg-slate-800 text-slate-300 border border-slate-700",
-                name: "ให้เพื่อน/ญาติยืมบัญชีโดยถูกหลอกลวงวัตถุประสงค์",
+                tagClass: "background:rgba(203,213,225,.15); color:#cbd5e1;",
+                name: "ให้เพื่อน/ญาติยืมบัญชีโดยถูกหลอกวัตถุประสงค์",
                 desc: "คุณให้คนสนิทยืมบัญชีไปใช้งานโดยถูกหลอกว่านำไปใช้เรื่องสุจริต แต่กลับถูกนำไปใช้รับเงินผิดกฎหมาย ต้องเร่งรวบรวมหลักฐานบทสนทนาเพื่อพิสูจน์ว่าถูกหลอกเจตนา",
-                dos: [
-                    "รวบรวมแชทบทสนทนาเหตุผลที่ขอยืมบัญชีทั้งหมด",
-                    "รีบแจ้งความลงบันทึกประจำวันว่าถูกหลอกนำบัญชีไปใช้ผิดวัตถุประสงค์",
-                    "ติดต่อญาติ/เพื่อนผู้นั้นให้มาชี้แจงร่วมกัน"
-                ],
-                donts: [
-                    "ห้ามช่วยปกปิดความผิดให้เพื่อนหรือญาติที่นำบัญชีไปใช้",
-                    "ห้ามลบประวัติการสนทนาในไลน์/แชท",
-                    "ห้ามรับเงินส่วนแบ่งจากธุรกรรมต้องสงสัย"
-                ],
-                chartData: [70, 30] // Moderate-high innocence proof needed
+                dos: ["รวบรวมแชทเหตุผลที่ขอยืมบัญชีทั้งหมด", "รีบแจ้งความว่าถูกหลอกนำบัญชีไปใช้ผิดวัตถุประสงค์"],
+                donts: ["ห้ามช่วยปกปิดความผิดให้เพื่อนหรือญาติ", "ห้ามลบประวัติการสนทนา"],
+                chartData: [70, 30]
             },
             darkBrown: {
                 title: "🟤 น้ำตาลเข้ม - รู้ตัวและใช้เอง",
-                tagClass: "bg-amber-950 text-amber-200 border border-amber-700",
+                tagClass: "background:rgba(249,115,22,.15); color:#f97316;",
                 name: "ทำหน้าที่โอนเงิน / กดเงินสดให้ผู้อื่นด้วยตนเอง",
                 desc: "คุณเป็นผู้ทำธุรกรรมกดเงินหรือโอนเงินให้ผู้อื่นตามคำสั่ง มีความเสี่ยงถูกแจ้งข้อหาร่วมกันฉ้อโกงประชาชนหรือฟอกเงิน ซึ่งมีอัตราโทษสูง",
-                dos: [
-                    "ปรึกษาทนายความหรือสภาทนายความก่อนเข้าให้การ",
-                    "รวบรวมหลักฐานคำสั่งการ สลิป และเส้นทางการส่งมอบเงินทั้งหมด",
-                    "ให้ความร่วมมือกับเจ้าหน้าที่เพื่อบรรเทาผลร้าย"
-                ],
-                donts: [
-                    "ห้ามหลบหนีหมายเรียกของพนักงานสอบสวน",
-                    "ห้ามทำลายโทรศัพท์มือถือหรือสมุดบัญชี",
-                    "ห้ามยักย้ายถ่ายเททรัพย์สิน"
-                ],
-                chartData: [20, 80] // Low innocence proof, high legal risk
+                dos: ["ปรึกษาทนายความก่อนเข้าให้การ", "รวบรวมหลักฐานคำสั่งการและสลิปทั้งหมด"],
+                donts: ["ห้ามหลบหนีหมายเรียกของพนักงานสอบสวน", "ห้ามทำลายสมุดบัญชี/โทรศัพท์"],
+                chartData: [20, 80]
             },
             black: {
                 title: "🖤 ดำ - เกี่ยวข้องกับขบวนการ",
+                tagClass: "background:rgba(232,93,82,.15); color:var(--red);",
                 name: "เปิดบัญชีม้าเป็นอาชีพ / สมาชิกแก๊งคอลเซ็นเตอร์",
-                tagClass: "bg-red-950 text-red-300 border border-red-800",
-                desc: "การเปิดบัญชีม้าเพื่อจำหน่ายหรือให้ผู้อื่นนำไปใช้กระทำผิด มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท ตามกฎหมาย พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี",
-                dos: [
-                    "จัดหาทนายความเข้าร่วมรับฟังการสอบสวนตามสิทธิ",
-                    "ให้การตามความจริงเพื่อขอรับผลบรรเทาโทษทางอาญา",
-                    "เตรียมแนวทางเยียวยาชดใช้ค่าเสียหายแก่เหยื่อ"
-                ],
-                donts: [
-                    "ห้ามปฏิเสธข้อเท็จจริงที่มีพยานหลักฐานมัดตัวชัดเจน",
-                    "ห้ามยุ่งเหยิงกับพยานหลักฐานหรือข่มขู่ผู้เสียหาย",
-                    "ห้ามหลบหนีการดำเนินคดี"
-                ],
-                chartData: [5, 95] // Critical legal risk
+                desc: "การเปิดบัญชีม้าเพื่อจำหน่ายหรือให้ผู้อื่นนำไปใช้กระทำผิด มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท ตามกฎหมาย พ.ร.ก. อาชญากรรมทางเทคโนโลยี",
+                dos: ["จัดหาทนายความเข้าร่วมรับฟังการสอบสวน", "ให้การตามความจริงเพื่อบรรเทาโทษ"],
+                donts: ["ห้ามปฏิเสธข้อเท็จจริงที่มีพยานมัดตัว", "ห้ามยุ่งเหยิงกับพยานหลักฐาน"],
+                chartData: [5, 95]
             }
         };
 
         let currentCategory = 'lightGray';
         let riskChartInstance = null;
 
-        // Initialize App on DOM Load
         document.addEventListener('DOMContentLoaded', () => {
             initGaugeChart();
             generateStatementText();
-            updateChecklistProgress();
         });
 
-        // Navigation Page Switcher
         function switchSection(sectionKey) {
-            // Hide all sections
             document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
-            
-            // Reset nav buttons styling
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-foothold-gold', 'text-slate-950', 'font-bold', 'shadow');
-                btn.classList.add('bg-slate-800', 'text-slate-300');
-            });
-
-            // Show selected section
             const targetSec = document.getElementById(`sec-${sectionKey}`);
             if (targetSec) targetSec.classList.remove('hidden');
-
-            // Highlight nav button
-            const activeNav = document.getElementById(`nav-btn-${sectionKey.replace('-mode', '')}`);
-            if (activeNav) {
-                activeNav.classList.remove('bg-slate-800', 'text-slate-300');
-                activeNav.classList.add('bg-foothold-gold', 'text-slate-950', 'font-bold', 'shadow');
-            }
-
-            // Scroll top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Account Risk Category Selection Logic
         function selectCategory(catKey) {
             currentCategory = catKey;
             const data = categoryDetails[catKey];
             if (!data) return;
 
-            // Update Active Class styling on Buttons
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('ring-2', 'ring-foothold-gold', 'shadow-md');
-            });
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
             const selectedBtn = document.getElementById(`cat-btn-${catKey}`);
-            if (selectedBtn) selectedBtn.classList.add('ring-2', 'ring-foothold-gold', 'shadow-md');
+            if (selectedBtn) selectedBtn.classList.add('active');
 
-            // Update Analysis Text UI
             document.getElementById('analysis-category-tag').innerText = data.title;
-            document.getElementById('analysis-category-tag').className = `text-xs font-bold px-2.5 py-0.5 rounded-full ${data.tagClass}`;
+            document.getElementById('analysis-category-tag').style.cssText = data.tagClass;
             document.getElementById('analysis-title').innerText = data.name;
             document.getElementById('analysis-desc').innerText = data.desc;
 
-            // Update Do's
             const dosList = document.getElementById('analysis-dos');
             dosList.innerHTML = '';
             data.dos.forEach(item => {
@@ -928,7 +658,6 @@
                 dosList.appendChild(li);
             });
 
-            // Update Don'ts
             const dontsList = document.getElementById('analysis-donts');
             dontsList.innerHTML = '';
             data.donts.forEach(item => {
@@ -937,34 +666,16 @@
                 dontsList.appendChild(li);
             });
 
-            // Update Chart Data
             if (riskChartInstance) {
                 riskChartInstance.data.datasets[0].data = data.chartData;
                 riskChartInstance.update();
             }
         }
 
-        // Checklist Progress Tracker
-        function updateChecklistProgress() {
-            const checkboxes = document.querySelectorAll('#checklist-container input[type="checkbox"]');
-            let checkedCount = 0;
-            checkboxes.forEach(cb => { if (cb.checked) checkedCount++; });
-
-            const total = checkboxes.length;
-            const percent = Math.round((checkedCount / total) * 100);
-
-            document.getElementById('doc-progress-bar').style.width = `${percent}%`;
-            document.getElementById('doc-counter').innerText = `${checkedCount} จาก ${total} เอกสารพร้อมแล้ว`;
-            document.getElementById('doc-percent-text').innerText = `${percent}%`;
-        }
-
-        // Statement Draft Generator Logic
         function generateStatementText() {
             const name = document.getElementById('stmt-name').value.trim() || "[ชื่อ-นามสกุล ของท่าน]";
             const idCard = document.getElementById('stmt-idcard').value.trim() || "[หมายเลขบัตรประชาชน 13 หลัก]";
             const bank = document.getElementById('stmt-bank').value.trim() || "[ชื่อธนาคาร และ เลขที่บัญชี]";
-            const rawDate = document.getElementById('stmt-date').value;
-            const dateStr = rawDate ? new Date(rawDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "[ระบุวันที่ทราบเรื่อง]";
             const reason = document.getElementById('stmt-reason').value.trim() || "[ระบุเหตุผลและข้อเท็จจริง เช่น ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น]";
 
             const outputText = 
@@ -977,12 +688,12 @@
 เรียน: พนักงานสอบสวน / ผู้บริหารธนาคาร ${bank.split(' ')[0] || ''}
 
 ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard} 
-ขอทำหนังสือฉบับนี้ขึ้นเพื่อชี้แจงข้อเท็จจริงกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกดำเนินการระงับ/อายัดธุรกรรม เมื่อวันที่ ${dateStr}
+ขอทำหนังสือฉบับนี้ขึ้นเพื่อชี้แจงข้อเท็จจริงกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกดำเนินการระงับ/อายัดธุรกรรม
 
 ข้าพเจ้าขอชี้แจงข้อเท็จจริงด้วยความบริสุทธิ์ใจ ดังนี้:
 ${reason}
 
-ทั้งนี้ ข้าพเจ้าขอรับรองด้วยเกียรติว่า ข้าพเจ้ามิได้มีเจตนาทุจริต มิได้มีส่วนเกี่ยวข้องกับขบวนการอาชญากรรมทางเทคโนโลยี หรือการฉ้อโกงประชาชนใดๆ ทั้งสิ้น ข้าพเจ้ายินดีให้ความร่วมมือกับพนักงานสอบสวนและธนาคารในการตรวจสอบเส้นทางการเงิน เอกสารพยานหลักฐาน และยินดีเข้าให้การด้วยความบริสุทธิ์ใจทุกประการ
+ทั้งนี้ ข้าพเจ้าขอรับรองด้วยเกียรติว่า ข้าพเจ้ามิได้มีเจตนาทุจริต มิได้มีส่วนเกี่ยวข้องกับขบวนการอาชญากรรมทางเทคโนโลยี หรือการฉ้อโกงประชาชนใดๆ ทั้งสิ้น ข้าพเจ้ายินดีให้ความร่วมมือกับพนักงานสอบสวนและธนาคารในการตรวจสอบพยานหลักฐานทุกประการ
 
 จึงเรียนมาเพื่อโปรดทราบและพิจารณาให้ความความเป็นธรรมแก่ข้าพเจ้าด้วย
 
@@ -993,20 +704,26 @@ ${reason}
             document.getElementById('statement-output').innerText = outputText;
         }
 
-        // Copy Statement Text to Clipboard
         function copyStatementToClipboard() {
             const text = document.getElementById('statement-output').innerText;
             navigator.clipboard.writeText(text).then(() => {
                 alert("คัดลอกร่างหนังสือชี้แจงเรียบร้อยแล้ว! สามารถนำไปวางในแอปโน้ตหรือปริ้นท์ได้ทันที");
-            }).catch(err => {
+            }).catch(() => {
                 alert("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาครอบดำและคัดลอกด้วยตนเอง");
             });
         }
 
-        // Initialize Dynamic Risk Polar Chart (Chart.js)
+        function openWizardModal() {
+            document.getElementById('wizardModal').style.display = 'grid';
+        }
+
+        function closeWizardModal() {
+            document.getElementById('wizardModal').style.display = 'none';
+        }
+
         function initGaugeChart() {
-            Chart.defaults.font.family = 'IBM Plex Sans Thai, sans-serif';
-            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'IBM Plex Thai, sans-serif';
+            Chart.defaults.color = '#a8b2b7';
 
             const ctx = document.getElementById('riskGaugeChart').getContext('2d');
             riskChartInstance = new Chart(ctx, {
@@ -1015,12 +732,9 @@ ${reason}
                     labels: ['โอกาสแสดงความบริสุทธิ์ใจ (%)', 'ความเสี่ยงทางกฎหมาย (%)'],
                     datasets: [{
                         data: [90, 10],
-                        backgroundColor: [
-                            '#10B981', // Emerald Sage
-                            '#EF4444'  // Emergency Red
-                        ],
+                        backgroundColor: ['#8dd6a7', '#e85d52'],
                         borderWidth: 2,
-                        borderColor: '#1E293B'
+                        borderColor: '#1f2d39'
                     }]
                 },
                 options: {
@@ -1029,18 +743,7 @@ ${reason}
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                boxWidth: 10,
-                                font: { size: 11 },
-                                color: '#cbd5e1'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.label}: ${context.raw}%`;
-                                }
-                            }
+                            labels: { boxWidth: 10, font: { size: 11 }, color: '#a8b2b7' }
                         }
                     }
                 }
