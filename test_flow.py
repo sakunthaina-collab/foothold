@@ -200,27 +200,37 @@ def run_test():
             page.wait_for_timeout(400)
 
             # 2. Emergency 3 Steps Mode
-            smart_click(page, page.locator("#nav-btn-emergency"))
+            smart_click(page, page.locator(".emergency-rail button"))
             page.wait_for_timeout(400)
             take_screenshot("2_emergency_mode")
 
-            # 3. Statement Generator Mode
-            smart_click(page, page.locator("#nav-btn-generator"))
+            # 3. Step 3: Event Summary & Checklist Mode
+            page.evaluate("switchSection('step3-mode')")
+            page.wait_for_timeout(400)
+            page.select_option("#step3-pattern", "identity_theft")
+            page.fill("#step3-details", "ถูกขโมยบัตรประชาชนเปิดบัญชีออนไลน์ ทราบเรื่องวันที่ 16 ส.ค.")
+            page.check("#chk-statement")
+            page.check("#chk-slips")
+            page.wait_for_timeout(400)
+            take_screenshot("3_step3_summary_checklist")
+
+            # 4. Statement Generator Mode
+            page.evaluate("switchSection('generator-mode')")
             page.wait_for_timeout(400)
             page.fill("#stmt-name", "สมชาย ใจบริสุทธิ์")
             page.fill("#stmt-idcard", "1-1234-56789-01-2")
             page.fill("#stmt-bank", "ธ.กสิกรไทย 012-3-45678-9")
             page.fill("#stmt-reason", "ถูกแอบอ้างนำข้อมูลบัตรประชาชนไปเปิดบัญชีออนไลน์โดยไม่ยินยอม")
             page.wait_for_timeout(400)
-            take_screenshot("3_generator_mode")
+            take_screenshot("4_generator_mode")
 
-            # 4. Flowchart & Directory Mode
-            smart_click(page, page.locator("#nav-btn-flowchart"))
+            # 5. Flowchart & Directory Mode
+            page.evaluate("switchSection('flowchart-mode')")
             page.wait_for_timeout(400)
-            take_screenshot("4_flowchart_mode")
+            take_screenshot("5_flowchart_mode")
 
-            # 5. Switch back to Main Wizard
-            smart_click(page, page.locator("#nav-btn-wizard"))
+            # 6. Switch back to Main Wizard
+            page.evaluate("switchSection('main-wizard')")
             page.wait_for_timeout(400)
             
             run_dashboard_tests(page, test_dir, is_mobile=(vp_name == "mobile"))

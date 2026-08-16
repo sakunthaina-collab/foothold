@@ -69,24 +69,59 @@
         /* Hero Section */
         .hero { min-height: 560px; display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(400px, 1.05fr); gap: 48px; align-items: center; padding: 48px 0 56px; }
         .hero-copy { max-width: 555px; }
+        
+        /* Enhanced Emergency Rail with Polite Pulse Animation & Touch Target */
         .emergency-rail { 
-            max-width: 520px; 
+            position: relative;
+            max-width: 540px; 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
-            padding: 12px 14px; 
+            gap: 14px; 
+            padding: 14px 16px; 
             margin-bottom: 22px; 
-            border-left: 3px solid var(--red); 
-            border-top: 1px solid rgba(232,93,82,.36); 
-            border-right: 1px solid rgba(232,93,82,.2); 
-            border-bottom: 1px solid rgba(232,93,82,.36); 
-            background: rgba(116,48,47,.22); 
-            color: #ff9b92; 
-            border-radius: 8px;
+            border-left: 4px solid var(--red); 
+            border-top: 1px solid rgba(232,93,82,.4); 
+            border-right: 1px solid rgba(232,93,82,.3); 
+            border-bottom: 1px solid rgba(232,93,82,.4); 
+            background: rgba(116,48,47,.28); 
+            color: #ffb1aa; 
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(232,93,82,.15);
+            transition: transform .16s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
         }
+        .emergency-rail:hover {
+            background: rgba(116,48,47,.45);
+            border-color: rgba(232,93,82,.7);
+            box-shadow: 0 6px 24px rgba(232,93,82,.25);
+        }
+        .emergency-rail:active {
+            transform: scale(.98);
+        }
+        .pulse-beacon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            shrink: 0;
+        }
+        .pulse-beacon::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: var(--red);
+            opacity: .4;
+            animation: polite-pulse 2s cubic-bezier(.24,0,.38,1) infinite;
+        }
+        @keyframes polite-pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.35); opacity: 0.1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
         .emergency-rail div { min-width: 0; flex: 1; }
         .emergency-rail strong, .emergency-rail span { display: block; }
-        .emergency-rail strong { font-size: 13px; color: #ffb1aa; font-family: 'Prompt', sans-serif; }
+        .emergency-rail strong { font-size: 14px; color: #ffb1aa; font-family: 'Prompt', sans-serif; }
         .emergency-rail span { font-size: 12px; color: #dbaba5; }
         
         .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing: .02em; }
@@ -139,7 +174,7 @@
         .hero-art::before { content: ''; position: absolute; top: 8%; bottom: 8%; left: 29%; width: 1px; background: linear-gradient(to bottom, transparent, rgba(246,196,69,.5), rgba(141,214,167,.4), transparent); }
         .path-spine { position: absolute; top: 13%; bottom: 14%; left: calc(29% - 4px); width: 9px; border: 1px solid rgba(246,196,69,.45); border-radius: 10px; background: repeating-linear-gradient(to bottom, var(--gold) 0 11px, transparent 11px 26px); opacity: .85; }
         .art-beacon { position: absolute; left: 42%; top: 35%; width: 110px; height: 110px; display: grid; place-items: center; border: 1px solid rgba(141,214,167,.5); border-radius: 28px; color: var(--sage); background: rgba(141,214,167,.08); box-shadow: 0 0 0 18px rgba(141,214,167,.035), 0 0 70px rgba(141,214,167,.12); }
-        .art-step { position: absolute; min-width: 200px; display: grid; gap: 3px; padding: 12px 16px; border-radius: 11px; background: rgba(31,45,57,.95); border: 1px solid var(--line); box-shadow: 0 14px 28px rgba(0,0,0,.18); }
+        .art-step { position: absolute; min-width: 200px; display: grid; gap: 3px; padding: 12px 16px; border-radius: 11px; background: rgba(31,45,57,.95); border: 1px solid var(--line); box-shadow: 0 14px 28px rgba(0,0,0,.18); cursor: pointer; }
         .art-step::before { content: ''; position: absolute; left: -8px; top: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 5px rgba(246,196,69,.12); }
         .art-step span { color: var(--gold); font: 700 12px 'Prompt'; }
         .art-step strong { font-size: 14px; color: var(--ink); }
@@ -194,6 +229,7 @@
             .hero-art { min-height: 340px; margin-top: 36px; transform: scale(.92); }
             .trust-grid { grid-template-columns: 1fr; }
             .trust-grid > div, .trust-grid > div:first-child { min-height: 76px; border-left: 1px solid rgba(141,214,167,.12); border-right: 1px solid rgba(141,214,167,.12); border-bottom: 1px solid rgba(141,214,167,.12); }
+            .step3-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 520px) {
             .container { width: calc(100% - 24px); }
@@ -224,8 +260,9 @@
 
             <!-- Navigation Links -->
             <nav>
-                <a href="javascript:void(0)" onclick="switchSection('main-wizard')">ประเมินความเสี่ยง</a>
+                <a href="javascript:void(0)" onclick="switchSection('main-wizard')">Step 1: ประเมินความเสี่ยง</a>
                 <a href="javascript:void(0)" onclick="switchSection('emergency-mode')">🚨 3 ขั้นตอนเร่งด่วน</a>
+                <a href="javascript:void(0)" onclick="switchSection('step3-mode')">Step 3: สรุปเหตุการณ์ & เช็กลิสต์</a>
                 <a href="javascript:void(0)" onclick="switchSection('generator-mode')">สร้างหนังสือชี้แจง</a>
                 <a href="javascript:void(0)" onclick="switchSection('flowchart-mode')">แผนผังคดี</a>
                 <a href="dashboard.html" class="text-button">
@@ -243,14 +280,18 @@
                     
                     <!-- Left Column: Copy & Actions -->
                     <div class="hero-copy">
-                        <!-- Emergency Rail (Above Fold Callout) -->
+                        <!-- Enhanced Emergency Rail (Above Fold Callout) -->
                         <div class="emergency-rail">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <div class="pulse-beacon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
                             <div>
                                 <strong>🚨 โทร 1441 ทันที</strong>
                                 <span>ถูกระงับบัญชีสดๆ ร้อนๆ? คุณไม่ได้ตัวคนเดียว</span>
                             </div>
-                            <button onclick="switchSection('emergency-mode')" class="text-button" style="font-size:12px;">ดู 3 ขั้น ➔</button>
+                            <button onclick="switchSection('emergency-mode')" class="primary-button" style="min-height:36px; padding:0 12px; font-size:12px; background:var(--red); color:white; border-radius:8px;">
+                                ดู 3 ขั้น ➔
+                            </button>
                         </div>
 
                         <div class="eyebrow">
@@ -262,8 +303,8 @@
                         <p>ตั้งหลักให้มั่น เมื่อถูกระงับบัญชีหรือถูกกล่าวหาเรื่องบัญชีม้า ประเมินประเภทความเสี่ยง รวบรวมหลักฐาน และแสดงความบริสุทธิ์ใจอย่างถูกวิธี</p>
 
                         <div class="hero-actions">
-                            <button onclick="openWizardModal()" class="primary-button">
-                                <span>เริ่มประเมินเส้นทางด่วน ➔</span>
+                            <button onclick="switchSection('step3-mode')" class="primary-button">
+                                <span>เริ่ม Step 3: สรุปเหตุการณ์ & เช็กลิสต์ ➔</span>
                             </button>
                             <a href="javascript:void(0)" onclick="switchSection('generator-mode')" class="quiet-link">
                                 <span>📝 สร้างหนังสือชี้แจง</span>
@@ -274,7 +315,7 @@
                         <div class="privacy-signal">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                             <div>
-                                <strong>🛡️ บันทึกลงในอุปกรณ์นี้เท่านั้น</strong>
+                                <strong>🛡️ บันทึกลงในอุปกรณ์นี้เท่านั้น (Local-Only Storage)</strong>
                                 <span>ประมวลผลในเครื่อง 100% ไม่มีการส่งข้อมูลขึ้นเซิร์ฟเวอร์</span>
                             </div>
                         </div>
@@ -288,24 +329,24 @@
                         </div>
                         
                         <!-- Step A -->
-                        <div class="art-step step-a">
+                        <div class="art-step step-a" onclick="switchSection('main-wizard')">
                             <span>ขั้นที่ 1: โทรก่อน</span>
                             <strong>โทร 1441 & ธนาคาร</strong>
                             <small>ขอเลขคำสั่งอายัด (AOC ID)</small>
                         </div>
 
                         <!-- Step B -->
-                        <div class="art-step step-b">
+                        <div class="art-step step-b" onclick="switchSection('emergency-mode')">
                             <span>ขั้นที่ 2: หลักฐานภายหลัง</span>
                             <strong>แคปแชท / สลิปโอน</strong>
                             <small>ขอ Statement ย้อนหลัง 6 เดือน</small>
                         </div>
 
                         <!-- Step C -->
-                        <div class="art-step step-c">
-                            <span>ขั้นที่ 3: บันทึกและไปต่อ</span>
-                            <strong>ยื่นพนักงานสอบสวน</strong>
-                            <small>รับสำเนาบันทึกประจำวัน</small>
+                        <div class="art-step step-c" onclick="switchSection('step3-mode')">
+                            <span>ขั้นที่ 3: สรุป & เช็กลิสต์</span>
+                            <strong>สรุปเหตุการณ์ & เอกสาร</strong>
+                            <small>พิมพ์ยื่นพนักงานสอบสวน</small>
                         </div>
 
                         <div class="art-caption">
@@ -338,7 +379,7 @@
                 </div>
             </div>
 
-            <!-- SECTION: ACCOUNT CLASSIFIER & ANALYSIS -->
+            <!-- SECTION 1: ACCOUNT CLASSIFIER & ANALYSIS -->
             <section class="section-box">
                 <div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1.1fr); gap: 32px;" class="classifier-layout">
                     
@@ -391,7 +432,7 @@
                     <!-- Right: Dynamic Analysis & Chart -->
                     <div class="card-panel" style="display:flex; flex-direction:column; justify-content:space-between;">
                         <div>
-                            <div style="display:flex; justify-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:14px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:14px;">
                                 <span style="font-size:12px; color:var(--muted); font-family:monospace;">บทวิเคราะห์ทางกฎหมายเฉพาะคุณ</span>
                                 <span id="analysis-category-tag" style="font-size:12px; padding:2px 10px; border-radius:12px; background:rgba(141,214,167,.15); color:var(--sage); font-weight:600;">⚪ เทาอ่อน - ไม่รู้ตัว</span>
                             </div>
@@ -427,6 +468,12 @@
                                 </ul>
                             </div>
                         </div>
+
+                        <div style="margin-top:14px;">
+                            <button onclick="switchSection('step3-mode')" class="primary-button" style="width:100%; font-size:13px;">
+                                ไปยัง Step 3: สรุปเหตุการณ์ & เช็กลิสต์ ➔
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -435,11 +482,14 @@
             <!-- SECTION 2: EMERGENCY MODE -->
             <section id="sec-emergency-mode" class="page-section hidden">
                 <div class="card-panel" style="border:2px solid var(--red); background:rgba(116,48,47,.25);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
                         <div>
                             <span class="eyebrow danger">🚨 โหมดเร่งด่วน 24 ชั่วโมง</span>
                             <h2 style="font-size:26px; margin:6px 0 0; color:var(--ink);">ถูกระงับบัญชีสดๆ ร้อนๆ? ทำ 3 สิ่งนี้ทันที</h2>
                         </div>
+                        <button onclick="switchSection('step3-mode')" class="primary-button" style="min-height:38px; padding:0 14px; font-size:12px;">
+                            ไป Step 3 ➔
+                        </button>
                     </div>
 
                     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
@@ -464,7 +514,126 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: STATEMENT GENERATOR -->
+            <!-- NEW SECTION: STEP 3 (EVENT SUMMARY & DOCUMENT CHECKLIST) -->
+            <section id="sec-step3-mode" class="page-section hidden">
+                <div class="card-panel" style="border:1px solid var(--gold); background:var(--navy-2);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:14px; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                        <div>
+                            <span class="eyebrow">
+                                <span class="signal-dot"></span>
+                                <span>ขั้นที่ 3 (Step 3): สรุปเหตุการณ์ & เช็กลิสต์</span>
+                            </span>
+                            <h2 style="font-size:24px; margin:6px 0 0; color:var(--ink);">สรุปเหตุการณ์และเตรียมเอกสาร (Checklist)</h2>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button onclick="switchSection('main-wizard')" class="quiet-link" style="border:1px solid var(--line); padding:6px 14px; border-radius:8px; font-size:12px;">
+                                ◀ ย้อนกลับไป Step 1
+                            </button>
+                            <button onclick="printSummaryChecklist()" class="primary-button" style="min-height:38px; padding:0 16px; font-size:12px;">
+                                🖨️ พิมพ์ / สรุปรายการเอกสาร
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;" class="step3-grid">
+                        <!-- Event Summary Form -->
+                        <div style="background:var(--navy); padding:20px; border-radius:14px; border:1px solid var(--line);">
+                            <h3 style="color:var(--gold); font-size:16px; margin-top:0;">📝 1. ข้อมูลสรุปเหตุการณ์ (Event Summary)</h3>
+                            
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; font-size:12px; color:var(--muted); margin-bottom:4px;">รูปแบบเหตุการณ์ที่เกิดขึ้น:</label>
+                                <select id="step3-pattern" onchange="saveStep3Data()" style="width:100%; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-size:13px;">
+                                    <option value="job_scam">ถูกหลอกสแกนหน้า / สมัครงานรายได้สูง</option>
+                                    <option value="identity_theft">ถูกขโมยเอกสารบัตรประชาชนไปเปิดบัญชีออนไลน์</option>
+                                    <option value="account_borrow">ถูกเพื่อน/ญาติขอยืมบัญชีไปรับเงินผิดกฎหมาย</option>
+                                    <option value="hired_mule">ยินยอมให้ผู้อื่นใช้บัญชีโดยได้รับเงินค่าตอบแทน</option>
+                                    <option value="other">เหตุการณ์อื่น ๆ</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; font-size:12px; color:var(--muted); margin-bottom:4px;">วันที่เกิดเหตุ / วันที่ทราบเรื่องอายัด:</label>
+                                <input type="date" id="step3-date" onchange="saveStep3Data()" style="width:100%; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-size:13px;">
+                            </div>
+
+                            <div style="margin-bottom:14px;">
+                                <label style="display:block; font-size:12px; color:var(--muted); margin-bottom:4px;">สรุปรายละเอียดเหตุการณ์สั้น ๆ:</label>
+                                <textarea id="step3-details" oninput="saveStep3Data()" rows="4" placeholder="เช่น ทราบเรื่องเมื่อวันที่ 15 ส.ค. เนื่องจากโอนเงินผ่านแอปไม่ได้ จึงโทรหาธนาคารและทราบว่าถูกระงับบัญชีตามคำสั่ง AOC..." style="width:100%; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-size:13px;"></textarea>
+                            </div>
+
+                            <div style="font-size:11px; color:var(--sage); display:flex; align-items:center; gap:6px;">
+                                <span>🛡️ ข้อมูลจะถูกบันทึกอัตโนมัติในเครื่องนี้เท่านั้น</span>
+                            </div>
+                        </div>
+
+                        <!-- Document Checklist -->
+                        <div style="background:var(--navy); padding:20px; border-radius:14px; border:1px solid var(--line);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <h3 style="color:var(--sage); font-size:16px; margin:0;">📋 2. รายการเอกสารที่ต้องเตรียม (Checklist)</h3>
+                                <span id="step3-doc-counter" style="font-size:11px; color:var(--gold); font-family:monospace; font-weight:700;">2/6 เอกสาร</span>
+                            </div>
+
+                            <div style="display:flex; flex-direction:column; gap:10px;" id="step3-checklist-container">
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-idcard" onchange="saveStep3Data()" checked style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">สำเนาบัตรประชาชน (1 ชุด)</strong>
+                                        <span style="font-size:11px; color:var(--muted);">พร้อมเซ็นชื่อรับรองสำเนาถูกต้อง ขีดฆ่าระบุ "ใช้เพื่อแจ้งความคดีบัญชีม้าเท่านั้น"</span>
+                                    </div>
+                                </label>
+
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-bankbook" onchange="saveStep3Data()" checked style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">สำเนาสมุดบัญชีธนาคาร (1 ชุด)</strong>
+                                        <span style="font-size:11px; color:var(--muted);">หน้าแรกที่มีชื่อและเลขที่บัญชีชัดเจน</span>
+                                    </div>
+                                </label>
+
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-statement" onchange="saveStep3Data()" style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">Statement ย้อนหลัง 6 เดือน</strong>
+                                        <span style="font-size:11px; color:var(--muted);">ขอผ่านแอปธนาคารหรือขอจากสาขาเจ้าของบัญชี</span>
+                                    </div>
+                                </label>
+
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-slips" onchange="saveStep3Data()" style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">หลักฐานสลิปโอนเงิน / รับเงิน</strong>
+                                        <span style="font-size:11px; color:var(--muted);">สลิปอิเล็กทรอนิกส์ที่มีเลขที่อ้างอิงและเวลาตรงกัน</span>
+                                    </div>
+                                </label>
+
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-chat" onchange="saveStep3Data()" style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">ภาพแคปหน้าจอแชทสนทนา</strong>
+                                        <span style="font-size:11px; color:var(--muted);">แคปโปรไฟล์ผู้ติดต่อ และข้อความชักชวน/สั่งการทั้งหมด</span>
+                                    </div>
+                                </label>
+
+                                <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+                                    <input type="checkbox" id="chk-police" onchange="saveStep3Data()" style="margin-top:3px;">
+                                    <div>
+                                        <strong style="display:block; font-size:13px; color:var(--ink);">สำเนาบันทึกประจำวัน / ใบแจ้งความ</strong>
+                                        <span style="font-size:11px; color:var(--muted);">ที่ได้รับจากพนักงานสอบสวนสถานีตำรวจท้องที่เกิดเหตุ</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div style="margin-top:16px; display:flex; gap:10px;">
+                                <button onclick="switchSection('generator-mode')" class="primary-button" style="width:100%; min-height:42px; font-size:13px;">
+                                    ไปสร้างหนังสือชี้แจงต่อ ➔
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: STATEMENT GENERATOR -->
             <section id="sec-generator-mode" class="page-section hidden">
                 <div class="card-panel">
                     <h2 style="font-size:22px; margin-top:0;">📝 เครื่องมือสร้างหนังสือชี้แจงความบริสุทธิ์ใจ (อัตโนมัติ)</h2>
@@ -494,7 +663,7 @@
                         </div>
 
                         <!-- Generated Text Output -->
-                        <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line); display:flex; flex-direction:column; justify-space-between;">
+                        <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                                     <span style="font-size:12px; color:var(--muted);">ตัวอย่างหนังสือชี้แจง</span>
@@ -508,7 +677,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: FLOWCHART -->
+            <!-- SECTION 5: FLOWCHART -->
             <section id="sec-flowchart-mode" class="page-section hidden">
                 <div class="card-panel">
                     <h2 style="font-size:22px; margin-top:0;">🗺️ แผนผังเส้นทางคดี & สิทธิทางกฎหมาย</h2>
@@ -549,26 +718,6 @@
             </div>
         </footer>
 
-    </div>
-
-    <!-- MODAL WIZARD (Quiet Civic Trust Popup) -->
-    <div id="wizardModal" class="modal-backdrop" style="display:none;">
-        <div class="wizard-shell">
-            <div class="wizard-topbar">
-                <div class="brand-lockup">
-                    <div class="brand-mark"><span></span><span></span><span></span></div>
-                    <div><strong>ตั้งหลัก</strong><small>FOOTHOLD</small></div>
-                </div>
-                <button onclick="closeWizardModal()" class="icon-button">✕</button>
-            </div>
-            <div class="wizard-content">
-                <h2>เริ่มประเมินเส้นทางด่วน 3 ขั้น</h2>
-                <p class="lead">ระบบนำทางจะช่วยสรุปสถานการณ์และสร้างเอกสารแสดงความบริสุทธิ์ใจ</p>
-                <button onclick="switchSection('main-wizard'); closeWizardModal();" class="primary-button" style="width:100%;">
-                    เข้าสู่การประเมินม้า 5 สี ➔
-                </button>
-            </div>
-        </div>
     </div>
 
     <!-- APPLICATION JAVASCRIPT -->
@@ -627,6 +776,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initGaugeChart();
             generateStatementText();
+            loadStep3Data();
         });
 
         function switchSection(sectionKey) {
@@ -713,12 +863,107 @@ ${reason}
             });
         }
 
-        function openWizardModal() {
-            document.getElementById('wizardModal').style.display = 'grid';
+        /* STEP 3 LOCAL STORAGE AUTO-SAVE & PRINT CHECKLIST LOGIC */
+        function saveStep3Data() {
+            const data = {
+                pattern: document.getElementById('step3-pattern')?.value || '',
+                date: document.getElementById('step3-date')?.value || '',
+                details: document.getElementById('step3-details')?.value || '',
+                chk_idcard: document.getElementById('chk-idcard')?.checked || false,
+                chk_bankbook: document.getElementById('chk-bankbook')?.checked || false,
+                chk_statement: document.getElementById('chk-statement')?.checked || false,
+                chk_slips: document.getElementById('chk-slips')?.checked || false,
+                chk_chat: document.getElementById('chk-chat')?.checked || false,
+                chk_police: document.getElementById('chk-police')?.checked || false,
+            };
+            
+            try {
+                localStorage.setItem('foothold_step3_data', JSON.stringify(data));
+            } catch (e) {}
+
+            // Update Counter
+            let count = 0;
+            if (data.chk_idcard) count++;
+            if (data.chk_bankbook) count++;
+            if (data.chk_statement) count++;
+            if (data.chk_slips) count++;
+            if (data.chk_chat) count++;
+            if (data.chk_police) count++;
+            
+            const counterEl = document.getElementById('step3-doc-counter');
+            if (counterEl) counterEl.innerText = `${count}/6 เอกสารพร้อมแล้ว`;
         }
 
-        function closeWizardModal() {
-            document.getElementById('wizardModal').style.display = 'none';
+        function loadStep3Data() {
+            try {
+                const saved = localStorage.getItem('foothold_step3_data');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+                
+                if (data.pattern && document.getElementById('step3-pattern')) document.getElementById('step3-pattern').value = data.pattern;
+                if (data.date && document.getElementById('step3-date')) document.getElementById('step3-date').value = data.date;
+                if (data.details && document.getElementById('step3-details')) document.getElementById('step3-details').value = data.details;
+                
+                if (document.getElementById('chk-idcard')) document.getElementById('chk-idcard').checked = !!data.chk_idcard;
+                if (document.getElementById('chk-bankbook')) document.getElementById('chk-bankbook').checked = !!data.chk_bankbook;
+                if (document.getElementById('chk-statement')) document.getElementById('chk-statement').checked = !!data.chk_statement;
+                if (document.getElementById('chk-slips')) document.getElementById('chk-slips').checked = !!data.chk_slips;
+                if (document.getElementById('chk-chat')) document.getElementById('chk-chat').checked = !!data.chk_chat;
+                if (document.getElementById('chk-police')) document.getElementById('chk-police').checked = !!data.chk_police;
+
+                saveStep3Data();
+            } catch (e) {}
+        }
+
+        function printSummaryChecklist() {
+            const patternMap = {
+                job_scam: "ถูกหลอกสแกนหน้า / สมัครงานรายได้สูง",
+                identity_theft: "ถูกขโมยเอกสารบัตรประชาชนไปเปิดบัญชีออนไลน์",
+                account_borrow: "ถูกเพื่อน/ญาติขอยืมบัญชีไปรับเงินผิดกฎหมาย",
+                hired_mule: "ยินยอมให้ผู้อื่นใช้บัญชีโดยได้รับเงินค่าตอบแทน",
+                other: "เหตุการณ์อื่น ๆ"
+            };
+
+            const pattern = patternMap[document.getElementById('step3-pattern')?.value] || "ไม่ระบุ";
+            const date = document.getElementById('step3-date')?.value || "ไม่ระบุ";
+            const details = document.getElementById('step3-details')?.value || "ไม่มีรายละเอียดเพิ่มเติม";
+
+            const docs = [];
+            if (document.getElementById('chk-idcard')?.checked) docs.push("[✓] สำเนาบัตรประชาชนพร้อมเซ็นชื่อรับรองสำเนาถูกต้อง");
+            if (document.getElementById('chk-bankbook')?.checked) docs.push("[✓] สำเนาสมุดบัญชีธนาคารหน้าแรก");
+            if (document.getElementById('chk-statement')?.checked) docs.push("[✓] Statement รายการเดินบัญชีย้อนหลัง 6 เดือน");
+            if (document.getElementById('chk-slips')?.checked) docs.push("[✓] หลักฐานสลิปโอนเงิน / รับเงินที่มีเลข reference");
+            if (document.getElementById('chk-chat')?.checked) docs.push("[✓] ภาพแคปหน้าจอแชทสนทนาและโปรไฟล์ผู้ติดต่อ");
+            if (document.getElementById('chk-police')?.checked) docs.push("[✓] สำเนาบันทึกประจำวัน / ใบแจ้งความจากสถานีตำรวจ");
+
+            const printText = 
+`==================================================
+สรุปข้อมูลเหตุการณ์และรายการเอกสารที่ต้องเตรียม (Checklist)
+โครงการตั้งหลัก (Foothold) — No-Server Privacy Edition
+==================================================
+
+1. ข้อมูลสรุปเหตุการณ์:
+   - รูปแบบเหตุการณ์: ${pattern}
+   - วันที่ทราบเรื่อง/เกิดเหตุ: ${date}
+   - รายละเอียดเหตุการณ์:
+${details}
+
+2. รายการเอกสารที่เตรียมพร้อมแล้ว (${docs.length}/6 รายการ):
+${docs.map(d => "   " + d).join("\n")}
+
+==================================================
+* หมายเหตุ: เอกสารชุดนี้ถูกจัดทำในเครื่องของผู้ใช้งาน 100%
+* นำเอกสารตามเช็กลิสต์นี้ยื่นประกอบคำร้องต่อพนักงานสอบสวน
+==================================================`;
+
+            const printWin = window.open('', '_blank');
+            if (printWin) {
+                printWin.document.write(`<pre style="font-family:monospace; font-size:13px; line-height:1.6; padding:20px; background:#fff; color:#000;">${printText}</pre>`);
+                printWin.document.close();
+                printWin.print();
+            } else {
+                alert("ไม่สามารถเปิดหน้าพิมพ์ได้ กรุณาอนุญาต Pop-up บนเบราว์เซอร์");
+            }
         }
 
         function initGaugeChart() {
