@@ -190,119 +190,38 @@ def run_test():
                         pass
                 print(f"Captured: {filename}")
             
-            # 1. Entry Page
-            take_screenshot("0_entry")
-            
-            # Click start button (เริ่มทีละขั้น)
-            page.evaluate("go('triage')")
-            page.wait_for_timeout(600)
-            
-            # 2. Triage Page
-            take_screenshot("1_triage")
-            
-            # Select "ม้าเทาอ่อน" (status grey_light)
-            smart_click(page, page.get_by_text("เลือกสีม้าโดยตรง"))
-            page.wait_for_timeout(600)
-            smart_click(page, page.get_by_text("ม้าเทาอ่อน", exact=True))
-            page.wait_for_timeout(600)
-            
-            # 3. Orient Page
-            take_screenshot("2_orient")
-            
-            # Click next button (ระบุสถานการณ์ย่อย)
-            smart_click(page, page.get_by_text("ระบุสถานการณ์ย่อย"))
-            page.wait_for_timeout(600)
-            
-            # 3.5. Subcase Page
-            take_screenshot("2_subcase")
-            
-            # Click first subcase option
-            page.locator(".opt").first.click(force=True)
-            page.wait_for_timeout(600)
-            
-            # 4. Pattern Select Page
-            take_screenshot("3_pattern_select")
-            
-            # Select "ถูกหลอกผ่านประกาศรับสมัครงาน" (job pattern)
-            smart_click(page, page.get_by_text("ถูกหลอกผ่านประกาศรับสมัครงาน", exact=True))
-            page.wait_for_timeout(600)
-            
-            # 5. Pattern Detail Page
-            take_screenshot("3_pattern_detail")
-            
-            # Click next button (เก็บข้อเท็จจริงของคุณ)
-            smart_click(page, page.get_by_text("เก็บข้อเท็จจริงของคุณ"))
-            page.wait_for_timeout(600)
-            
-            # 6. Facts Page
-            take_screenshot("4_facts_empty")
-            
-            # Fill facts
-            page.fill("#fn", "สมชาย ใจดี")
-            page.fill("#fid", "1234567890123")
-            page.fill("#fad", "123 ถ.สุขุมวิท กรุงเทพฯ")
-            page.fill("#fph", "081-234-5678")
-            page.fill("#fbk", "กรุงเทพ")
-            page.fill("#fac", "123-4-56789-0")
-            page.fill("#fci", "12345/2569")
-            page.fill("#fbr", "REF987654")
-            page.fill("#fof", "ร.ต.อ. รักธรรม")
-            page.fill("#fst", "สน.ทุ่งมหาเมฆ")
-            page.fill("#ffw", "20 มิ.ย. 2569")
-            page.fill("#ffh", "โอนเงินผ่านแอปไม่ได้")
-            page.fill("#fiv", "ถูกหลอกผ่านงานโพสต์รายได้สูง ให้สแกนหน้าและลงทะเบียน")
-            page.wait_for_timeout(300)
-            
-            take_screenshot("4_facts_filled")
-            
-            # Click next (สร้างไทม์ไลน์)
-            smart_click(page, page.get_by_text("สร้างไทม์ไลน์"))
-            page.wait_for_timeout(600)
-            
-            # 7. Timeline Page
-            take_screenshot("5_timeline")
-            
-            # Click next (เอกสารที่ต้องเตรียม)
-            smart_click(page, page.get_by_text("เอกสารที่ต้องเตรียม"))
-            page.wait_for_timeout(600)
-            
-            # 8. Docs Page
-            # Tick all checkboxes
-            checkboxes = page.locator("input[type='checkbox']")
-            count = checkboxes.count()
-            print(f"Found {count} checkboxes on Docs page")
-            for i in range(count):
-                checkboxes.nth(i).check(force=True)
-            page.wait_for_timeout(300)
-            take_screenshot("6_docs")
-            
-            # Click next (ถัดไป)
-            smart_click(page, page.get_by_text("ถัดไป"))
-            page.wait_for_timeout(600)
-            
-            # 8.5. Prep Page
-            take_screenshot("7_prep")
-            
-            # Click next (ไปร่างคำร้องต่อ)
-            smart_click(page, page.get_by_text("ไปร่างคำร้องต่อ"))
-            page.wait_for_timeout(600)
-            
-            # 9. Petition Page
-            take_screenshot("8_petition")
-            
-            # Click next (ขั้นสุดท้าย: ส่งต่อ)
-            smart_click(page, page.get_by_text("ขั้นสุดท้าย: ส่งต่อ"))
-            page.wait_for_timeout(600)
-            
-            # 9.5. Download Page
-            take_screenshot("9_download")
-            
-            # Click next (ไปขั้นตอนส่งต่อ)
-            smart_click(page, page.get_by_text("ไปขั้นตอนส่งต่อ"))
-            page.wait_for_timeout(600)
-            
-            # 10. Next Page
-            take_screenshot("10_next")
+            # 1. Main Wizard & Category Selection
+            take_screenshot("0_wizard_main")
+            smart_click(page, page.locator("#cat-btn-lightBrown"))
+            page.wait_for_timeout(400)
+            take_screenshot("1_cat_lightBrown")
+
+            smart_click(page, page.locator("#cat-btn-lightGray"))
+            page.wait_for_timeout(400)
+
+            # 2. Emergency 3 Steps Mode
+            smart_click(page, page.locator("#nav-btn-emergency"))
+            page.wait_for_timeout(400)
+            take_screenshot("2_emergency_mode")
+
+            # 3. Statement Generator Mode
+            smart_click(page, page.locator("#nav-btn-generator"))
+            page.wait_for_timeout(400)
+            page.fill("#stmt-name", "สมชาย ใจบริสุทธิ์")
+            page.fill("#stmt-idcard", "1-1234-56789-01-2")
+            page.fill("#stmt-bank", "ธ.กสิกรไทย 012-3-45678-9")
+            page.fill("#stmt-reason", "ถูกแอบอ้างนำข้อมูลบัตรประชาชนไปเปิดบัญชีออนไลน์โดยไม่ยินยอม")
+            page.wait_for_timeout(400)
+            take_screenshot("3_generator_mode")
+
+            # 4. Flowchart & Directory Mode
+            smart_click(page, page.locator("#nav-btn-flowchart"))
+            page.wait_for_timeout(400)
+            take_screenshot("4_flowchart_mode")
+
+            # 5. Switch back to Main Wizard
+            smart_click(page, page.locator("#nav-btn-wizard"))
+            page.wait_for_timeout(400)
             
             run_dashboard_tests(page, test_dir, is_mobile=(vp_name == "mobile"))
             

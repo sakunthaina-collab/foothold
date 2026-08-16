@@ -1,1514 +1,1035 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ตั้งหลัก — เครื่องมือตั้งหลักเรื่องบัญชีม้า</title>
-<meta name="description" content="เครื่องมือฟรีช่วยคนที่บัญชีถูกระงับ/ถูกกล่าวหาเรื่องบัญชีม้า เข้าใจสถานะตัวเอง เตรียมเอกสาร และไปต่อยังธนาคารหรือทนายที่ช่วยได้จริง">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --navy:#1b2734; --navy2:#243341; --gold:#caa75f; --gold2:#a8853f; --gold-soft:#d8b774;
-  --gold-ink:#6f5214; --tag-bg:#ece0c4;
-  --paper:#ece7da; --card:#faf6ec; --card-line:#e2d9c5; --ink:#2c271f; --ink2:#4d473b;
-  --mut:#6f6757; --mut2:#5f5849; --sage:#3f6d5f; --warn:#bd5a3c; --warnbg:#fbeee9;
-  --calmbg:#eef4f0; --notebg:#f7f0e2;
-  --serif:'Noto Serif Thai',serif; --sans:'IBM Plex Sans Thai',sans-serif; --doc:'Sarabun',sans-serif;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:#c8bea8;border-radius:6px}
-::-webkit-scrollbar-track{background:transparent}
-@keyframes scFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes scPop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-a{color:var(--gold2)}
-
-/* ---------- layout ---------- */
-.app{display:flex;min-height:100vh;width:100%}
-.sidebar{width:286px;flex-shrink:0;background:var(--navy);color:#e9e2d2;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-.brand{padding:24px 22px 20px;border-bottom:1px solid rgba(202,167,95,.22)}
-.brand-row{display:flex;align-items:center;gap:11px}
-.brand-mark{width:38px;height:38px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.brand-mark span{font-family:var(--serif);font-weight:700;font-size:21px;color:var(--navy)}
-.brand-name{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.3px;line-height:1}
-.brand-en{font-size:11px;letter-spacing:2px;color:var(--gold);margin-top:3px;text-transform:uppercase}
-.brand-tag{font-size:12px;color:#9aa3ad;margin-top:13px;line-height:1.5}
-.nav{flex:1;overflow-y:auto;padding:16px 13px}
-.nav-h{font-size:10.5px;letter-spacing:1.6px;color:#6f7a85;text-transform:uppercase;padding:4px 10px 9px}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;cursor:pointer;margin-bottom:3px;transition:background .15s;border:none;background:transparent;color:inherit;width:100%;text-align:left;font-family:var(--sans)}
-.nav-item:hover{background:rgba(202,167,95,.10)}
-.nav-item.on{background:rgba(202,167,95,.16)}
-.nav-item.lock{opacity:.4;cursor:not-allowed}
-.nav-num{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;background:rgba(255,255,255,.07);color:#aeb6bf}
-.nav-item.on .nav-num{background:var(--gold);color:var(--navy)}
-.nav-item.done .nav-num{background:rgba(108,163,108,.22);color:#bcd6bc}
-.nav-tx{flex:1;min-width:0}
-.nav-lb{font-size:13.5px;font-weight:600;line-height:1.25}
-.nav-sb{font-size:11px;color:#79828c;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-item.on .nav-sb{color:#c2b89f}
-.nav-ck{color:var(--gold);font-size:14px}
-.side-foot{padding:15px 17px 18px;border-top:1px solid rgba(202,167,95,.22)}
-.lawyer-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:12px;font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;transition:background .15s}
-.lawyer-btn:hover{background:var(--gold-soft)}
-.save-ind{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:11.5px;color:#8b95a0}
-.save-dot{width:7px;height:7px;border-radius:50%;background:#6ca36c;box-shadow:0 0 0 3px rgba(108,163,108,.2);flex-shrink:0}
-
-.main{flex:1;min-width:0;position:relative}
-.wrap{max-width:920px;margin:0 auto;padding:44px 48px 96px}
-
-/* mobile top bar */
-.topbar{display:none;align-items:center;gap:12px;background:var(--navy);color:#e9e2d2;padding:13px 16px;position:sticky;top:0;z-index:40;pointer-events:none}
-.topbar *{pointer-events:auto}
-.topbar .brand-mark{width:32px;height:32px}
-.topbar .brand-mark span{font-size:18px}
-.topbar-name{font-family:var(--serif);font-weight:700;font-size:17px}
-.menu-btn{margin-left:auto;background:rgba(255,255,255,.08);border:none;color:#e9e2d2;border-radius:8px;padding:8px 11px;cursor:pointer;font-size:18px;line-height:1}
-.scrim{display:none;position:fixed;inset:0;background:rgba(20,26,33,.55);z-index:45}
-
-/* ---------- content primitives ---------- */
-.screen{animation:scFade .4s ease both}
-.eyebrow{font-size:12px;letter-spacing:2.5px;color:var(--gold-ink);text-transform:uppercase;font-weight:600}
-h1.q{font-family:var(--serif);font-weight:700;font-size:34px;line-height:1.22;margin:13px 0 0}
-h2.q{font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.3;margin:34px 0 0}
-.lead{font-size:16px;line-height:1.7;color:var(--mut2);max-width:62ch;margin:16px 0 0}
-.hero-h{font-size:42px;max-width:18ch}
-.hero-h .hl{color:var(--gold-ink)}
-
-.btn-row{display:flex;gap:12px;margin:30px 0 0;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:9px;border-radius:11px;padding:14px 24px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;border:none;transition:background .15s,border-color .15s,transform .15s}
-.btn svg{display:block}
-.btn-primary{background:var(--navy);color:#f3ecda}
-.btn-primary:hover{background:var(--navy2)}
-.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid #c3b89f;font-weight:600}
-.btn-ghost:hover{border-color:var(--gold);background:#f3eee2}
-
-.card{background:var(--card);border:1px solid var(--card-line);border-radius:14px}
-.card.pad{padding:22px 24px}
-
-.note{display:flex;gap:12px;align-items:flex-start;background:var(--notebg);border:1px solid var(--card-line);border-radius:12px;padding:15px 17px;margin:18px 0 0;font-size:13.5px;line-height:1.6}
-.note svg{flex-shrink:0;margin-top:1px}
-.note .t{flex:1}
-.note.warn{background:var(--warnbg);border-color:#e6c4b6}
-.note.calm{background:var(--calmbg);border-color:#cfe0d6}
-.note.dark{background:var(--navy);border-color:var(--navy);color:#cdd4dc}
-
-/* status spectrum (signature) */
-.spectrum{display:flex;flex-direction:column;gap:10px;margin:24px 0 0}
-.opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--card-line);border-radius:13px;padding:15px 17px;cursor:pointer;font-family:var(--sans);transition:border-color .14s,background .14s,transform .14s}
-.opt:hover{border-color:var(--gold);background:#fbf3e2;transform:translateX(2px)}
-.swatch{width:30px;height:30px;border-radius:8px;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
-.ttl{display:block;font-weight:700;font-size:15.5px;color:var(--ink)}
-.sub{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
-.door{font-size:12px;font-weight:700;padding:6px 11px;border-radius:8px;white-space:nowrap;flex-shrink:0}
-.door.bank{background:#e7efe9;color:#356152}
-.door.case{background:#ece3d3;color:#7c5320}
-
-/* law cards */
-.law{background:var(--card);border:1px solid var(--card-line);border-radius:13px;padding:18px 20px;margin:12px 0 0}
-.law .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gold-ink);background:var(--tag-bg);padding:4px 10px;border-radius:7px;text-transform:uppercase}
-.law h4{font-family:var(--serif);font-weight:600;font-size:17px;margin:11px 0 0;line-height:1.35}
-.law p{font-size:14px;line-height:1.65;color:var(--ink2);margin:7px 0 0}
-.verify{font-size:12px;color:var(--gold-ink);margin-top:10px;font-weight:600}
-
-/* hero grid */
-.layers{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:42px 0 0}
-.layer{background:var(--card);border:1px solid var(--card-line);border-radius:14px;padding:21px 21px 19px;cursor:pointer;text-align:left;font-family:var(--sans);transition:transform .15s,box-shadow .15s,border-color .15s}
-.layer:hover{transform:translateY(-3px);box-shadow:0 12px 30px -14px rgba(43,39,31,.32);border-color:var(--gold)}
-.layer-top{display:flex;align-items:center;justify-content:space-between}
-.layer-num{width:40px;height:40px;border-radius:10px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:19px}
-.layer-ic{font-size:22px}
-.layer-t{font-family:var(--serif);font-weight:600;font-size:18px;margin:14px 0 0}
-.layer-d{font-size:13.5px;line-height:1.6;color:var(--mut);margin:7px 0 0}
-
-/* fields */
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{margin:14px 0 0}
-.field:first-child{margin-top:0}
-.field label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px}
-.field .hint{font-weight:400;color:var(--mut);font-size:12px}
-.field input,.field textarea{width:100%;font-family:var(--sans);font-size:14.5px;color:var(--ink);background:#fff;border:1.5px solid var(--card-line);border-radius:10px;padding:11px 13px;transition:border-color .14s}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold)}
-.field textarea{min-height:78px;resize:vertical;line-height:1.55}
-
-/* timeline */
-.tl{display:flex;flex-direction:column;gap:0}
-.tl-item{position:relative;padding:0 0 18px 26px;border-left:2px solid var(--card-line)}
-.tl-item:last-child{padding-bottom:0}
-.tl-item::before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px var(--card)}
-.tl-item .d{font-weight:700;font-size:13.5px;color:var(--navy)}
-.tl-item .e{font-size:14px;color:var(--ink2);margin-top:3px;line-height:1.6}
-
-/* checklist */
-.check{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--card-line);cursor:pointer}
-.check:last-child{border-bottom:none}
-.check input{margin-top:3px;width:18px;height:18px;accent-color:var(--gold2);flex-shrink:0}
-.ct{display:block;font-size:14.5px;font-weight:500;color:var(--ink)}
-.cs{display:block;font-size:12.5px;color:var(--mut);margin-top:2px}
-
-/* petition document */
-.doc{background:#fff;border:1px solid var(--card-line);border-radius:12px;padding:40px 42px;margin:18px 0 0;font-family:var(--doc);font-size:15.5px;line-height:1.95;color:#1d1a15;white-space:pre-wrap}
-.doc .rt{text-align:right;white-space:pre-wrap}
-.doc .center{text-align:center;white-space:pre-wrap;margin-top:8px}
-.doc b{font-weight:600}
-.fill{background:#fff4cc;border-bottom:1px dashed #d9b53a;padding:0 3px;border-radius:2px;font-style:normal}
-
-/* contacts */
-.contact{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--card-line);border-radius:12px;padding:15px 17px;margin:11px 0 0}
-.contact .ci{width:34px;height:34px;border-radius:9px;background:#f1e6cf;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.contact b{font-size:14.5px}
-.contact .cd{font-size:13px;color:var(--mut2);margin-top:3px;line-height:1.55}
-
-/* dev */
-.dev{margin:34px 0 0;border:1px dashed #c3b89f;border-radius:12px;background:#f3eee2}
-.dev summary{cursor:pointer;padding:14px 18px;font-size:13px;font-weight:600;color:var(--mut2)}
-.dev .body{padding:0 18px 16px;font-size:13px;line-height:1.7;color:var(--ink2)}
-.dev code{background:#e7ddc8;padding:1px 6px;border-radius:5px;font-size:12.5px}
-
-.disclaimer{margin:40px 0 0;padding-top:18px;border-top:1px solid var(--card-line);font-size:12.5px;color:var(--mut);line-height:1.7}
-
-@media (max-width:860px){
-  .sidebar{display:none;position:fixed;left:0;top:0;z-index:50;height:100vh;width:280px;box-shadow:6px 0 30px -10px rgba(0,0,0,.4)}
-  .app.nav-open .sidebar{display:flex}
-  .app.nav-open .scrim{display:block}
-  .topbar{display:flex}
-  .wrap{padding:26px 20px 80px}
-  h1.q{font-size:27px}
-  .hero-h{font-size:31px}
-  .two{grid-template-columns:1fr}
-  .layers{grid-template-columns:1fr}
-  .doc{padding:26px 20px;font-size:14.5px}
-  .opt{flex-wrap:wrap}
-  .door{order:3}
-}
-
-@media print{
-  .sidebar,.topbar,.scrim,.btn-row,.note.no-print,.dev,.eyebrow,.disclaimer,.lead{display:none!important}
-  .main,.wrap{margin:0;padding:0;max-width:none}
-  .doc{border:none;padding:0;margin:0}
-  body{background:#fff}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตั้งหลัก (Foothold) - คู่มือปฏิบัติตนและระบบนำทางกฎหมายบัญชีม้าสำหรับประชาชน</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0f172a',
+                            surface: '#1a202c',
+                            card: '#1f2937',
+                            border: '#374151',
+                            accent: '#fcd34d',
+                            accentHover: '#f59e0b',
+                            success: '#66efac',
+                            danger: '#ef4444',
+                            warning: '#f59e0b',
+                            info: '#3b82f6'
+                        }
+                    },
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #0f172a;
+            color: #f3f4f6;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Prompt', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 260px;
+            max-height: 320px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a202c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
 </head>
-<body>
-<div class="app" id="app">
-  <div class="scrim" onclick="closeNav()"></div>
+<body class="min-h-screen flex flex-col antialiased">
 
-  <!-- top bar (mobile) -->
-  <div class="topbar">
-    <div class="brand-mark"><span>ต</span></div>
-    <div class="topbar-name">ตั้งหลัก</div>
-  <a href="dashboard.html" style="margin-left:12px;font-size:11.5px;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">📊 แดชบอร์ดติดตามหลายคดี (v4.0)</a>
-  <div style="margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:14px;font-size:11px;color:var(--gold)"><span style="width:6px;height:6px;border-radius:50%;background:#48bb78;display:inline-block"></span>ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ · PDPA</div>
-    <button class="menu-btn" onclick="toggleNav()" aria-label="เมนู">☰</button>
-  </div>
+    <!-- Header Navigation -->
+    <header class="bg-brand-surface border-b border-brand-border sticky top-0 z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSection('main-wizard')">
+                    <div class="w-10 h-10 rounded-xl bg-brand-accent text-gray-900 font-heading font-bold flex items-center justify-center text-xl shadow-lg shadow-brand-accent/20">
+                        TL
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-heading font-bold text-lg text-white">ตั้งหลัก</span>
+                            <span class="text-[11px] px-2 py-0.5 rounded-full bg-brand-accent/20 text-brand-accent border border-brand-accent/40 font-mono">สำหรับประชาชน</span>
+                        </div>
+                        <p class="text-xs text-gray-400 hidden sm:block">ระบบนำทางและคู่มือปฏิบัติตนทางกฎหมายเมื่อถูกกล่าวหาเรื่องบัญชีม้า</p>
+                    </div>
+                </div>
 
-  <!-- sidebar -->
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-row">
-        <div class="brand-mark"><span>ต</span></div>
-        <div>
-          <div class="brand-name">ตั้งหลัก</div>
-          <div class="brand-en">Foothold</div>
-        </div>
-      </div>
-      <div class="brand-tag">เครื่องมือตั้งหลักเรื่องบัญชีม้า — ฟรี และข้อมูลไม่ออกจากเครื่องคุณ</div>
-    </div>
-    <nav class="nav" id="nav"></nav>
-    <div class="side-foot">
-      <button class="lawyer-btn" onclick="go('next')"><span style="font-size:15px">⚖️</span> หาทนายความ</button>
-      <div class="save-ind"><span class="save-dot"></span> ข้อมูลอยู่ในเครื่องนี้ · ไม่ถูกส่งออก</div>
-      <div style="font-size:10px;color:var(--mut);margin-top:8px;text-align:center">
-        Foothold &copy; 2026 Nakarin Sakunthai<br>
-        Licensed under <a href="LICENSE" target="_blank" style="color:var(--gold-ink);text-decoration:underline">MIT License</a>
-      </div>
-    </div>
-  </aside>
-
-  <!-- main -->
-  <main class="main">
-    <div class="wrap"><div id="screen"></div></div>
-  </main>
-</div>
-
-<script>
-/* ===================== data model ===================== */
-const STEPS = ['entry','triage','orient','subcase','pattern','facts','timeline','docs','prep','petition','download','next','glossary'];
-const NAV = [
-  {key:'entry',    num:'•', label:'หน้าแรก',     sub:'ภาพรวมและเริ่มต้น'},
-  {key:'triage',   num:'1', label:'สถานะของคุณ',  sub:'คุณเป็น “สีม้า” ไหน'},
-  {key:'orient',   num:'2', label:'ทางออก',        sub:'ธนาคาร หรือ คดี'},
-  {key:'subcase',  num:'3', label:'สถานการณ์ย่อย',  sub:'6 เคสตามระเบียบจริง'},
-  {key:'pattern',  num:'4', label:'เหตุการณ์',     sub:'รูปแบบเรื่องของคุณ'},
-  {key:'facts',    num:'5', label:'ข้อเท็จจริง',    sub:'เล่าเรื่องของคุณ'},
-  {key:'timeline', num:'6', label:'ไทม์ไลน์',      sub:'ลำดับเหตุการณ์'},
-  {key:'docs',     num:'7', label:'เอกสาร',         sub:'เช็กลิสต์ก่อนไป'},
-  {key:'prep',     num:'8', label:'เตรียมพบตำรวจ',   sub:'แนวคำถาม&หมายเรียก'},
-  {key:'petition', num:'9', label:'คำร้อง',         sub:'ร่างหนังสือเพิกถอน'},
-  {key:'download', num:'10',label:'ดาวน์โหลดฟอร์ม', sub:'แบบฟอร์มตามเคส'},
-  {key:'next',     num:'11',label:'ส่งต่อ',         sub:'ธนาคาร / ทนาย'},
-  {key:'glossary', num:'📚',label:'คำศัพท์&ติดต่อ', sub:'อักษรย่อ&ช่องทางด่วน'},
-];
-
-const state = {
-  step:'entry',
-  status:null,
-  pattern:null,
-  subcase:null,
-  glossaryTab:'terms',
-  facts:{ name:'', idcard:'', addr:'', phone:'', bank:'', acct:'',
-          caseId:'', bankRef:'', officer:'', station:'',
-          frozenWhen:'', frozenHow:'', involve:'', edd:'',
-          isVictim:false, hasSummons:false,
-          accountsList:'' },
-  events:[],
-  done:{}
-};
-
-/* horse-color taxonomy — door = which path the person actually takes (verified CFR/BOT) */
-const STATUS = {
-  brown_light: {label:'ม้าน้ำตาลอ่อน', sw:'#faf6ec', door:'bank',
-                short:'FR01: ต้องสงสัยระดับแรก จำกัดบางธุรกรรม',
-                meaning:'บัญชีถูกระงับเพราะระบบเฝ้าระวังพฤติกรรม (FR01) โดย<b>ยังไม่มีผู้เสียหายแจ้งความ ไม่มี Case ID และคุณยังไม่ใช่ผู้ต้องหา</b> — ปลดที่ธนาคารด้วยการทำ EDD'},
-  brown_dark:  {label:'ม้าน้ำตาลเข้ม', sw:'#d8c4a8', door:'bank',
-                short:'FR01 (เสี่ยงสูง): ธนาคารพบความเสี่ยงสูงแต่อาจยังไม่มีคดี',
-                meaning:'บัญชีถูกระงับเนื่องจากธนาคารตรวจพบความผิดปกติที่ส่อไปในทางทุจริต (FR01/FR02) ยังไม่มีการออกหมายจับจากตำรวจ แต่ต้องผ่านการชี้แจงกับธนาคารอย่างเข้มข้น'},
-  grey_light:  {label:'ม้าเทาอ่อน', sw:'#cdc7ba', door:'case',
-                short:'CFR (เฝ้าระวัง): เส้นเงินผ่านบัญชีทุจริต ยังไม่แจ้งตำรวจ',
-                meaning:'บัญชีมีรายชื่ออยู่ในเส้นทางเงินทุจริตในระบบ CFR (มี Case ID แล้ว) แต่<b>ยังไม่มีการแจ้งความดำเนินคดีกับตัวท่านโดยตรง</b> หรือยังไม่เข้าสู่การออกหมายอายัดทางอาญา'},
-  grey_dark:   {label:'ม้าเทาเข้ม', sw:'#9a948a', door:'case',
-                short:'CFR (มีคดี): เส้นเงินทุจริตชัดเจน มีผู้เสียหายแจ้งความแล้ว',
-                meaning:'มีผู้เสียหายแจ้งความดำเนินคดีและมีเลข Case ID แล้ว พนักงานสอบสวนออกหมายอายัดถึงธนาคาร มีความเสี่ยงที่จะตกเป็นผู้ต้องหาสูงมาก'},
-  black:       {label:'ม้าดำ', sw:'#26211c', door:'case',
-                short:'HR03 (ปปง.): บัญชีความเสี่ยงสูง/ขึ้นบัญชีดำ ปปง.',
-                meaning:'ปปง. ประกาศรายชื่อเป็นบุคคลผู้มีความเสี่ยงสูง (HR-03) ส่งผลให้ถูกระงับการใช้งานธุรกรรมออนไลน์ทุกบัญชีและทุก E-Wallet ทุกแห่งเป็นเวลา 3 ปี'}
-};
-
-const SUBCASES = {
-  withdraw: { label: 'ผู้เสียหายยอมถอนคำร้องทุกข์แล้ว (มีหลักฐาน)', desc: 'มีหลักฐานการถอนคำร้องทุกข์/ถอนแจ้งความจากผู้เสียหาย', form: 'case-1-withdraw.pdf' },
-  partial:  { label: 'ยอมรับว่าเคยใช้บัญชีนั้นจริง แต่บัญชีอื่นสุจริต', desc: 'ยอมรับเฉพาะบัญชีที่ทำผิด แต่ขอปลดบัญชีที่ไม่ได้เกี่ยวข้องเพื่อใช้งานปกติ', form: 'case-2-partial.pdf' },
-  innocent: { label: 'พิสูจน์ได้ว่าไม่ได้รับเงิน / ไม่เกี่ยวข้องเลย', desc: 'มีหลักฐานชัดเจนว่าไม่ได้เป็นผู้ใช้บัญชี/ถูกสวมรอย/ถูกหลอก', form: 'case-3-innocent.pdf' },
-  livelihood: { label: 'ต้องการขอใช้บัญชีเพื่อดำรงชีพ (ม้าเทาเข้ม)', desc: 'ยื่นคำขอปลดบางบัญชีที่จำเป็นต่อการใช้ชีวิตประจำวัน/รับเงินเดือน', form: 'case-4-temp.pdf' },
-  notfound: { label: 'ธนาคารแจ้งว่าเป็นม้าเทา แต่ตรวจสอบในระบบ Prasan ไม่มีชื่อ', desc: 'เกิดข้อผิดพลาดในการ sync ข้อมูลระหว่างธนาคารและระบบตำรวจ', form: 'case-5-notfound.pdf' },
-  black_to_grey: { label: 'ม้าดำขอปลดม้าเทา (มีคดีอาญา แต่บัญชีอื่นไม่เกี่ยว)', desc: 'กรณีมีรายชื่อ HR-03 แต่ต้องการขอปลดบัญชีที่ไม่เกี่ยวข้องกับคดี', form: 'case-6-black.pdf' }
-};
-
-const GLOSSARY_TERMS = [
-  { term: 'AOC', full: 'Anti Online Scam Operation', desc: 'ศูนย์ปฏิบัติการแก้ไขปัญหาอาชญากรรมออนไลน์ โทร 1441 สังกัด บช.สอท. ทำหน้าที่ระงับธุรกรรมชั่วคราวและประสานงาน' },
-  { term: 'TPO', full: 'Thai Police Online', desc: 'ระบบรับแจ้งความออนไลน์ของสำนักงานตำรวจแห่งชาติ (thaipoliceonline.go.th)' },
-  { term: 'BCID', full: 'Bank Case ID', desc: 'เลขอ้างอิงการระงับบัญชีที่ออกโดยธนาคารเมื่อได้รับการแจ้งระงับธุรกรรม (CFR)' },
-  { term: 'PCID', full: 'Police Case ID', desc: 'เลขคดีของตำรวจ ขึ้นต้นด้วยตัวอักษรบอกแหล่งรับแจ้ง เช่น L68xxxx (L = แจ้งออนไลน์เอง, T = แจ้งผ่าน 1441, C = ไปโรงพักแล้วคีย์ระบบภายหลัง, W = พนักงานสอบสวนคีย์ให้)' },
-  { term: 'CFR', full: 'Central Fraud Registry', desc: 'ระบบแลกเปลี่ยนข้อมูลเส้นทางการเงินและรายชื่อต้องสงสัยระหว่างสถาบันการเงิน เพื่อระงับบัญชีม้าอย่างรวดเร็ว' },
-  { term: 'HR03', full: 'High Risk 03', desc: 'รหัสบุคคลที่มีความเสี่ยงสูงในการทำธุรกรรมทางการเงิน (บัญชีม้าดำ) ส่งผลให้ถูกระงับทุกบัญชีและทุก E-Wallet' },
-  { term: 'EDD', full: 'Enhanced Due Diligence', desc: 'กระบวนการตรวจสอบและพิสูจน์ความสุจริตของลูกค้าอย่างเข้มข้นโดยธนาคาร เพื่อตรวจสอบที่มาของรายได้และพฤติกรรมการใช้งาน' }
-];
-
-const CONTACTS = [
-  { name: 'ศปอส.ตร. (ศูนย์ปราบฯ เทคโนโลยี ตร.)', tel: '095-425-7478, 061-032-2914', line: 'https://line.me/R/ti/p/@634bizqx', lineId: '@634bizqx', note: 'ประสานงานกรณีบัญชีม้าเทา' },
-  { name: 'บช.สอท. (ตำรวจไซเบอร์)', tel: '1441 / 084-213-6078', line: 'https://line.me/R/ti/p/@HR03', lineId: '@HR03', note: 'ประสานงานกรณีบัญชีม้าดำ' },
-  { name: 'สำนักงาน ปปง.', tel: '1710 / 02-219-3600', line: 'https://line.me/R/ti/p/@amlo1710', lineId: '@amlo1710', note: 'กรณีถูกประกาศรายชื่อผู้มีความเสี่ยงสูง HR-03' },
-  { name: 'ศูนย์ AOC 1441', tel: '1441', line: '', lineId: '', note: 'แจ้งระงับบัญชีและขอข้อมูลเลข PCID / ชื่อ พงส. เจ้าของคดี' },
-  { name: 'ธนาคารแห่งประเทศไทย (ธปท.)', tel: '1213', line: '', lineId: '', note: 'ร้องเรียนกรณีธนาคารปฏิเสธการทำ EDD หรือปิดบัญชีโดยไม่มีเหตุผล' }
-];
-
-/* law references keyed by door (verified) */
-const LAW = {
-  bank:[
-    {tag: 'ฐานอำนาจระงับ', h: 'พ.ร.ก.ฯ มาตรา 6 และ 7 (พ.ศ. 2566)', p: 'ม.6 = ธนาคารพบเหตุสงสัยเอง/ได้ข้อมูลจากระบบ · ม.7 = ผู้เสียหายเจ้าของบัญชีแจ้งเอง — ทั้งสองคือฐาน "ระงับธุรกรรม" ไม่ใช่ฐานความผิดอาญา การถูกระงับ ≠ ถูกตั้งข้อหา', v: false},
-    {tag: 'แจ้งรายชื่อ→เพิกถอน', h: 'พ.ร.ก.ฯ มาตรา 4/2 (เพิ่มโดยฉบับที่ 2 พ.ศ. 2568)', p: 'เมื่อ ศปอท. แจ้งรายชื่อ/เลขกระเป๋าดิจิทัลที่เกี่ยวข้องกับความผิด ให้สถาบันการเงินระงับ/ปฏิเสธ/ปิดบัญชี จนกว่าจะมีการ "เพิกถอนรายชื่อ" — นี่คือฐานกฎหมายของระบบม้าเทา/CFR และครอบคลุมกระเป๋าสินทรัพย์ดิจิทัล (crypto) ด้วย', v: false},
-    {tag: 'มาตรฐาน EDD', h: 'ประกาศ ธปท. ที่ 19/2568 และ 58/2568', p: 'ออกตามอำนาจ พ.ร.ก.ฯ — ให้สถาบันการเงินตรวจสอบลูกค้าเข้มข้น (Enhanced Due Diligence) แล้ว "ปลดเองได้" หากพบว่าไม่เกี่ยวข้องกับอาชญากรรม (คำว่า "ม้าเทา/CFR" มาจากชั้นประกาศนี้ ไม่ใช่ตัวบท พ.ร.ก.)', v: true},
-    {tag: 'ใครปลด', h: 'ธนาคารเป็นผู้ปลด ไม่ใช่ตำรวจ', p: 'สำหรับ "ม้าเทาอ่อน/ไม่ปรากฏสี" ที่ยังไม่มีคดี พนักงานสอบสวนไม่มีอำนาจออกคำสั่งถอนอายัด เพราะไม่ได้เป็นผู้สั่งอายัด — ต้องทำ EDD ที่สาขา', v: true}
-  ],
-  case:[
-    {tag: 'ฐานอำนาจระงับ', h: 'พ.ร.ก.ฯ มาตรา 6 และ 7 (พ.ศ. 2566)', p: 'ฐานอำนาจระงับบัญชี — แยกจากฐานความผิดอาญา', v: false},
-    {tag: 'ฐานความผิด (ถ้ามี)', h: 'พ.ร.ก.ฯ มาตรา 9', p: 'เจ้าของบัญชี/ซิม — องค์ประกอบหัวใจคือ "รู้หรือควรรู้" ว่าจะถูกนำไปใช้ทำผิด จุดนี้คือจุดสู้หลัก โทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท หรือทั้งจำทั้งปรับ (ฉบับที่ 2/2568 ไม่ได้แก้ ม.9 — โทษเท่าเดิม)', v: false},
-    {tag: 'สิทธิของคุณ', h: 'ป.วิ.อาญา ม.134/4 และ ม.131', p: 'คุณมีสิทธิจะให้การหรือไม่ให้การก็ได้ มีสิทธิมีทนายร่วมฟังการสอบสวน และขอให้พนักงานสอบสวนรวบรวมพยานหลักฐานพิสูจน์ความบริสุทธิ์ (ม.131)', v: true},
-    {tag: 'ช่องทางขอเพิกถอน', h: 'ระบบ Prasan (Thaipoliceonline → Bank-Portal)', p: 'ยื่นคำขอเพิกถอน HR03/ม้าเทา ออนไลน์ผ่าน ThaID หรือยื่นหนังสือถึงพนักงานสอบสวน/ขอความเป็นธรรมต่อ ศปอส.ตร.', v: true}
-  ]
-};
-
-/* ===================== helpers ===================== */
-const screenEl = document.getElementById('screen');
-const navEl = document.getElementById('nav');
-const appEl = document.getElementById('app');
-const esc = s => (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const F = (v,ph) => v && v.trim() ? esc(v) : `<span class="fill">${ph}</span>`;
-const arrow = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-const iWarn='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#bd5a3c" stroke-width="1.9"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h16.9a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
-const iInfo='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c79a3e" stroke-width="1.9"><circle cx="12" cy="12" r="10"/><path d="M12 16v-5M12 8h.01"/></svg>';
-const iCheck='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3f6d5f" stroke-width="1.9"><path d="M20 6 9 17l-5-5"/></svg>';
-
-const PATTERNS = {
-  job:    {icon:'💼', label:'ถูกหลอกผ่านประกาศรับสมัครงาน',
-           lead:'เห็นโพสต์งานรายได้สูง → ส่งบัตร ปชช./บัญชี/สแกนใบหน้าให้ "นายจ้าง" → บัญชีถูกใช้รับเงินจากเหยื่อ',
-           charges:['พ.ร.ก.เทคโนโลยี ม.9 (รู้หรือควรรู้)','ร่วมฉ้อโกงประชาชน (ป.อาญา ม.343)','พ.ร.บ.คอมพ์ ม.14'],
-           prove:['มีเจตนาใช้บัญชีเพื่อตนเอง หรือเพื่อ "นายจ้าง"?','ได้รับ "เงินเดือน/ค่าจ้างเปิดบัญชี" จริงหรือไม่?','ส่งมอบรหัส OTP/รหัสผ่านโดยสมัครใจ?'],
-           evidence:['แชต/ข้อความสนทนาสมัครงาน','ลิงก์โพสต์รับสมัครงาน (ถ้ายังอยู่)','สัญญาจ้างที่ได้รับ (จริงหรือปลอม)','บันทึกการโทรศัพท์ระหว่างนัด','ข้อความขอ OTP / ขอ Mobile Banking','หลักฐานว่ารีบแจ้งระงับบัญชี/แจ้งความเมื่อรู้ตัว'],
-           questions:['ทำงานตำแหน่งอะไร นายจ้างเป็นใคร?','ได้รับเงินเดือนจริงไหม จำนวนเท่าใด?','ทำไมยอมมอบรหัสและสแกนใบหน้าให้คนอื่นควบคุมบัญชี?']},
-  close:  {icon:'👥', label:'ถูกคนใกล้ชิด (เพื่อน/ญาติ) ขอยืม/หลอกให้เปิดบัญชี',
-           lead:'คนรู้จักขอยืมบัญชี/ATM อ้างว่าบัญชีตัวเองมีปัญหา → ถูกนำไปใช้รับเงินฉ้อโกง',
-           charges:['พ.ร.ก.เทคโนโลยี ม.9','ร่วมฉ้อโกงประชาชน','ฟอกเงิน'],
-           prove:['ความสัมพันธ์/ความน่าเชื่อถือของผู้ยืม','พฤติการณ์ส่งมอบอำนาจควบคุม (ATM, รหัส, Mobile Banking?)','ได้รับค่าตอบแทน/เปอร์เซ็นต์/ของขวัญหรือไม่'],
-           evidence:['แชตข้อความขอยืม + เหตุผลที่อ้าง','หลักฐานความสัมพันธ์ใกล้ชิด','ถ้าระบุว่า "ยืมเงิน" → หลักฐานการคืนเงิน','หลักฐานว่ารีบแจ้งระงับเมื่อรู้ผิดวัตถุประสงค์'],
-           questions:['ผู้ยืมเป็นใครกับคุณ?','ทำไมเขาไม่ใช้บัญชีของตัวเอง?','ได้รับผลประโยชน์ตอบแทนหรือไม่?'],
-           warn:'<b>ฎีกาที่ 1173/2566:</b> ศาลฎีกาตัดสินว่า ภรรยาที่ให้สามียืมบัญชีและส่งมอบอำนาจควบคุม (เช่น ผูกเบอร์สามี ตั้งรหัสเอง) ถือว่าผิดฐานเป็น "ผู้สนับสนุน" ฉ้อโกงประชาชน และต้องร่วมรับผิดชดใช้เงินทางแพ่ง — อ้างไม่รู้ไม่ได้'},
-  sold:   {icon:'💰', label:'ขาย/ให้เช่าบัญชีโดยรู้ตัว',
-           lead:'เห็นโพสต์รับซื้อบัญชี → ยินยอมเปิดและส่งสมุด/ATM/รหัส แลกเงินสด',
-           charges:['พ.ร.ก.เทคโนโลยี ม.9 (และ ม.10 ถ้าชวนผู้อื่นต่อ)','ฟอกเงิน'],
-           prove:['⚠ องค์ประกอบความผิดน่าจะครบ — สู้ให้หลุดทำได้ยาก','รูปคดีหลักคือ <b>"บรรเทาโทษ/รอลงอาญา"</b> ตาม ป.อาญา ม.78','ปัจจัยลดโทษ (ลดได้กึ่งหนึ่ง): (1) ให้ความร่วมมือชี้เบาะแส/ขยายผล (2) เหตุจำเป็นทางเศรษฐกิจที่รุนแรง (3) รับสารภาพแต่เนิ่นๆ (4) พยายามชดใช้ค่าเสียหาย/บรรเทาผลร้าย'],
-           evidence:['หลักฐานเหตุจำเป็น/ความยากลำบาก (ใบรับรองแพทย์ ใบรับเงินกู้ ฯลฯ)','หลักฐานการนำเงินคืนผู้เสียหาย (ถ้าทำได้)','ประวัติส่วนตัว — ไม่เคยทำผิดมาก่อน','หลักฐานให้ความร่วมมือกับเจ้าหน้าที่'],
-           questions:['รู้หรือไม่ว่าการขายบัญชีเป็นสิ่งผิดกฎหมาย?','ได้รับค่าตอบแทนเท่าใด?','ใครเป็นคนติดต่อรับซื้อ?'],
-           warn:'เคสนี้ Foothold ช่วยเรื่อง "เตรียมขอบรรเทาโทษ" — ไม่ใช่ "สู้ให้หลุด" ควรปรึกษาทนายตั้งแต่แรกเพื่อรูปคดีที่ดีที่สุด'},
-  shop:   {icon:'🛒', label:'ร้านค้าออนไลน์รับโอนเงินสีเทา (กลโกงสามเหลี่ยม)',
-           lead:'ขายของออนไลน์ปกติ → มิจฉาชีพหลอกเหยื่อโอนเข้าบัญชีร้าน → มิจฉาชีพมารับสินค้า/แลกเงินสด',
-           charges:['ร่วมฉ้อโกงประชาชน','ร่วมฟอกเงิน','(ม.9 อาจไม่ถูกตั้ง ถ้าพิสูจน์ค้าขายจริง)'],
-           prove:['ความสุจริตในการค้าขายตามปกติวิสัย','กิจกรรมค้าขายมีจริง (โพสต์ขาย ออเดอร์ ใบเสร็จ)','ส่งมอบสินค้าจริงตามมูลค่าธุรกรรม','<b>ชื่อผู้โอนเงินตรงกับชื่อผู้ติดต่อซื้อสินค้าหรือไม่</b> — จุดสำคัญที่สุด'],
-           evidence:['โพสต์ขายสินค้า (Facebook/Shopee/Lazada/Line)','แชตสั่งซื้อกับลูกค้า','ใบเสร็จขนส่ง (Kerry/Flash/ไปรษณีย์) + tracking','รายการเดินบัญชีย้อนหลัง (แสดงรูปแบบค้าขายปกติ)','CCTV ร้าน/หน้าร้านถ้ามี','บัญชีรายรับ-รายจ่าย/ภาษี'],
-           questions:['มีธุรกรรมค้าขายจริงไหม?','ส่งสินค้าให้ใคร ช่องทางใด ที่อยู่ใด?','ชื่อผู้โอนเงินตรงกับชื่อผู้สั่งซื้อหรือไม่?']},
-  crypto: {icon:'🪙', label:'ซื้อขายคริปโต/USDT แบบ P2P',
-           lead:'ตั้งคำสั่งขายเหรียญบน P2P → มิจฉาชีพเอาเงินที่หลอกเหยื่อมาโอนเข้าบัญชี เพื่อฟอกเป็นสินทรัพย์ดิจิทัล',
-           charges:['ร่วมฉ้อโกงประชาชน','ร่วมฟอกเงิน','ฉบับที่ 2/2568 ขยายนิยามครอบคลุมกระเป๋าสินทรัพย์ดิจิทัลแล้ว'],
-           prove:['ทำ KYC บนแพลตฟอร์มถูกต้อง','อัตราแลกเปลี่ยนปกติของตลาด ไม่สูงผิดปกติ','<b>ตรวจชื่อบัญชีโอนเงินตรงกับชื่อผู้ซื้อในระบบ P2P</b>'],
-           evidence:['ประวัติคำสั่งซื้อ-ขายบนแพลตฟอร์ม (Binance/Bitkub/อื่นๆ)','แชตสนทนาในคำสั่งซื้อ','หลักฐานการตรวจสลิป/ใบหน้าคู่สัญญาก่อนปล่อยเหรียญ','ประวัติเรท trade ในวันนั้น'],
-           questions:['ตรวจชื่อผู้โอนตรงกับชื่อผู้ซื้อใน P2P หรือไม่?','เรทแลกเปลี่ยนเป็นอย่างไรเทียบตลาด?','ปล่อยเหรียญหลังตรวจสลิปอย่างไร?']},
-  border: {icon:'🚨', label:'ถูกหลอก/พาไปทำงานตะเข็บชายแดน (รวมเหยื่อค้ามนุษย์)',
-           lead:'ถูกชวนไปทำงานบ่อน/ท่องเที่ยวชายแดน → ลักลอบข้ามแดน → กักขัง → บังคับสแกนใบหน้า/โอนเงิน',
-           charges:['ร่วมฉ้อโกงประชาชน','มีส่วนร่วมในองค์กรอาชญากรรมข้ามชาติ','ฟอกเงิน'],
-           prove:['<b>พฤติการณ์ถูกจำกัดเสรีภาพ</b> — เหยื่อค้ามนุษย์/บังคับขู่เข็ญ','ขาดเจตนาโดยสมบูรณ์'],
-           evidence:['ประวัติเดินทาง · ตราประทับหนังสือเดินทาง · ตั๋ว','แชตประวัติถูกล่อลวง/ติดต่อ "นายหน้า"','ใบแจ้งความที่สถานทูต/ตำรวจหลังหนีรอด','ประวัติการรักษาตัว (ร่างกาย/จิตใจ)','รูปถ่าย/วิดีโอจากที่ถูกกักขัง (ถ้ามี)'],
-           questions:['เดินทางข้ามแดนด้วยวิธีใด?','ใครเป็นผู้ควบคุม?','ได้รับเงินค่าตอบแทนสแกนใบหน้าหรือไม่?'],
-           warn:'เคสนี้อยู่นอกขอบเขตที่ Foothold ช่วยเองได้ — ควรติดต่อ <b>สภาทนายความ (1167)</b>, <b>มูลนิธิ HRDF (02-277-6887)</b>, <b>มูลนิธิกระจกเงา (02-973-2236)</b> หรือ <b>TICAC</b> ทันที'},
-  loan:   {icon:'💳', label:'ถูกหลอกทำสัญญากู้เงินออนไลน์',
-           lead:'ยื่นกู้ผ่านแอป/เพจปลอม → ถูกหลอกให้เปิดบัญชี/ให้สิทธิ์ควบคุมแอป/รหัส OTP อ้างเพื่อ "สร้างประวัติทางการเงิน"',
-           charges:['พ.ร.ก.เทคโนโลยี ม.9','ร่วมฉ้อโกงประชาชน'],
-           prove:['มีเจตนาขอกู้เงินจริง','ถูกล่อลวงให้ส่งข้อมูลรหัสความปลอดภัย "โดยสำคัญผิด" ว่าธนาคารกำหนด'],
-           evidence:['หน้าเพจ/แอปกู้เงิน (screenshot)','แชตประวัติขอกู้','ภาพถ่ายหน้าจอขั้นตอนกู้เงิน','ประวัติการแจ้งระงับบัญชีหลังรู้ตัวว่าถูกหลอก'],
-           questions:['ทำไมยอมส่งรหัส OTP/สิทธิ์ควบคุมแอปให้คนอื่น?','ได้รับเงินกู้จริงตามสัญญาหรือไม่?']},
-  other:  {icon:'❓', label:'ไม่ตรงกับรูปแบบข้างต้น / ไม่แน่ใจ',
-           lead:'รูปแบบเรื่องของคุณไม่เข้าใน 7 รูปแบบมาตรฐาน — ใช้แนวทางทั่วไปและ<b>ปรึกษาทนาย</b>',
-           charges:['อาจเป็น ม.9 พ.ร.ก.เทคโนโลยี และ/หรือ ความผิดอื่นตามพฤติการณ์'],
-           prove:['ใช้ "เงื่อนไขหลุดคดี 3 ข้อ" เป็น anchor: (1) ไม่ได้ผลประโยชน์ (2) รีบแจ้งระงับเมื่อรู้ตัว (3) ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย'],
-           evidence:['เก็บทุกหลักฐานเกี่ยวกับเหตุการณ์ — แชต ภาพ คลิป ใบเสร็จ ใบแจ้งความ','รายการเดินบัญชีย้อนหลัง'],
-           questions:['เหตุการณ์เกิดขึ้นอย่างไร? เมื่อใด? เกี่ยวข้องกับใครบ้าง?']}
-};
-
-/* เงื่อนไขหลุดคดี 3 ข้อ (anchor) — ใช้ใน screenPattern */
-
-function reached(key){
-  if(key==='entry'||key==='triage'||key==='glossary') return true;
-  if(!state.status) return false;
-  const isCase = STATUS[state.status].door==='case';
-  if(!isCase && ['subcase','pattern','prep'].includes(key)) return false;
-  return true;
-}
-function go(step){
-  if(!reached(step)) step='triage';
-  state.step=step; closeNav(); render();
-  document.querySelector('.main').scrollTop=0; window.scrollTo({top:0,behavior:'smooth'});
-}
-function setStatus(s){ state.status=s; state.done.triage=true; go('orient'); }
-function markDone(k){ state.done[k]=true; }
-function bind(id,path){ const el=document.getElementById(id); if(el) el.addEventListener('input',e=>{ const k=path.split('.'); let o=state; for(let i=0;i<k.length-1;i++)o=o[k[i]]; o[k[k.length-1]]=e.target.value; }); }
-function toggleNav(){ appEl.classList.toggle('nav-open'); }
-function closeNav(){ appEl.classList.remove('nav-open'); }
-
-function shareLink(){
-  const url = window.location.href;
-  if(navigator.share){
-    navigator.share({title:'ตั้งหลัก (Foothold)', url:url}).catch(console.error);
-  }else{
-    navigator.clipboard.writeText(url);
-    alert('คัดลอกลิงก์แล้ว สามารถส่งให้ทนายดูได้: ' + url);
-  }
-}
-
-/* ===================== sidebar nav ===================== */
-function renderNav(){
-  const cur = state.step;
-  const isCase = state.status ? STATUS[state.status].door === 'case' : true;
-  navEl.innerHTML = `<div class="nav-h">ขั้นตอน</div>` + NAV.filter(n=>{
-    if(!isCase && ['subcase','pattern','prep'].includes(n.key)) return false;
-    return true;
-  }).map(n=>{
-    const on = cur===n.key;
-    const done = state.done[n.key] && !on;
-    const lock = !reached(n.key);
-    return `<button class="nav-item ${on?'on':''} ${done?'done':''} ${lock?'lock':''}" ${lock?'disabled':''} onclick="go('${n.key}')">
-      <span class="nav-num">${n.num}</span>
-      <span class="nav-tx"><span class="nav-lb">${n.label}</span><span class="nav-sb">${n.sub}</span></span>
-      ${done?'<span class="nav-ck">✓</span>':''}
-    </button>`;
-  }).join('');
-}
-
-function screenEntry(){
-  return `<div class="screen">
-    <div class="eyebrow">ตั้งหลัก · เข้าใจ · ไปต่อ</div>
-    <h1 class="q hero-h">ได้ข้อความว่าบัญชี<span class="hl">ถูกระงับ</span>? ตั้งหลักที่นี่</h1>
-    <p class="lead">เครื่องมือช่วยคุณเข้าใจว่าเกิดอะไรขึ้น แยกแยะสถานะตัวเอง เตรียมข้อเท็จจริงและเอกสารให้ครบ แล้วพาไปยังธนาคารหรือทนายที่ช่วยได้จริง — เป็นภาษาที่คนทั่วไปเข้าใจ ไม่ใช่คำแนะนำทางกฎหมายแทนทนายความ</p>
-    
-    <div style="display:flex;gap:10px;margin:14px 0 20px;flex-wrap:wrap">
-      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ไม่มีค่าใช้จ่าย</div>
-      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ (Client Local Only)</div>
-      <div style="font-size:12px;color:var(--mut);border:1px solid var(--card-line);padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;background:#fff"><span style="width:6px;height:6px;border-radius:50%;background:#3f6d5f"></span>ใช้เวลาประมาณ 8–10 นาที</div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="go('triage')">เริ่มทีละขั้น ${arrow}</button>
-      <button class="btn btn-ghost" onclick="go('next')">⚖️ หาทนายความ</button>
-    </div>
-
-    <div class="note warn" style="margin-top:26px">${iWarn}
-      <div class="t"><b>ก่อนทำอะไร — กันมิจฉาชีพซ้ำ:</b> อย่าโทรเบอร์ใน SMS ทันที · อย่าโอนเงินให้ใครเพื่อ "ปลดบัญชี" · อย่ากดลิงก์ใน SMS · ติดต่อธนาคารผ่านเบอร์หลังบัตร/แอปทางการ และสายด่วน AOC <b>1441</b> เท่านั้น</div>
-    </div>
-    <div class="note calm">${iInfo.replace('#c79a3e','#3f6d5f')}
-      <div class="t">การที่บัญชี "ถูกระงับ" <b>ไม่ได้แปลว่าคุณถูกตั้งข้อหา</b>เสมอไป — หลายกรณีเป็นแค่ระบบเฝ้าระวัง (CFR) และปลดได้ที่ธนาคาร ขั้นแรกเราจะช่วยดูว่าคุณอยู่สถานะไหน</div>
-    </div>
-
-    <div class="layers">
-      ${[
-        ['1','📋','รู้สถานะตัวเอง','ดูว่าคุณเป็น "สีม้า" ใด และประตูของคุณคือธนาคารหรือคดี','triage'],
-        ['2','⚖️','เข้าใจข้อกฎหมาย','เห็นมาตราที่เกี่ยวกับสถานะคุณ และ "จุดที่ต้องพิสูจน์"','triage'],
-        ['3','🗂️','เตรียมเอกสาร+คำร้อง','เก็บข้อเท็จจริง สร้างไทม์ไลน์ และร่างหนังสือเพิกถอน','triage'],
-        ['4','🤝','ส่งต่อคนที่ช่วยได้','ธนาคาร ระบบ Prasan หรือทนายอาสาฟรี','next']
-      ].map(L=>`<button class="layer" onclick="go('${L[4]}')">
-        <div class="layer-top"><div class="layer-num">${L[0]}</div><span class="layer-ic">${L[1]}</span></div>
-        <div class="layer-t">${L[2]}</div><div class="layer-d">${L[3]}</div>
-      </button>`).join('')}
-    </div>
-
-    <div class="note dark">🔒
-      <div class="t">ข้อมูลทั้งหมดอยู่ในเครื่องของคุณเท่านั้น ไม่ถูกส่งออกไปไหน และเครื่องมือนี้เป็นเพียงแนวทางเบื้องต้น ไม่แทนคำปรึกษาจากทนายความ</div>
-    </div>
-  </div>`;
-}
-
-function screenTriage(){
-  const order = ['brown_light', 'brown_dark', 'grey_light', 'grey_dark', 'black'];
-  
-  if (!state.triageTab) state.triageTab = 'quiz';
-  if (!state.quiz) state.quiz = { q1: null, q2: null };
-
-  const tab = state.triageTab;
-
-  let tabContent = '';
-
-  if (tab === 'quiz') {
-    // Render Triage Quiz
-    tabContent = `
-      <div class="card pad" style="margin-top:10px">
-        <h3 style="font-size:16px;margin:0 0 12px;font-family:var(--serif);color:var(--navy)">ระบบตอบคำถามประเมินสถานะอัตโนมัติ (Triage Quiz)</h3>
-        
-        <!-- Question 1 -->
-        <div style="margin-bottom:20px">
-          <p style="font-weight:600;margin:0 0 8px">๑. บัญชีธนาคารอื่น ๆ และ E-Wallet ทั้งหมดของคุณถูกระงับพร้อมกันด้วยหรือไม่?</p>
-          <label style="display:block;margin-bottom:8px">
-            <input type="radio" name="q1" value="yes" ${state.quiz.q1 === 'yes' ? 'checked' : ''} onclick="state.quiz.q1='yes';state.quiz.q2=null;render()">
-            <span style="margin-left:8px"><b>ใช่</b> (โดนระงับพร้อมกันทุกธนาคารและ E-Wallet/ShopeePay ทั้งหมด ธุรกรรมออนไลน์ใช้ไม่ได้เลย)</span>
-          </label>
-          <label style="display:block">
-            <input type="radio" name="q1" value="no" ${state.quiz.q1 === 'no' ? 'checked' : ''} onclick="state.quiz.q1='no';render()">
-            <span style="margin-left:8px"><b>ไม่ใช่</b> (ระงับเฉพาะบางบัญชี หรือเฉพาะบัญชีธนาคารที่เกิดเรื่อง บัญชีธนาคารอื่นยังใช้งานได้ปกติ)</span>
-          </label>
-        </div>
-
-        <!-- Question 2 -->
-        ${state.quiz.q1 === 'no' ? `
-        <div style="margin-bottom:20px;padding-top:15px;border-top:1px dashed var(--card-line)">
-          <p style="font-weight:600;margin:0 0 8px">๒. มีคดีอาญาหรือเลขรับแจ้งความในระบบตำรวจ (Case ID ขึ้นต้นด้วย L68...) หรือไม่?</p>
-          <label style="display:block;margin-bottom:8px">
-            <input type="radio" name="q2" value="case_active" ${state.quiz.q2 === 'case_active' ? 'checked' : ''} onclick="state.quiz.q2='case_active';render()">
-            <span style="margin-left:8px"><b>มีแล้ว</b> (ตำรวจสั่งอายัดโดยตรง / มีผู้เสียหายแจ้งความดำเนินคดี / มีเลข Case ID หรือใบหมายเรียก)</span>
-          </label>
-          <label style="display:block;margin-bottom:8px">
-            <input type="radio" name="q2" value="cfr_warn" ${state.quiz.q2 === 'cfr_warn' ? 'checked' : ''} onclick="state.quiz.q2='cfr_warn';render()">
-            <span style="margin-left:8px"><b>เป็นเส้นทางการเงิน (CFR)</b> (ธนาคารแจ้งว่ามีประวัติเส้นเงินพ่วงกับบัญชีทุจริตในระบบ CFR แต่ยังไม่มีตำรวจดำเนินคดีกับเราโดยตรง)</span>
-          </label>
-          <label style="display:block">
-            <input type="radio" name="q2" value="internal_warn" ${state.quiz.q2 === 'internal_warn' ? 'checked' : ''} onclick="state.quiz.q2='internal_warn';render()">
-            <span style="margin-left:8px"><b>ยังไม่มีคดี/เป็นรหัสเฝ้าระวังธนาคาร</b> (ระงับชั่วคราวรหัส FR01/FR02 เนื่องจากระบบความเสี่ยงธนาคารตรวจจับพฤติกรรมเอง)</span>
-          </label>
-        </div>
-        ` : ''}
-
-        <!-- Quiz Result -->
-        ${(state.quiz.q1 === 'yes' || (state.quiz.q1 === 'no' && state.quiz.q2)) ? (() => {
-          let evalStatus = '';
-          if (state.quiz.q1 === 'yes') evalStatus = 'black';
-          else if (state.quiz.q2 === 'case_active') evalStatus = 'grey_dark';
-          else if (state.quiz.q2 === 'cfr_warn') evalStatus = 'grey_light';
-          else evalStatus = 'brown_dark';
-
-          const s = STATUS[evalStatus];
-          return `
-            <div style="background:var(--notebg);border-left:4px solid var(--gold);padding:15px;border-radius:6px;margin-top:20px">
-              <h4 style="margin:0 0 6px;color:var(--navy)">🎯 ผลการประเมินเบื้องต้น: คุณเข้าข่ายกลุ่ม "${s.label}"</h4>
-              <p style="margin:0 0 10px;font-size:14px;color:var(--ink2)">${s.short}</p>
-              <p style="margin:0 0 12px;font-size:13px;line-height:1.5;color:var(--mut)">${s.meaning}</p>
-              <button class="btn btn-primary btn-sm" onclick="setStatus('${evalStatus}')">ใช้สถานะนี้และไปต่อ ${arrow}</button>
+                <!-- Navigation Action Buttons -->
+                <div class="flex items-center space-x-2">
+                    <a href="dashboard.html" class="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-card hover:bg-gray-800 text-brand-accent border border-brand-border transition">
+                        📊 แดชบอร์ดหลายคดี (v4.2)
+                    </a>
+                    <button onclick="switchSection('emergency-mode')" class="px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold bg-red-600 hover:bg-red-500 text-white transition flex items-center space-x-1.5 shadow-lg shadow-red-900/40">
+                        <span class="animate-ping w-2 h-2 rounded-full bg-white"></span>
+                        <span>🚨 โหมดเร่งด่วน 24 ชม.</span>
+                    </button>
+                    <a href="tel:1441" class="hidden md:flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-brand-card hover:bg-gray-800 text-brand-accent border border-brand-border transition">
+                        <span>📞</span>
+                        <span>สายด่วน 1441</span>
+                    </a>
+                </div>
             </div>
-          `;
-        })() : ''}
-      </div>
-    `;
-  } else if (tab === 'direct') {
-    // Original list of 5 colors
-    tabContent = `
-      <div class="spectrum" style="margin-top:10px">
-      ${order.map(k=>{const s=STATUS[k];const door=s.door==='bank'
-        ?'<span class="door bank">🏦 ปลดที่ธนาคาร</span>'
-        :'<span class="door case">⚖️ ผ่านคดี/ตำรวจ</span>';
-        return `<button class="opt" onclick="setStatus('${k}')">
-          <span class="swatch" style="background:${s.sw}"></span>
-          <span style="flex:1;min-width:0"><span class="ttl">${s.label}</span><span class="sub">${s.short}</span></span>
-          ${door}
-        </button>`;}).join('')}
-      </div>
-    `;
-  } else {
-    // Help guide for bank inquiries
-    tabContent = `
-      <div class="card pad" style="margin-top:10px">
-        <h3 style="font-size:16px;margin:0 0 12px;font-family:var(--serif);color:var(--warn)">💡 วิธีเช็คสถานะบัญชีที่โดนระงับ (หากยังไม่ทราบรหัส)</h3>
-        <p style="margin:0 0 12px;line-height:1.6">เมื่อไปติดต่อสาขาธนาคารที่บัญชีโดนระงับ หรือโทรคุยกับ Call Center ให้ถามคำถามสำคัญ 3 ข้อนี้กับเจ้าหน้าที่ เพื่อให้ได้ข้อมูลที่ถูกต้องสำหรับนำมากรอกในระบบ:</p>
-        
-        <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.6;margin-bottom:15px">
-          <thead>
-            <tr style="border-bottom:1.5px solid var(--card-line);background:#f5efe2">
-              <th style="padding:8px;text-align:left;width:40%">คำถามสำคัญที่ต้องถาม</th>
-              <th style="padding:8px;text-align:left">เหตุผลทางคดี</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="border-bottom:1px solid var(--card-line)">
-              <td style="padding:8px;font-weight:600">"บัญชีนี้ถูกระงับด้วยรหัสใด?" (FR01, FR02, CFR หรือ HR-03)</td>
-              <td style="padding:8px;color:var(--mut)">ช่วยจำแนกกลุ่มความเสี่ยงและแยกประตูทางออก (ธนาคาร หรือ ตำรวจ)</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--card-line)">
-              <td style="padding:8px;font-weight:600">"เลขอ้างอิงคดีคืออะไร?" (ขอเลข Bank Case ID หรือ Police Case ID)</td>
-              <td style="padding:8px;color:var(--mut)">ใช้สำหรับยื่นคำร้องประสานงานหรือปลดบัญชีในระบบ Prasan / 1441</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--card-line)">
-              <td style="padding:8px;font-weight:600">"สถานีตำรวจใดเป็นผู้สั่งอายัด และใครเป็นพนักงานสอบสวน?"</td>
-              <td style="padding:8px;color:var(--mut)">ชี้เป้า สน./สภ. ที่เราต้องส่งจดหมายชี้แจงเพื่อป้องกันหมายจับ</td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div style="background:var(--notebg);border-left:4px solid var(--navy);padding:12px;border-radius:6px;font-size:13.5px;line-height:1.6">
-          <b>🗣️ บทพูดแนะนำเมื่อคุยกับพนักงานธนาคาร:</b><br>
-          <i>"สวัสดีครับ ผมได้รับแจ้งว่าบัญชีเงินฝากถูกระงับครับ รบกวนช่วยตรวจสอบข้อมูลรหัสระงับในระบบให้หน่อยครับว่าเป็นรหัสกลุ่มใด (FR01/CFR/HR-03) และเป็นคำสั่งอายัดของสถานีตำรวจใด พร้อมขอเลขอ้างอิง Case ID เพื่อติดต่อชี้แจงด้วยครับ"</i>
         </div>
-      </div>
-    `;
-  }
+    </header>
 
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 1 · คัดกรอง</div>
-    <h1 class="q">บัญชีของคุณอยู่ในสถานะใด?</h1>
-    <p class="lead">ระบบคัดกรองสถานะตามเกณฑ์มาตรฐานทางการ เพื่อวิเคราะห์ทางเลือกในการดำเนินการปลดล็อกอย่างถูกต้อง</p>
-    
-    <!-- Tab Controls -->
-    <div style="display:flex;gap:5px;border-bottom:2px solid var(--card-line);padding-bottom:5px;margin-bottom:15px" class="no-print">
-      <button class="btn btn-sm ${tab === 'quiz' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='quiz';render()" style="padding:8px 12px;font-size:13.5px">🎯 ประเมินสถานะ (Triage Quiz)</button>
-      <button class="btn btn-sm ${tab === 'direct' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='direct';render()" style="padding:8px 12px;font-size:13.5px">🎨 เลือกสีม้าโดยตรง</button>
-      <button class="btn btn-sm ${tab === 'help' ? 'btn-primary' : 'btn-ghost'}" onclick="state.triageTab='help';render()" style="padding:8px 12px;font-size:13.5px">💡 วิธีสอบถามธนาคาร</button>
-    </div>
-
-    <!-- Tab Content -->
-    ${tabContent}
-
-    <div class="note warn" style="margin-top:20px">${iWarn}
-      <div class="t">
-        <b>ความหมายของรหัสเฝ้าระวังของธนาคาร (Fraud Code):</b><br>
-        • <b>FR01</b> = บัญชีต้องสงสัยระดับต้น (เทียบเท่า ม้าน้ำตาลอ่อน/เข้ม) มีเหตุสั่งจับตา<br>
-        • <b>FR02</b> = บัญชีพัวพันธุรกรรมทุจริตรุนแรง เสี่ยงถูกดำเนินคดีสูงมาก<br>
-        • <b>CFR (Case Fraud Report)</b> = จุดเริ่มต้นคดี มีการรับเรื่องระงับธุรกรรม (ระงับด่วน 72 ชม. แรก)
-      </div>
-    </div>
-    
-    <div class="note">${iInfo}
-      <div class="t">สำหรับรหัสแจ้งเตือน <b>PCID (Police Case ID)</b> หากขึ้นต้นด้วยอักษร <b>T/L/C/W/ซ</b> จะเป็นตัวระบุช่องทางแจ้งความของเหยื่อ เช่น T = โทรแจ้ง 1441, L = แจ้งออนไลน์เอง, C = แจ้งโรงพักแล้วคีย์ข้อมูลตามหลัง, W = พนักงานสอบสวนคีย์ข้อมูลให้, ซ = ชาวต่างชาติแจ้งความ</div>
-    </div>
-    <div class="btn-row"><button class="btn btn-ghost" onclick="go('entry')">ย้อนกลับ</button></div>
-  </div>`;
-}
-
-function screenOrient(){
-  const s=STATUS[state.status], door=s.door, isBank=door==='bank';
-  const laws=LAW[door].map(l=>`<div class="law">
-     <span class="tag">${l.tag}</span>
-     <h4>${l.h}</h4><p>${l.p}</p>
-     ${l.v
-       ?'<div class="verify">⚑ ออกตามประกาศ ธปท. / เลขประกาศควรยืนยันฉบับล่าสุดกับทนายก่อนใช้จริง</div>'
-       :'<div class="verify" style="color:#3f6d5f">✓ ตรงตัวบท พ.ร.ก. 2566 (ตรวจกับราชกิจจานุเบกษา/วุฒิสภาแล้ว)</div>'}
-   </div>`).join('');
-   
-  // C3 Unfreeze Mapping Table
-  const unfreezeTable = `
-    <h2 class="q">⚠️ กฎสำคัญ: ผู้อายัด ≠ ผู้ปลด (กฎระบบ Prasan จริง)</h2>
-    <p class="lead">การแจ้งปลดอายัดบัญชีต้องไปตามหน่วยงานที่อายัดเท่านั้น มาตรการข้อหนึ่งไม่มีผลต่อการปลดข้ออื่น (ต้องปลดแยกทุกหน่วยงาน)</p>
-    <div class="card pad" style="margin-top:12px;overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;text-align:left">
-        <thead>
-          <tr style="border-bottom:2px solid var(--card-line)">
-            <th style="padding:8px">มาตรการที่ระงับ</th>
-            <th style="padding:8px">หน่วยงานผู้อายัด</th>
-            <th style="padding:8px;color:var(--warn)">ผู้มีอำนาจปลดอายัด</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;font-weight:600">1. หมายอายัดอาญา (ตช.)</td>
-            <td style="padding:8px">พนักงานสอบสวน (พงส.)</td>
-            <td style="padding:8px;color:var(--warn);font-weight:600">พนักงานสอบสวน ส่งเรื่องให้ธนาคาร</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;font-weight:600">2. CFR - ม้าน้ำตาล</td>
-            <td style="padding:8px">ธนาคาร → AOC</td>
-            <td style="padding:8px;color:var(--warn);font-weight:600">ศูนย์ AOC 1441 เท่านั้น</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;font-weight:600">3. CFR - ม้าเทา</td>
-            <td style="padding:8px">ตำรวจไซเบอร์ → ธนาคาร</td>
-            <td style="padding:8px;color:var(--warn);font-weight:600">พงส. ส่งขอปลดเข้าระบบ Prasan ศปอส.ตร.</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;font-weight:600">4. HR03 - ม้าดำ</td>
-            <td style="padding:8px">สำนักงาน ปปง.</td>
-            <td style="padding:8px;color:var(--warn);font-weight:600">พงส. ส่งเรื่องเสนอ ปปง. เพิกถอน</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  `;
-
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 2 · ทางออกของคุณ</div>
-    <h1 class="q">สถานะ "${s.label}" — ${isBank?'ปลดได้ที่ธนาคาร':'เดินผ่านคดี/ตำรวจ'}</h1>
-    <div class="card pad" style="margin-top:18px"><p style="margin:0;font-size:15px;line-height:1.7">${s.meaning}</p></div>
-    <div class="note calm">${iCheck}
-      <div class="t"><b>ขั้นต่อไปของคุณ:</b> ${isBank
-        ? 'นำเอกสารยืนยันตัวตน + แหล่งที่มาเงิน ไปทำ EDD ที่สาขาธนาคาร — เราจะช่วยจัดข้อเท็จจริงและเอกสารให้พร้อมก่อนไป'
-        : 'แยกแยะสถานการณ์ย่อยของคดี และเตรียมข้อเท็จจริงเพื่อยื่นผ่านระบบ Prasan / พนักงานสอบสวน และเตรียมแนวสู้คดี'}</div>
-    </div>
-    
-    ${unfreezeTable}
-
-    <h2 class="q">กฎหมายที่เกี่ยวกับสถานการณ์คุณ</h2>
-    <p class="lead" style="margin-bottom:4px">นี่คือข้อกฎหมายที่เกี่ยวข้องและ "จุดที่คุณต้องพิสูจน์" — ไม่ใช่คำตัดสินว่าคุณผิดหรือถูก</p>
-    ${laws}
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('triage')">เปลี่ยนสถานะ</button>
-      <button class="btn btn-primary" onclick="go('${STATUS[state.status].door==='case'?'subcase':'facts'}')">${STATUS[state.status].door==='case'?'ระบุสถานการณ์ย่อย':'เก็บข้อเท็จจริงของคุณ'} ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenSubcase(){
-  const cards = Object.entries(SUBCASES).map(([k,p])=> {
-    const active = state.subcase === k ? 'border-color:var(--gold);background:#fbf3e2;' : '';
-    return `<button class="opt" onclick="state.subcase='${k}';markDone('subcase');go('pattern')" style="${active}flex-wrap:wrap">
-      <span style="flex:1;min-width:0"><span class="ttl">${p.label}</span><span class="sub">${p.desc}</span></span>
-    </button>`;
-  }).join('');
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 3 · สถานการณ์ย่อย</div>
-    <h1 class="q">สถานการณ์คดีของคุณเป็นอย่างไร?</h1>
-    <p class="lead">เลือกข้อที่ตรงกับแนวทางการร้องขอความเป็นธรรมของท่าน ระบบ Prasan ของพนักงานสอบสวนจะแยกแบบคำขอตามช่องทางเหล่านี้</p>
-    <div class="spectrum" style="margin-top:20px">${cards}</div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('orient')">ย้อนกลับ</button>
-      <button class="btn btn-primary" onclick="go('pattern')">เลือกรูปแบบเหตุการณ์ ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-const ESCAPE_ANCHORS = [
-  {n:1, t:'ไม่มีพฤติการณ์แสวงหาประโยชน์', d:'พิสูจน์ได้ว่า<b>ไม่เคยได้</b>ค่าจ้าง/เปอร์เซ็นต์/ส่วนแบ่ง/ของขวัญ จากธุรกรรมในบัญชี'},
-  {n:2, t:'รีบแจ้งระงับทันทีที่รู้ตัว',  d:'มีหลักฐานเชิงประจักษ์ว่าได้แจ้งระงับบัญชี/แจ้งความ <b>"ก่อน" บัญชีจะถูกใช้โกงผู้อื่น</b> หรือทันทีที่ตรวจพบความผิดปกติ'},
-  {n:3, t:'ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย', d:'มีหลักฐานว่าสมุดบัญชี/มือถือ/ข้อมูลส่วนตัว <b>หลุดจากการครอบครอง</b> (ใบแจ้งของหาย ใบรับซ่อมโทรศัพท์ ฯลฯ)'}
-];
-
-function screenPattern(){
-  // เก็บ pattern ที่เลือกใน state
-  if(!state.pattern) state.pattern=null;
-  const pid = state.pattern;
-  // หน้าเลือก pattern
-  if(!pid){
-    const cards = Object.entries(PATTERNS).map(([k,p])=>`<button class="opt" onclick="state.pattern='${k}';markDone('pattern');render()" style="flex-wrap:wrap">
-      <span class="swatch" style="background:#faf6ec;display:flex;align-items:center;justify-content:center;font-size:18px">${p.icon}</span>
-      <span style="flex:1;min-width:0"><span class="ttl">${p.label}</span><span class="sub">${p.lead}</span></span>
-    </button>`).join('');
-    return `<div class="screen">
-      <div class="eyebrow">ขั้น 3 · เหตุการณ์</div>
-      <h1 class="q">เลือกรูปแบบที่<u>ใกล้เคียง</u>เรื่องของคุณที่สุด</h1>
-      <p class="lead">7 รูปแบบนี้ครอบคลุมเคสบัญชีม้าส่วนใหญ่ที่พบในไทย — เลือกอันที่ใกล้ที่สุด ระบบจะบอกข้อหาที่มักถูกตั้ง จุดที่ต้องพิสูจน์ และหลักฐานที่ควรเตรียม</p>
-      <div class="note">${iInfo}<div class="t"><b>การเลือกรูปแบบ ≠ คำตัดสินว่าคุณผิด</b> — แต่ละรูปแบบมีทั้งคนที่ถูกหลอกจริงและคนที่รู้ตัว เครื่องมือนี้ช่วยจัดระเบียบเรื่อง เพื่อพิสูจน์ <b>ข้อเท็จจริงเฉพาะของคุณ</b></div></div>
-      <div class="spectrum" style="margin-top:20px">${cards}</div>
-      <div class="btn-row"><button class="btn btn-ghost" onclick="go('orient')">ย้อนกลับ</button></div>
-    </div>`;
-  }
-  // หน้าผลของ pattern ที่เลือก
-  const p = PATTERNS[pid];
-  const charges = p.charges.map(c=>`<li>${c}</li>`).join('');
-  const prove   = p.prove.map(c=>`<li>${c}</li>`).join('');
-  const ev      = p.evidence.map(c=>`<li>${c}</li>`).join('');
-  const qs      = p.questions.map(c=>`<li>${c}</li>`).join('');
-  const anchors = ESCAPE_ANCHORS.map(a=>`<div class="law"><span class="tag">หลักฐานชุดที่ ${a.n}</span><h4>${a.t}</h4><p>${a.d}</p></div>`).join('');
-  const warn = p.warn?`<div class="note warn">${iWarn}<div class="t">${p.warn}</div></div>`:'';
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 3 · เหตุการณ์ที่เลือก</div>
-    <h1 class="q">${p.icon} ${p.label}</h1>
-    <div class="card pad" style="margin-top:16px"><p style="margin:0;font-size:15px;line-height:1.7">${p.lead}</p></div>
-    ${warn}
-    <h2 class="q">ข้อหาที่มักถูกตั้งในเคสรูปแบบนี้</h2>
-    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${charges}</ul></div>
-    <h2 class="q">จุดที่กฎหมายต้องพิสูจน์ "รู้ / ควรรู้"</h2>
-    <p class="lead" style="margin-bottom:0">คำถามเหล่านี้คือสิ่งที่ศาลและพนักงานสอบสวนจะใช้พิจารณา — เตรียมคำตอบให้พร้อม</p>
-    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${prove}</ul></div>
-    <h2 class="q">หลักฐานสำคัญที่ควรเก็บ/รวบรวม</h2>
-    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${ev}</ul></div>
-    <h2 class="q">คำถามที่พนักงานสอบสวนมักถาม</h2>
-    <p class="lead" style="margin-bottom:0">ซ้อมตอบตามความจริง — คำตอบไม่สอดคล้องกับหลักฐานคือจุดอ่อนที่สุด</p>
-    <div class="card pad" style="margin-top:12px"><ul style="margin:0;padding-left:22px;line-height:1.85">${qs}</ul></div>
-    <h2 class="q">เงื่อนไข 3 ข้อที่ทำให้คดีบัญชีม้า "หลุด" หรือ "ลดโทษ"</h2>
-    <p class="lead" style="margin-bottom:0">จากแนวคำพิพากษา/อัยการสั่งไม่ฟ้อง — ยิ่งมีหลักฐานครบทั้ง 3 ข้อ ยิ่งดี</p>
-    ${anchors}
-    <div class="note calm">${iCheck}<div class="t"><b>ฎีกาที่ 4920/2567:</b> ศาลฎีกาวินิจฉัยว่าการรับจ้างเปิดบัญชีเป็นเรื่องผิดปกติวิสัย อ้างว่า "ถูกหลอก" ไม่ขึ้น (ในคดีนี้จำเลยอายุ 17 ปี ได้รับค่าจ้างเพียง 400 บาท/บัญชี แต่บัญชีถูกใช้รับเงิน 200,000 บาทจาก SMS phishing) → <b>เคสที่ "รับค่าจ้างเปิดบัญชี" ศาลจะตีว่า "ควรรู้" และผิดฐานผู้สนับสนุนเสมอ</b></div></div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="state.pattern=null;render()">เลือกรูปแบบใหม่</button>
-      <button class="btn btn-primary" onclick="go('facts')">เก็บข้อเท็จจริงของคุณ ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenFacts(){
-  const f=state.facts; const isCase=STATUS[state.status].door==='case';
-  setTimeout(()=>{
-    [['fn','facts.name'],['fid','facts.idcard'],['fad','facts.addr'],['fph','facts.phone'],
-     ['fbk','facts.bank'],['fac','facts.acct'],['fci','facts.caseId'],['fbr','facts.bankRef'],
-     ['fof','facts.officer'],['fst','facts.station'],['ffw','facts.frozenWhen'],
-     ['ffh','facts.frozenHow'],['fiv','facts.involve'],['fed','facts.edd'],
-     ['falist','facts.accountsList']].forEach(([id,p])=>bind(id,p));
-     
-     // Manual bind for checkboxes
-     const vic = document.getElementById('fvic');
-     if(vic) vic.addEventListener('change', e => { state.facts.isVictim = e.target.checked; });
-     const sum = document.getElementById('fsum');
-     if(sum) sum.addEventListener('change', e => { state.facts.hasSummons = e.target.checked; });
-  },0);
-  
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 5 · ข้อเท็จจริงของคุณ</div>
-    <h1 class="q">เล่าตามจริง ทีละช่อง</h1>
-    <p class="lead">กรอกเท่าที่รู้ ช่องไหนไม่รู้เว้นไว้ได้ — ข้อมูลนี้จะกลายเป็นไทม์ไลน์และคำร้องให้อัตโนมัติ</p>
-    <div class="note">${iInfo}<div class="t"><b>ตอบตามความจริงเท่านั้น</b> — ตำรวจและธนาคารตรวจย้อนได้ การให้ข้อมูลเท็จเป็นความผิดใหม่และทำให้เรื่องแย่ลง</div></div>
-    <div class="card pad" style="margin-top:18px">
-      <div class="two">
-        <div class="field"><label>ชื่อ–นามสกุล</label><input id="fn" value="${esc(f.name)}" placeholder="เช่น สมชาย ใจดี"></div>
-        <div class="field"><label>เลขบัตรประชาชน</label><input id="fid" value="${esc(f.idcard)}" placeholder="13 หลัก"></div>
-      </div>
-      <div class="field"><label>ที่อยู่</label><input id="fad" value="${esc(f.addr)}" placeholder="ที่อยู่ตามบัตร / ที่ติดต่อได้"></div>
-      <div class="field"><label>เบอร์โทร <span class="hint">(เบอร์ที่ลงทะเบียนกับธนาคาร)</span></label><input id="fph" value="${esc(f.phone)}" placeholder="08x-xxx-xxxx"></div>
-      
-      <!-- Gap 3 & Summons Checks -->
-      <div class="field" style="margin-top:15px">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:700;color:var(--warn)">
-          <input type="checkbox" id="fvic" ${f.isVictim ? 'checked' : ''} style="width:18px;height:18px">
-          ฉันถูกข่มขู่ / หน่วงเหนี่ยวกักขัง / บังคับสแกนใบหน้า หรือยึดโทรศัพท์ (เคสผู้เสียหายถูกบังคับ)
-        </label>
-      </div>
-      <div class="field" style="margin-top:10px">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:700">
-          <input type="checkbox" id="fsum" ${f.hasSummons ? 'checked' : ''} style="width:18px;height:18px">
-          ฉันได้รับหมายเรียกตัวจริงจากพนักงานสอบสวนแล้ว
-        </label>
-      </div>
-      
-      <div class="two" style="margin-top:15px">
-        <div class="field"><label>ธนาคารหลัก</label><input id="fbk" value="${esc(f.bank)}" placeholder="เช่น กรุงเทพ"></div>
-        <div class="field"><label>เลขที่บัญชีหลักที่ถูกระงับ</label><input id="fac" value="${esc(f.acct)}" placeholder="เลขบัญชี"></div>
-      </div>
-      
-      <!-- Gap 4: Multiple accounts list -->
-      <div class="field">
-        <label>ระบุรายชื่อธนาคารและเลขบัญชี/Wallet อื่นทั้งหมดที่ถูกระงับ (แยกทีละบรรทัด) <span class="hint">กรณีมีหลายบัญชี</span></label>
-        <textarea id="falist" placeholder="เช่น:\n- ธ.กสิกรไทย 123-x-xxxxx-x\n- TrueMoney Wallet 08x-xxx-xxxx">${esc(f.accountsList)}</textarea>
-      </div>
-
-      <div class="two">
-        <div class="field"><label>เลขรับแจ้งความ (Case ID) <span class="hint">ถ้ามี</span></label><input id="fci" value="${esc(f.caseId)}" placeholder="ถ้ายังไม่มี เว้นไว้"><div style="margin-top:4px"><span style="cursor:pointer;font-size:11.5px;color:var(--gold);text-decoration:underline" onclick="document.getElementById('fci').value='ไม่มีเลขคดีในมือขณะนี้';bind('fci','facts.caseId')">💡 ไม่มีเลขคดีอยู่ในมือขณะนี้ (คลิกเพื่อระบุ)</span></div></div>
-        <div class="field"><label>เลขอ้างอิงธนาคาร (Bank Ref) <span class="hint">ถ้ามี</span></label><input id="fbr" value="${esc(f.bankRef)}" placeholder=""></div>
-      </div>
-      ${isCase?`<div class="two">
-        <div class="field"><label>พนักงานสอบสวนผู้รับผิดชอบ <span class="hint">ถ้าทราบ</span></label><input id="fof" value="${esc(f.officer)}" placeholder="ยศ-ชื่อ"></div>
-        <div class="field"><label>สถานีตำรวจ <span class="hint">ถ้าทราบ</span></label><input id="fst" value="${esc(f.station)}" placeholder="สน./สภ."></div>
-      </div>`:`<input type="hidden" id="fof"><input type="hidden" id="fst">`}
-      <div class="field"><label>บัญชีถูกระงับเมื่อไหร่ <span class="hint">วัน/เดือน/ปี ที่รู้ว่าใช้ไม่ได้</span></label><input id="ffw" value="${esc(f.frozenWhen)}" placeholder="เช่น 20 มิ.ย. 2569"></div>
-      <div class="field"><label>รู้ได้อย่างไรว่าถูกระงับ</label><textarea id="ffh" placeholder="เช่น ได้ SMS จากธนาคาร / โอนเงินไม่ได้ / ธนาคารโทรแจ้ง">${esc(f.frozenHow)}</textarea></div>
-      <div class="field"><label>คุณเข้าไปเกี่ยวข้องกับเรื่องนี้ได้อย่างไร <span class="hint">เล่าตามจริง — นี่คือหัวใจของคำชี้แจง</span></label><textarea id="fiv" placeholder="เช่น เปิดบัญชีรับเงินค่าขายของออนไลน์ / ถูกหลอกให้เปิดบัญชีผ่านแอปหางาน / ขายของแล้วลูกค้าโอนมา">${esc(f.involve)}</textarea>
-        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
-          <span style="font-size:11px;color:var(--mut);align-self:center">คำถามช่วยเรียบเรียง:</span>
-          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [เกิดเหตุเมื่อวันที่ ...]';bind('fiv','facts.involve')">+ เกิดเหตุเมื่อไร</span>
-          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [ธนาคารที่เกี่ยวข้องคือ ...]';bind('fiv','facts.involve')">+ ธนาคารใด</span>
-          <span style="cursor:pointer;border:1px dashed var(--card-line);padding:3px 9px;border-radius:12px;font-size:11.5px;background:#fff" onclick="document.getElementById('fiv').value+=' [มีการติดต่อกลับพนักงานสอบสวนเมื่อ ...]';bind('fiv','facts.involve')">+ การติดต่อกลับ</span>
+    <!-- Sub-Header Navigation Tabs for Mobile & Desktop -->
+    <div class="bg-brand-surface/80 backdrop-blur border-b border-brand-border sticky top-16 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 overflow-x-auto py-2 scrollbar-none">
+            <button id="nav-btn-wizard" onclick="switchSection('main-wizard')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading font-medium transition whitespace-nowrap bg-brand-accent text-gray-900 font-bold shadow">
+                📱 วิซาร์ดประเมิน & ไทม์ไลน์
+            </button>
+            <button id="nav-btn-emergency" onclick="switchSection('emergency-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading font-medium transition whitespace-nowrap text-red-400 bg-brand-card hover:bg-gray-800 border border-brand-border">
+                🚨 3 ขั้นตอนเร่งด่วน
+            </button>
+            <button id="nav-btn-generator" onclick="switchSection('generator-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading font-medium transition whitespace-nowrap text-gray-300 bg-brand-card hover:bg-gray-800 border border-brand-border">
+                📝 สร้างหนังสือชี้แจงบริสุทธิ์ใจ
+            </button>
+            <button id="nav-btn-flowchart" onclick="switchSection('flowchart-mode')" class="nav-btn px-4 py-2 rounded-lg text-xs sm:text-sm font-heading font-medium transition whitespace-nowrap text-gray-300 bg-brand-card hover:bg-gray-800 border border-brand-border">
+                🗺️ แผนผังคดี & เบอร์สายด่วน
+            </button>
         </div>
-      </div>
-      ${!isCase?`<div class="field"><label>ติดต่อธนาคารทำ EDD แล้วหรือยัง ผลเป็นอย่างไร</label><textarea id="fed" placeholder="เช่น ไปสาขาแล้ว ธนาคารให้มาพบตำรวจ / ยังไม่ได้ไป / ธนาคารกำลังตรวจสอบ">${esc(f.edd)}</textarea></div>`:`<input type="hidden" id="fed">`}
     </div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('${isCase?'pattern':'orient'}')">ย้อนกลับ</button>
-      <button class="btn btn-primary" onclick="markDone('facts');go('timeline')">สร้างไทม์ไลน์ ${arrow}</button>
-    </div>
-  </div>`;
-}
 
-function buildTimeline(){
-  const f=state.facts; const ev=[];
-  if(state.pattern && PATTERNS[state.pattern]) ev.push({d:'รูปแบบเหตุการณ์', e:PATTERNS[state.pattern].label+' — '+PATTERNS[state.pattern].lead});
-  if(f.isVictim) ev.push({d:'⚠️ สถานะผู้เสียหายหลัก', e:'ระบุว่าถูกข่มขู่ / บังคับกักขังหน่วงเหนี่ยวให้ทำธุรกรรมโดยไม่สมัครใจ'});
-  if(f.hasSummons) ev.push({d:'⚠️ หมายเรียก', e:'ได้รับหมายเรียกตัวจริงจากพนักงานสอบสวนแล้ว'});
-  if(f.frozenWhen||f.frozenHow) ev.push({d:f.frozenWhen||'(ระบุวันที่)', e:'บัญชีหลักถูกระงับ — '+(f.frozenHow||'ทราบว่าทำธุรกรรมไม่ได้')});
-  if(f.accountsList) ev.push({d:'บัญชี/Wallet อื่นๆ ที่ถูกระงับร่วม', e:'\n'+f.accountsList});
-  if(f.involve) ev.push({d:'ความเกี่ยวข้อง', e:f.involve});
-  if(f.edd) ev.push({d:'การติดต่อธนาคาร (EDD)', e:f.edd});
-  if(f.caseId) ev.push({d:'มีคดี', e:'เลขรับแจ้งความ (Case ID): '+f.caseId});
-  state.events=ev; return ev;
-}
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-function screenTimeline(){
-  const ev=buildTimeline();
-  const f=state.facts;
-  
-  // Gap 1: CCTV countdown warning
-  const cctvWarn = f.isVictim ? `
-    <div class="note warn" style="margin-bottom:15px">${iWarn}
-      <div class="t">
-        <b>⏰ ข้อจำกัดเวลาภาพวงจรปิด (CCTV):</b> เนื่องจากคดีเกี่ยวข้องกับการกักขัง/ข่มขู่ในสถานที่จริง ภาพ CCTV มักมีกำหนดลบภายใน <b>15-30 วัน</b> (เช่น Silver Palm Resort) ท่านต้องรีบติดต่อตำรวจขอออกหมายขอภาพด่วนที่สุด!
-      </div>
-    </div>
-  ` : '';
+        <!-- SECTION 1: MAIN WIZARD & CLASSIFIER (DEFAULT VIEW) -->
+        <section id="sec-main-wizard" class="page-section space-y-6">
+            
+            <!-- Welcome Alert & Privacy Guarantee Banner -->
+            <div class="bg-gradient-to-r from-brand-card via-brand-surface to-brand-card p-5 rounded-2xl border border-brand-border shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-accent/10 text-brand-accent text-xs font-mono border border-brand-accent/30">
+                        <span>🛡️</span> ปลอดภัย 100%: ข้อมูลทั้งหมดประมวลผลบนเครื่องของคุณเท่านั้น
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-heading font-bold text-white">ตั้งหลักให้มั่น เราอยู่ข้างคุณเมื่อบัญชีถูกระงับ</h1>
+                    <p class="text-xs sm:text-sm text-gray-300">
+                        ทำความเข้าใจสถานะทางกฎหมาย ประเมินความเสี่ยง เตรียมเอกสาร และปฏิบัติตนตามขั้นตอนอย่างถูกต้องเพื่อพิสูจน์เจตนาบริสุทธิ์
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="switchSection('emergency-mode')" class="w-full md:w-auto px-4 py-2 bg-red-950/80 hover:bg-red-900 border border-red-700 text-red-200 text-xs font-heading font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                        <span>🚨</span>
+                        <span>เพิ่งโดนอายัด? ทำ 3 สิ่งนี้ทันที</span>
+                    </button>
+                </div>
+            </div>
 
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 6 · ไทม์ไลน์</div>
-    <h1 class="q">ลำดับเหตุการณ์ของคุณ</h1>
-    <p class="lead">เรียงจากข้อเท็จจริงที่กรอก — ไทม์ไลน์ที่ชัดช่วยให้ธนาคาร/พนักงานสอบสวนเข้าใจเรื่องเร็วขึ้น แก้ไขได้โดยย้อนกลับไปแก้ข้อเท็จจริง</p>
-    
-    ${cctvWarn}
+            <!-- Responsive Grid: Left Column (Classifier) | Right Column (Timeline & Checklist) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- LEFT COLUMN: Account Category Classifier & Dynamic Advice -->
+                <div class="lg:col-span-5 space-y-6">
+                    
+                    <!-- 5 Account Category Selectors -->
+                    <div class="bg-brand-card p-5 rounded-2xl border border-brand-border shadow-sm space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center">
+                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                                    <span>🏷️</span> คัดแยกประเภทบัญชี
+                                </h2>
+                                <span class="text-xs text-brand-accent font-mono">เลือก 1 ข้อที่ตรงจริง</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">คลิกเลือกสถานะเพื่อดูวิเคราะห์ความเสี่ยงและข้อควรระวังเฉพาะกรณีของคุณ</p>
+                        </div>
 
-    
-    <div class="card pad" style="margin-top:14px">
-      <h3 style="margin:0 0 10px;font-size:15px;font-family:var(--serif)">🗓️ กรอบเวลาดำเนินการทางคดี (Timeline Milestones)</h3>
-      <div style="display:flex;gap:10px;overflow-x:auto;padding-top:5px;padding-bottom:5px">
-        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--gold)">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold)">วันนี้</div>
-          <div style="font-size:11.5px;color:var(--ink2);margin-top:2px">รวบรวมข้อเท็จจริง และยื่นคำร้อง EDD/1441</div>
+                        <div class="space-y-2.5">
+                            <!-- Category 3 (Default Selected: เหยื่อ/ไม่รู้ตัว) -->
+                            <button onclick="selectCategory('lightGray')" id="cat-btn-lightGray" class="cat-btn w-full p-3.5 rounded-xl text-left border border-gray-600 bg-gray-800/90 hover:bg-gray-700/80 transition flex items-start justify-between gap-3 ring-2 ring-brand-accent shadow-md">
+                                <div class="space-y-0.5">
+                                    <div class="font-heading font-bold text-gray-100 text-sm flex items-center gap-1.5">
+                                        <span>⚪</span>
+                                        <span>1. เทาอ่อน - ไม่รู้ตัว (ผู้บริสุทธิ์/เหยื่อ)</span>
+                                    </div>
+                                    <div class="text-xs text-gray-300 pl-5">ถูกแอบอ้าง/หลอกเอาข้อมูลเอกสารไปเปิดบัญชีโดยไม่ยินยอม</div>
+                                </div>
+                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-700 font-mono shrink-0">ความเสี่ยงต่ำ</span>
+                            </button>
+
+                            <!-- Category 1: น้ำตาลอ่อน -->
+                            <button onclick="selectCategory('lightBrown')" id="cat-btn-lightBrown" class="cat-btn w-full p-3.5 rounded-xl text-left border border-amber-900/60 bg-amber-950/30 hover:bg-amber-900/40 transition flex items-start justify-between gap-3">
+                                <div class="space-y-0.5">
+                                    <div class="font-heading font-bold text-amber-300 text-sm flex items-center gap-1.5">
+                                        <span>🟤</span>
+                                        <span>2. น้ำตาลอ่อน - รู้ตัวแต่ให้ใช้</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 pl-5">ให้ผู้อื่นนำบัญชีไปใช้ โดยได้รับเงินค่าตอบแทนหรือผลประโยชน์</div>
+                                </div>
+                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-amber-950 text-amber-300 border border-amber-800 font-mono shrink-0">เสี่ยงปานกลาง</span>
+                            </button>
+
+                            <!-- Category 4: เทาเข้ม -->
+                            <button onclick="selectCategory('darkGray')" id="cat-btn-darkGray" class="cat-btn w-full p-3.5 rounded-xl text-left border border-gray-700 bg-gray-900/80 hover:bg-gray-800 transition flex items-start justify-between gap-3">
+                                <div class="space-y-0.5">
+                                    <div class="font-heading font-bold text-gray-300 text-sm flex items-center gap-1.5">
+                                        <span>🩶</span>
+                                        <span>3. เทาเข้ม - ไม่รู้ตัวแต่ควรระวัง</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 pl-5">ให้เพื่อน/ญาติยืมบัญชี โดยไม่ทราบว่าจะนำไปรับเงินผิดกฎหมาย</div>
+                                </div>
+                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-gray-800 text-gray-300 border border-gray-700 font-mono shrink-0">ต้องพิสูจน์เจตนา</span>
+                            </button>
+
+                            <!-- Category 2: น้ำตาลเข้ม -->
+                            <button onclick="selectCategory('darkBrown')" id="cat-btn-darkBrown" class="cat-btn w-full p-3.5 rounded-xl text-left border border-amber-950 bg-amber-950/70 hover:bg-amber-900/50 transition flex items-start justify-between gap-3">
+                                <div class="space-y-0.5">
+                                    <div class="font-heading font-bold text-amber-400 text-sm flex items-center gap-1.5">
+                                        <span>🟤</span>
+                                        <span>4. น้ำตาลเข้ม - รู้ตัวและใช้เอง</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 pl-5">รู้ตัวและทำหน้าที่โอน/กดถอนเงินให้ผู้อื่นด้วยตนเองตามสั่ง</div>
+                                </div>
+                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-amber-950 text-amber-200 border border-amber-700 font-mono shrink-0">เสี่ยงสูง</span>
+                            </button>
+
+                            <!-- Category 5: ดำ -->
+                            <button onclick="selectCategory('black')" id="cat-btn-black" class="cat-btn w-full p-3.5 rounded-xl text-left border border-red-950 bg-red-950/30 hover:bg-red-900/30 transition flex items-start justify-between gap-3">
+                                <div class="space-y-0.5">
+                                    <div class="font-heading font-bold text-red-400 text-sm flex items-center gap-1.5">
+                                        <span>🖤</span>
+                                        <span>5. ดำ - เกี่ยวข้องกับขบวนการ</span>
+                                    </div>
+                                    <div class="text-xs text-gray-400 pl-5">เปิดบัญชีม้าเป็นอาชีพ / รับจ้างกลุ่มแก๊งคอลเซ็นเตอร์-เว็บพนัน</div>
+                                </div>
+                                <span class="badge text-[11px] px-2 py-0.5 rounded-md bg-red-950 text-red-300 border border-red-800 font-mono shrink-0">เสี่ยงวิกฤต</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Legal Risk Analysis Box -->
+                    <div id="legal-analysis-box" class="bg-brand-surface p-5 rounded-2xl border border-brand-border space-y-4 shadow-md">
+                        <div class="flex items-center justify-between border-b border-gray-700 pb-3">
+                            <span class="text-xs font-mono text-gray-400">บทวิเคราะห์ทางกฎหมายเฉพาะคุณ</span>
+                            <span id="analysis-category-tag" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700">⚪ เทาอ่อน - ไม่รู้ตัว</span>
+                        </div>
+                        
+                        <div>
+                            <h3 id="analysis-title" class="font-heading font-bold text-brand-accent text-base">ผู้เสียหายที่ถูกแอบอ้างนำข้อมูลไปเปิดบัญชี (ไม่มีเจตนา)</h3>
+                            <p id="analysis-desc" class="text-xs sm:text-sm text-gray-300 leading-relaxed mt-1">
+                                คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชีหรือทำธุรกรรมนั้นๆ
+                            </p>
+                        </div>
+
+                        <!-- Legal Exposure Chart -->
+                        <div class="bg-brand-card p-3 rounded-xl border border-gray-800 space-y-1">
+                            <div class="text-xs text-gray-400 font-mono text-center">ระดับภาระการพิสูจน์เจตนา vs ความเสี่ยงรับโทษ</div>
+                            <div class="chart-container">
+                                <canvas id="riskGaugeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Do's and Don'ts -->
+                        <div class="grid grid-cols-1 gap-3 pt-1">
+                            <div class="bg-emerald-950/30 border border-emerald-800/60 p-3 rounded-xl space-y-1">
+                                <div class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                                    <span>✅</span> สิ่งที่ต้องทำทันที:
+                                </div>
+                                <ul id="analysis-dos" class="text-xs text-gray-300 space-y-1 list-disc pl-4">
+                                    <li>ไปแจ้งความลงบันทึกประจำวันระบุว่าถูกแอบอ้างนำข้อมูลไปเปิดบัญชี</li>
+                                    <li>ขอหนังสือรับรองและอายัดทุกบัญชีกับธนาคารเจ้าของบัญชี</li>
+                                    <li>ยื่นหนังสือบริสุทธิ์ใจต่อพนักงานสอบสวนพร้อมหลักฐาน</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-red-950/30 border border-red-800/60 p-3 rounded-xl space-y-1">
+                                <div class="text-xs font-bold text-red-400 flex items-center gap-1">
+                                    <span>❌</span> สิ่งที่ห้ามทำเด็ดขาด:
+                                </div>
+                                <ul id="analysis-donts" class="text-xs text-gray-300 space-y-1 list-disc pl-4">
+                                    <li>ห้ามลบแชท ประวัติการคุย หรือรีเซ็ตโทรศัพท์เด็ดขาด</li>
+                                    <li>ห้ามยินยอมรับเงินชดเชยเพื่อจบลับๆ โดยไม่ผ่านตำรวจ</li>
+                                    <li>ห้ามหลบหนีหรือปฏิเสธการเข้าพบพนักงานสอบสวนตามหมายเรียก</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <button onclick="switchSection('generator-mode')" class="w-full py-2.5 bg-brand-accent hover:bg-brand-accentHover text-gray-900 font-heading font-bold text-xs rounded-xl transition shadow flex items-center justify-center gap-1.5">
+                            <span>📝</span>
+                            <span>สร้างหนังสือชี้แจงความบริสุทธิ์ใจด้วยระบบอัตโนมัติ</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN: Guided Timeline & Dynamic Checklist -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- 4-Phase Guided Timeline -->
+                    <div class="bg-brand-card p-5 rounded-2xl border border-brand-border shadow-sm space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                                    <span>⏱️</span> ลำดับขั้นตอนการดำเนินการ (Action Plan)
+                                </h2>
+                                <p class="text-xs text-gray-400">ขั้นตอนปฏิบัติตนตามกฎหมายเพื่อความปลอดภัยของตัวคุณ</p>
+                            </div>
+                            <span id="timeline-badge" class="text-xs px-2.5 py-1 rounded-full bg-brand-accent/20 text-brand-accent border border-brand-accent/30 font-mono shrink-0">
+                                4 ขั้นตอนหลัก
+                            </span>
+                        </div>
+
+                        <!-- Timeline steps list -->
+                        <div class="space-y-3.5">
+                            <!-- Phase 1 -->
+                            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border hover:border-brand-accent transition flex gap-3.5 items-start">
+                                <div class="w-8 h-8 rounded-full bg-brand-accent text-gray-900 font-bold font-mono flex items-center justify-center shrink-0 text-sm shadow">1</div>
+                                <div class="flex-grow space-y-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <h3 class="font-heading font-bold text-white text-sm">ระยะที่ 1: รวบรวมหลักฐานและตั้งสติ</h3>
+                                        <span class="text-[11px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 font-mono w-fit">ต้องทำใน 24 ชม. แรก</span>
+                                    </div>
+                                    <p class="text-xs text-gray-300">แคปหน้าจอแชท สลิปโอนเงิน โพสต์ประกาศรับสมัครงาน และจดบันทึกวันเวลาเกิดเหตุอย่างละเอียด</p>
+                                </div>
+                            </div>
+
+                            <!-- Phase 2 -->
+                            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border hover:border-brand-accent transition flex gap-3.5 items-start">
+                                <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold font-mono flex items-center justify-center shrink-0 text-sm">2</div>
+                                <div class="flex-grow space-y-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <h3 class="font-heading font-bold text-white text-sm">ระยะที่ 2: ติดต่อสาขาธนาคารเจ้าของบัญชี</h3>
+                                        <span class="text-[11px] text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-800 font-mono w-fit">แนะนำ: ภายใน 1-3 วัน</span>
+                                    </div>
+                                    <p class="text-xs text-gray-300">ขออายัดบัญชีทุกบัญชี ขอรายการเดินบัญชีย้อนหลัง (Statement) และขอเลขที่คำสั่งอายัด (AOC ID)</p>
+                                </div>
+                            </div>
+
+                            <!-- Phase 3 -->
+                            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border hover:border-brand-accent transition flex gap-3.5 items-start">
+                                <div class="w-8 h-8 rounded-full bg-gray-800 text-gray-300 font-bold font-mono flex items-center justify-center shrink-0 text-sm">3</div>
+                                <div class="flex-grow space-y-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <h3 class="font-heading font-bold text-white text-sm">ระยะที่ 3: แจ้งความร้องทุกข์ต่อพนักงานสอบสวน</h3>
+                                        <span class="text-[11px] text-gray-400 bg-gray-800 px-2 py-0.5 rounded border border-gray-700 font-mono w-fit">แนะนำ: ภายใน 7 วัน</span>
+                                    </div>
+                                    <p class="text-xs text-gray-300">เข้าพบตำรวจท้องที่ หรือแจ้งความออนไลน์ 1441 ยื่นหนังสือแสดงความบริสุทธิ์ใจเพื่อขอลงบันทึกประจำวัน</p>
+                                </div>
+                            </div>
+
+                            <!-- Phase 4 -->
+                            <div class="p-4 rounded-xl bg-brand-surface border border-brand-border hover:border-brand-accent transition flex gap-3.5 items-start">
+                                <div class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 font-bold font-mono flex items-center justify-center shrink-0 text-sm">4</div>
+                                <div class="flex-grow space-y-1">
+                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                        <h3 class="font-heading font-bold text-gray-300 text-sm">ระยะที่ 4: ยื่นเอกสารยื่นปลดอายัดบัญชี</h3>
+                                        <span class="text-[11px] text-gray-500 bg-gray-900 px-2 py-0.5 rounded border border-gray-800 font-mono w-fit">ต่อเนื่อง</span>
+                                    </div>
+                                    <p class="text-xs text-gray-400">นำสำเนาหนังสือแจ้งความและผลการสอบสวนยื่นต่อธนาคารเพื่อพิจารณาปลดระงับบัญชีเงินฝาก</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Interactive Document Checklist -->
+                    <div class="bg-brand-card p-5 rounded-2xl border border-brand-border shadow-sm space-y-4">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <div>
+                                <h2 class="font-heading font-bold text-lg text-white flex items-center gap-2">
+                                    <span>📋</span> เช็กลิสต์เอกสารที่ต้องเตรียมยื่น
+                                </h2>
+                                <p class="text-xs text-gray-400">ก้าวกาเอกสารที่คุณเตรียมพร้อมแล้ว เพื่อประเมินความพร้อม</p>
+                            </div>
+                            <span id="doc-counter" class="text-xs font-mono text-brand-accent font-bold bg-brand-surface px-3 py-1 rounded-lg border border-brand-border">
+                                2 จาก 6 เอกสารพร้อมแล้ว
+                            </span>
+                        </div>
+
+                        <!-- Progress Bar Container -->
+                        <div class="space-y-1">
+                            <div class="w-full bg-gray-900 rounded-full h-3 overflow-hidden border border-gray-700">
+                                <div id="doc-progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-3 rounded-full transition-all duration-300" style="width: 33%"></div>
+                            </div>
+                            <div class="flex justify-between text-[11px] font-mono text-gray-400">
+                                <span>ความพร้อมเอกสาร</span>
+                                <span id="doc-percent-text">33%</span>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox Container -->
+                        <div id="checklist-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" checked class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">สำเนาบัตรประชาชน</span>
+                                    <span class="text-[11px] text-gray-400 block">พร้อมเซ็นชื่อรับรองสำเนาถูกต้อง</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" checked class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">สำเนาสมุดบัญชีธนาคาร</span>
+                                    <span class="text-[11px] text-gray-400 block">หน้าที่มีชื่อและเลขที่บัญชีชัดเจน</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">รายการเดินบัญชีย้อนหลัง</span>
+                                    <span class="text-[11px] text-gray-400 block">Statement ย้อนหลัง 6 เดือนจากแอปธนาคาร</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">หลักฐานสลิปโอน/รับเงิน</span>
+                                    <span class="text-[11px] text-gray-400 block">สลิปที่มีเลขที่อ้างอิงและเวลาตรงกัน</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">ภาพแคปหน้าจอแชท/บทสนทนา</span>
+                                    <span class="text-[11px] text-gray-400 block">รวมโปรไฟล์ผู้ติดต่อ และข้อความชักชวน</span>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start space-x-3 p-3 rounded-xl bg-brand-surface border border-gray-700 cursor-pointer hover:bg-gray-800 transition">
+                                <input type="checkbox" onchange="updateChecklistProgress()" class="mt-0.5 w-4 h-4 rounded text-brand-accent focus:ring-brand-accent bg-gray-900 border-gray-600">
+                                <div class="space-y-0.5">
+                                    <span class="font-medium text-white block">บันทึกประจำวัน / ใบแจ้งความ</span>
+                                    <span class="text-[11px] text-gray-400 block">จากสถานีตำรวจท้องที่เกิดเหตุ</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="pt-3 border-t border-gray-800 flex justify-between items-center text-xs text-gray-400">
+                            <span>💡 เคล็ดลับ: ถ่ายรูปเก็บไว้ในโทรศัพท์อีก 1 ชุดป้องกันเอกสารหาย</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECTION 2: URGENT EMERGENCY MODE (3 STEPS FOR 24 HRS) -->
+        <section id="sec-emergency-mode" class="page-section hidden space-y-6">
+            
+            <!-- Red High Urgency Header Box -->
+            <div class="bg-gradient-to-br from-red-950/90 via-red-900/60 to-brand-card border-2 border-red-700 p-6 rounded-2xl shadow-2xl space-y-4">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-900 text-red-200 text-xs font-bold font-mono border border-red-600">
+                            <span class="animate-ping w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                            โหมดเร่งด่วน (Urgent Action Plan)
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">ถูกอายัดบัญชีสดๆ ร้อนๆ? ทำ 3 สิ่งนี้ทันทีใน 24 ชั่วโมง</h2>
+                        <p class="text-xs sm:text-sm text-red-200 leading-relaxed">
+                            อย่าพึ่งตื่นตระหนก! หากคุณเพิ่งทราบว่าบัญชีธนาคารถูกระงับหรือถูกแจ้งความปฏิบัติตาม 3 ขั้นตอนฉุกเฉินนี้ทันทีเพื่อป้องกันความเสียหายและคุ้มครองตัวคุณเอง
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3 Action Steps Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+                    
+                    <!-- Card 1: Call Bank -->
+                    <div class="bg-brand-surface/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-900/80 border border-red-500 text-red-300 flex items-center justify-center font-heading font-bold text-lg">
+                                1
+                            </div>
+                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">ขั้นแรกสุด</span>
+                        </div>
+                        <h3 class="font-heading font-bold text-base text-white">โทรหาธนาคารทันที</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            โทรเข้าศูนย์รับแจ้งเหตุภัยทางการเงินของธนาคารเจ้าของบัญชี ถามเหตุผลที่อายัด และขอ **"เลขที่คำสั่งอายัด (AOC ID)"**
+                        </p>
+                        
+                        <!-- Bank Hotline Directory -->
+                        <div class="bg-brand-card p-3 rounded-lg border border-gray-700 text-xs space-y-2 font-mono">
+                            <div class="text-brand-accent font-sans text-xs font-bold">เบอร์โทรศูนย์แจ้งเหตุธนาคาร (24 ชม.):</div>
+                            <div class="grid grid-cols-1 gap-1.5 text-gray-300">
+                                <a href="tel:028888888" class="flex justify-between hover:text-brand-accent"><span>• กสิกรไทย (KBank):</span> <span class="font-bold">02-888-8888 (กด 1)</span></a>
+                                <a href="tel:1333" class="flex justify-between hover:text-brand-accent"><span>• กรุงเทพ (BBL):</span> <span class="font-bold">1333 (กด 9)</span></a>
+                                <a href="tel:027777777" class="flex justify-between hover:text-brand-accent"><span>• ไทยพาณิชย์ (SCB):</span> <span class="font-bold">02-777-7777</span></a>
+                                <a href="tel:021111111" class="flex justify-between hover:text-brand-accent"><span>• กรุงไทย (KTB):</span> <span class="font-bold">02-111-1111</span></a>
+                                <a href="tel:1428" class="flex justify-between hover:text-brand-accent"><span>• ทีทีบี (ttb):</span> <span class="font-bold">1428 (กด 3)</span></a>
+                                <a href="tel:1115" class="flex justify-between hover:text-brand-accent"><span>• ออมสิน (GSB):</span> <span class="font-bold">1115 (กด 6)</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Call 1441 -->
+                    <div class="bg-brand-surface/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-900/80 border border-red-500 text-red-300 flex items-center justify-center font-heading font-bold text-lg">
+                                2
+                            </div>
+                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">ขั้นที่สอง</span>
+                        </div>
+                        <h3 class="font-heading font-bold text-base text-white">โทร 1441 สายด่วน AOC</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            โทรแจ้งศูนย์ปฏิบัติการแก้ไขปัญหาอาชญากรรมออนไลน์ (AOC 1441) เพื่อลงทะเบียนแจ้งเหตุและสอบถามสถานะคำสั่งอายัด
+                        </p>
+                        
+                        <div class="bg-brand-card p-3 rounded-lg border border-gray-700 text-xs space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-white">สายด่วนตำรวจไซเบอร์:</span>
+                                <a href="tel:1441" class="font-mono text-lg font-bold text-brand-accent bg-brand-surface px-3 py-1 rounded border border-brand-accent/40">1441</a>
+                            </div>
+                            <p class="text-[11px] text-gray-400">
+                                ให้บริการตลอด 24 ชั่วโมง เพื่อให้ข้อมูล และประสานงานพนักงานสอบสวนทั่วประเทศ
+                            </p>
+                            <a href="https://www.thaipoliceonline.go.th" target="_blank" class="block text-center py-2 bg-brand-surface hover:bg-gray-800 text-brand-accent text-xs rounded border border-brand-border font-bold">
+                                🔗 เว็บไซต์แจ้งความออนไลน์ (thaipoliceonline.go.th)
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Preserve Evidence -->
+                    <div class="bg-brand-surface/90 p-5 rounded-xl border border-red-800 hover:border-red-500 transition space-y-3 shadow-lg">
+                        <div class="flex justify-between items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-900/80 border border-red-500 text-red-300 flex items-center justify-center font-heading font-bold text-lg">
+                                3
+                            </div>
+                            <span class="text-[11px] font-mono text-red-400 bg-red-950 px-2 py-0.5 rounded border border-red-900">สำคัญที่สุด</span>
+                        </div>
+                        <h3 class="font-heading font-bold text-base text-white">แคปหลักฐาน ห้ามลบแชท!</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            บันทึกภาพหน้าจอหลักฐานทั้งหมดทันที การลบแชทจะทำให้คุณขาดพยานหลักฐานในการพิสูจน์เจตนาบริสุทธิ์ต่อตำรวจ
+                        </p>
+
+                        <div class="bg-brand-card p-3 rounded-lg border border-gray-700 text-xs space-y-1.5 text-gray-300">
+                            <div class="text-emerald-400 font-bold">ภาพที่ต้องแคปจอเก็บไว้:</div>
+                            <div class="text-[11px] text-gray-300">• โปรไฟล์และเบอร์โทรของผู้ติดต่อ/ว่าจ้าง</div>
+                            <div class="text-[11px] text-gray-300">• ข้อความสนทนาทั้งหมด (ตั้งแต่เริ่มต้น)</div>
+                            <div class="text-[11px] text-gray-300">• สลิปโอนเงิน / เลขบัญชีที่เกี่ยวข้องทั้งหมด</div>
+                            <div class="text-[11px] text-gray-300">• โพสต์ประกาศรับสมัครงาน / ข้อตกลง</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="pt-4 text-center border-t border-red-900/80">
+                    <button onclick="switchSection('main-wizard')" class="px-6 py-2.5 bg-brand-accent hover:bg-brand-accentHover text-gray-900 font-heading font-bold rounded-xl shadow transition">
+                        เสร็จสิ้นขั้นตอนเร่งด่วน -> เข้าสู่ประเมินประเภทบัญชี & ไทม์ไลน์เต็มรูปแบบ
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECTION 3: LEGAL STATEMENT DRAFT GENERATOR -->
+        <section id="sec-generator-mode" class="page-section hidden space-y-6">
+            
+            <div class="bg-brand-card p-5 rounded-2xl border border-brand-border space-y-2">
+                <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                    <span>📝</span> เครื่องมือสร้าง "หนังสือชี้แจงความบริสุทธิ์ใจ" (อัตโนมัติ)
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-300">
+                    กรอกข้อมูลเบื้องต้นด้านล่างเพื่อสร้างร่างหนังสือชี้แจง สำหรับนำไปยื่นต่อพนักงานสอบสวนหรือธนาคารเจ้าของบัญชี
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Input Form Grid -->
+                <div class="lg:col-span-5 bg-brand-card p-5 rounded-2xl border border-brand-border space-y-4">
+                    <h3 class="font-heading font-bold text-sm text-brand-accent border-b border-gray-800 pb-2">
+                        กรอกข้อมูลของคุณ (ระบบไม่เก็บข้อมูลไว้)
+                    </h3>
+
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-1">ชื่อ-นามสกุล ของคุณ:</label>
+                            <input type="text" id="stmt-name" oninput="generateStatementText()" placeholder="เช่น นายสมชาย ใจบริสุทธิ์" class="w-full bg-brand-surface border border-gray-700 rounded-lg p-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-1">หมายเลขบัตรประชาชน:</label>
+                            <input type="text" id="stmt-idcard" oninput="generateStatementText()" placeholder="1-XXXX-XXXXX-XX-X" class="w-full bg-brand-surface border border-gray-700 rounded-lg p-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent font-mono">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-1">ชื่อธนาคารและเลขบัญชีที่ถูกระงับ:</label>
+                            <input type="text" id="stmt-bank" oninput="generateStatementText()" placeholder="เช่น ธ.กสิกรไทย เลขที่ 012-3-45678-9" class="w-full bg-brand-surface border border-gray-700 rounded-lg p-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-1">วันที่ทราบเรื่องถูกอายัด/ระงับ:</label>
+                            <input type="date" id="stmt-date" onchange="generateStatementText()" class="w-full bg-brand-surface border border-gray-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-accent">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-300 font-medium mb-1">เหตุผลและสรุปข้อเท็จจริง:</label>
+                            <textarea id="stmt-reason" oninput="generateStatementText()" rows="3" placeholder="เช่น ถูกผู้อื่นหลอกลวงเอาข้อมูลบัตรประชาชนไปเปิดบัญชีออนไลน์โดยข้าพเจ้าไม่มีส่วนรู้เห็น หรือ ถูกเพื่อนขอยืมบัญชีเพื่อรับเงินค่าสินค้า" class="w-full bg-brand-surface border border-gray-700 rounded-lg p-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-accent"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Document Output -->
+                <div class="lg:col-span-7 bg-brand-surface p-5 rounded-2xl border border-brand-border space-y-4 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                        <span class="text-xs font-mono text-gray-400">ตัวอย่างเอกสารร่างชี้แจง</span>
+                        <button onclick="copyStatementToClipboard()" class="px-3 py-1 bg-brand-accent hover:bg-brand-accentHover text-gray-900 font-heading font-bold text-xs rounded-lg transition flex items-center gap-1 shadow">
+                            <span>📋</span>
+                            <span>คัดลอกข้อความ</span>
+                        </button>
+                    </div>
+
+                    <!-- Printed Document Box -->
+                    <div id="statement-output" class="bg-gray-950 p-5 rounded-xl border border-gray-800 text-xs leading-relaxed font-sarabun text-gray-200 whitespace-pre-wrap select-all font-mono">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <p class="text-[11px] text-gray-400">
+                        * หมายเหตุ: สามารถคัดลอกข้อความนี้ไปปริ้นท์ใส่กระดาษ A4 เซ็นชื่อรับรอง แล้วยื่นประกอบบันทึกประจำวันต่อพนักงานสอบสวนได้ทันที
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SECTION 4: PROCESS FLOWCHART & DIRECTORY -->
+        <section id="sec-flowchart-mode" class="page-section hidden space-y-6">
+            
+            <div class="bg-brand-card p-5 rounded-2xl border border-brand-border space-y-2">
+                <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                    <span>🗺️</span> แผนผังเส้นทางการดำเนินคดี & สิทธิทางกฎหมาย
+                </h2>
+                <p class="text-xs sm:text-sm text-gray-300">
+                    ทำความเข้าใจความเชื่อมโยงระหว่าง "ตัวคุณ" -> "ธนาคารเจ้าของบัญชี" -> "พนักงานสอบสวน"
+                </p>
+            </div>
+
+            <!-- Flowchart Container -->
+            <div class="bg-brand-card p-6 rounded-2xl border border-brand-border space-y-6">
+                
+                <!-- Start Node -->
+                <div class="flex flex-col items-center">
+                    <div class="bg-brand-surface border-2 border-brand-accent p-4 rounded-xl text-center w-full max-w-xs shadow-lg">
+                        <div class="text-2xl">👤</div>
+                        <div class="font-heading font-bold text-white text-sm mt-1">ประชาชนผู้ถูกระงับบัญชี</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">ถูกระงับธุรกรรมธนาคาร / มีหมายเรียก</div>
+                    </div>
+                    <div class="w-0.5 h-6 bg-brand-accent"></div>
+                    <div class="text-brand-accent text-xs">▼</div>
+                </div>
+
+                <!-- Decision Split -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                    
+                    <!-- Route 1: Bank -->
+                    <div class="bg-brand-surface p-5 rounded-xl border border-emerald-800/80 space-y-3">
+                        <div class="flex items-center space-x-2 text-emerald-400 border-b border-gray-700 pb-2">
+                            <span class="text-xl">🏦</span>
+                            <span class="font-heading font-bold text-sm">เส้นทางที่ 1: ติดต่อธนาคาร</span>
+                        </div>
+                        <ul class="text-xs text-gray-300 space-y-2 list-disc pl-4">
+                            <li>ขออายัดและขอเลข AOC ID (กรณีถูกแจ้งอายัดสด)</li>
+                            <li>ขอเอกสาร Statement ย้อนหลังและหนังสือรับรองข้อมูลบัญชี</li>
+                            <li>ขอข้อมูลสถานีตำรวจและชื่อพนักงานสอบสวนเจ้าของคดี</li>
+                        </ul>
+                    </div>
+
+                    <!-- Route 2: Police -->
+                    <div class="bg-brand-surface p-5 rounded-xl border border-blue-800/80 space-y-3">
+                        <div class="flex items-center space-x-2 text-blue-400 border-b border-gray-700 pb-2">
+                            <span class="text-xl">👮</span>
+                            <span class="font-heading font-bold text-sm">เส้นทางที่ 2: ติดต่อพนักงานสอบสวน</span>
+                        </div>
+                        <ul class="text-xs text-gray-300 space-y-2 list-disc pl-4">
+                            <li>ยื่นหนังสือชี้แจงความบริสุทธิ์ใจพร้อมพยานหลักฐาน (แชท/สลิป)</li>
+                            <li>ให้การตามความจริงและขอรับ "สำเนาบันทึกประจำวัน / ใบแจ้งความ"</li>
+                            <li>ติดตามความคืบหน้าคดีเพื่อขอหนังสือปลดอายัดบัญชี</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- Final Outcome -->
+                <div class="flex flex-col items-center pt-2">
+                    <div class="w-0.5 h-6 bg-emerald-500"></div>
+                    <div class="text-emerald-500 text-xs">▼</div>
+                    <div class="bg-brand-surface border-2 border-emerald-500 p-4 rounded-xl text-center w-full max-w-sm shadow-xl">
+                        <div class="text-2xl">✅</div>
+                        <div class="font-heading font-bold text-emerald-400 text-sm mt-1">เป้าหมายสูงสุด (Final Goal)</div>
+                        <div class="text-[11px] text-gray-300 mt-1">
+                            พิสูจน์เจตนาบริสุทธิ์ -> ยุติการดำเนินคดีอาญา -> ปลดระงับบัญชีธนาคารสำเร็จ
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Law Reference Legend Box -->
+            <div class="bg-brand-card p-5 rounded-2xl border border-brand-border space-y-3">
+                <h3 class="font-heading font-bold text-sm text-white flex items-center gap-2">
+                    <span>⚖️</span> เกร็ดกฎหมายน่ารู้: พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-300 leading-relaxed">
+                    <div class="bg-brand-surface p-3.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="font-bold text-amber-300">มาตรา 9 (กรณีเป็นบัญชีม้า/เปิดให้ผู้อื่นใช้):</div>
+                        <p class="text-[11px]">
+                            ผู้ใดเปิดหรือยินยอมให้บุคคลอื่นใช้บัญชีเงินฝาก บัตรอิเล็กทรอนิกส์ หรือบัญชีเงินอิเล็กทรอนิกส์ของตน โดยมิได้มีเจตนาใช้เพื่อตนหรือเพื่อกิจการที่ตนเกี่ยวข้อง มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท หรือทั้งจำทั้งปรับ
+                        </p>
+                    </div>
+
+                    <div class="bg-brand-surface p-3.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="font-bold text-emerald-300">ความสำคัญของการพิสูจน์เจตนาบริสุทธิ์:</div>
+                        <p class="text-[11px]">
+                            หากคุณเป็นเหยื่อที่ถูกแอบอ้างข้อมูลโดยไม่ได้ยินยอม หรือถูกหลอกลวงโดยไม่มีเจตนาทุจริต การรีบแจ้งความลงบันทึกประจำวันและยื่นหลักฐานแชทจะถือเป็นพยานหลักฐานสำคัญในการหักล้างข้อกล่าวหาตามกฎหมาย
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Sticky Mobile Emergency Hotline Bar -->
+    <div class="md:hidden sticky bottom-0 z-40 bg-brand-surface border-t border-brand-border p-3 shadow-2xl">
+        <div class="flex items-center justify-between gap-2">
+            <a href="tel:1441" class="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-white font-heading font-bold text-xs rounded-xl transition text-center flex items-center justify-center gap-1.5 shadow-lg">
+                <span>📞</span>
+                <span>โทร 1441 แจ้งอายัดด่วน</span>
+            </a>
+            <button onclick="switchSection('generator-mode')" class="px-3.5 py-2.5 bg-brand-accent text-gray-900 font-heading font-bold text-xs rounded-xl transition text-center">
+                📝 สร้างหนังสือ
+            </button>
         </div>
-        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--gold)">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--gold)">วันที่ 7</div>
-          <div style="font-size:11.5px;color:var(--ink2);margin-top:2px">ติดตามผลการสอบทาน / การส่งเรื่องเข้า Prasan</div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-brand-surface border-t border-brand-border py-6 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-400 space-y-2">
+            <div class="flex justify-center items-center space-x-2">
+                <span class="font-heading font-bold text-white text-sm">ตั้งหลัก (Foothold)</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400 font-mono">v4.2 Citizen Edition</span>
+            </div>
+            <p>คู่มือทางกฎหมายและระบบนำทางขั้นตอนสำหรับประชาชนผู้ถูกกล่าวหาเรื่องบัญชีม้า</p>
+            <p class="text-[11px] text-gray-500">
+                Foothold (ตั้งหลัก) &copy; 2026 Nakarin Sakunthai. Released under the <a href="LICENSE" target="_blank" class="text-brand-accent underline">MIT License</a>.
+            </p>
         </div>
-        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--card-line)">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--mut)">วันที่ 15</div>
-          <div style="font-size:11.5px;color:var(--mut);margin-top:2px">ธนาคารสรุปรายงาน ปปง. (ตามเกณฑ์ 15 วัน)</div>
-        </div>
-        <div style="flex:1;min-width:110px;background:#f5efe2;padding:10px;border-radius:4px;border-left:3px solid var(--card-line)">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--mut)">วันที่ 30</div>
-          <div style="font-size:11.5px;color:var(--mut);margin-top:2px">ครบกำหนดสรุปผลเพิกถอนชื่อ หรือยื่นขอความเป็นธรรม</div>
-        </div>
-      </div>
-    </div>
-    ${ev.length? `<div class="card pad" style="margin-top:14px"><div class="tl">${ev.map(x=>`<div class="tl-item"><div class="d">${esc(x.d)}</div><div class="e">${esc(x.e)}</div></div>`).join('')}</div></div>`
-      : `<div class="note">${iInfo}<div class="t">ยังไม่มีข้อมูลพอจะสร้างไทม์ไลน์ — ลองย้อนไปกรอกข้อเท็จจริงเพิ่ม</div></div>`}
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('facts')">แก้ข้อเท็จจริง</button>
-      <button class="btn btn-primary" onclick="markDone('timeline');go('docs')">เอกสารที่ต้องเตรียม ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenDocs(){
-  const isBank=STATUS[state.status].door==='bank';
-  const f=state.facts;
-  const common=[
-    ['บัตรประชาชนฉบับจริง','ใช้ยืนยันตัวตนที่สาขา/แนบสำเนาคำร้อง'],
-    ['โทรศัพท์ที่ใช้ SIM เบอร์ที่ลงทะเบียนกับธนาคาร','ธนาคารใช้ยืนยันตัวตน'],
-    ['สมุดบัญชี / ข้อมูลบัญชีที่ถูกระงับ','หรือหน้าจอแอปแสดงการระงับเพื่อยืนยันเลขบัญชี'],
-    ['เอกสารแสดงแหล่งที่มาของเงิน','สลิปเงินเดือน บัญชีรายรับ-รายจ่าย ใบเสร็จ/ออร์เดอร์ขายของ หลักฐานภาษี']
-  ];
-  const bank=[['ข้อความ/SMS หรือหนังสือแจ้งจากธนาคาร','เก็บต้นฉบับ ห้ามลบ'],
-    ['หลักฐานการติดต่อธนาคาร (ถ้าเคยไป)','วันที่ สาขา ผลที่ได้']];
-  const cs=[['สำเนาหมายอายัด / หมายเรียก / บันทึกแจ้งข้อหา (ถ้ามี)','เก็บฉบับจริงไว้'],
-    ['แชต/โฆษณาหางาน หรือหลักฐานว่าถูกหลอก (ถ้ามี)','เก็บต้นฉบับ ห้ามลบเด็ดขาด'],
-    ['บันทึกแจ้งความในฐานะผู้เสียหาย (ถ้าเคยแจ้ง)','พร้อมเลขรับแจ้งความ PCID']];
-    
-  if(f.isVictim) {
-    cs.push(['หลักฐานพฤติการณ์ถูกกักขัง/บังคับ (ถ้ามี)', 'ประวัติการโทรศัพท์โทรเข้า-ออก สัญญาณพิกัด GPS/Timeline Google Map']);
-  }
-  if(f.hasSummons) {
-    cs.push(['หมายเรียกพนักงานสอบสวนฉบับจริง', 'เพื่อใช้ยื่นแสดงตนต่อตำรวจใกล้บ้านหรือ สภ. ต้นเรื่อง']);
-  }
-  const list=[...common, ...(isBank?bank:cs)];
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 7 · เอกสารที่ต้องเตรียม</div>
-    <h1 class="q">เช็กลิสต์ก่อนไป${isBank?'ธนาคาร':'ยื่นเรื่อง/พบตำรวจ'}</h1>
-    <p class="lead">ติ๊กเมื่อเตรียมได้ — ครบยิ่งมาก เรื่องยิ่งเร็วและน่าเชื่อถือในชั้นศาล</p>
-    
-    <!-- Gap 6: Digital Evidence preservation checklist -->
-    <div class="note warn">${iWarn}
-      <div class="t">
-        <b>🚨 คำเตือนความปลอดภัยของพยานหลักฐานดิจิทัล:</b><br>
-        • ห้าม Factory Reset หรือลบแชต/ประวัติการโทรศัพท์โดยเด็ดขาด<br>
-        • แคปภาพหน้าจอและสำรองข้อมูลแชตเก็บไว้ใน Email หรือ Cloud ป้องกันข้อมูลสูญหาย
-      </div>
-    </div>
-
-    <div class="card pad" style="margin-top:18px">
-      ${list.map((x,i)=>`<label class="check"><input type="checkbox" id="ck${i}"><span><span class="ct">${x[0]}</span>${x[1]?`<span class="cs">${x[1]}</span>`:''}</span></label>`).join('')}
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('timeline')">ย้อนกลับ</button>
-      <button class="btn btn-primary" onclick="markDone('docs');go(STATUS[state.status].door==='case'?'prep':'petition')">ถัดไป ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenPrep(){
-  const pid = state.pattern;
-  const p = PATTERNS[pid] || PATTERNS.other;
-  const f = state.facts;
-  
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 8 · เตรียมพบตำรวจ</div>
-    <h1 class="q">ชุดเตรียมตัวสอบปากคำ (Prep Kit)</h1>
-    <p class="lead">สำหรับผู้ถูกกล่าวหาหรือผู้เสียหายในคดี เพื่อเตรียมพยานหลักฐานและแนวทางการตอบคำถามกับพนักงานสอบสวน</p>
-    
-    <!-- CCTV Warning -->
-    <div class="note warn">${iWarn}
-      <div class="t">
-        <b>⏰ ข้อจำกัดเวลาภาพวงจรปิด (CCTV):</b> เนื่องจากคดีเกี่ยวข้องกับการกักขัง/ข่มขู่ในสถานที่จริง ภาพ CCTV มักมีกำหนดลบภายใน <b>15 - 30 วันเท่านั้น</b> หากเหตุการณ์เพิ่งเกิดขึ้น ให้รีบขอหนังสือจาก พงส. เพื่อไปอายัด/ขอภาพวงจรปิดทันทีก่อนจะถูกเขียนทับ!
-      </div>
-    </div>
-
-    <!-- Legal Drafting Core Wording & Warnings -->
-    <h2 class="q">⚖️ ข้อแนะนำถ้อยคำแกนหลักและการใช้คำ (เพื่อต่อสู้คดี)</h2>
-    <div class="card pad" style="margin-top:12px; border-left: 4px solid var(--gold)">
-      <p style="margin:0 0 10px;font-weight:600;color:var(--navy)">ถ้อยคำแกนหลักที่ควรใช้ชี้แจงกับธนาคารหรือตำรวจ:</p>
-      <blockquote style="margin:0;padding:12px 15px;background:var(--notebg);border-radius:8px;font-style:italic;font-size:14px;line-height:1.75;color:var(--ink2)">
-        "ข้าพเจ้าไม่ปฏิเสธว่าบัญชีดังกล่าวเป็นบัญชีของข้าพเจ้า และมีรายการเงินผ่านบัญชีจริง แต่ขอยืนยันว่าบัญชีดังกล่าวถูกกลุ่มบุคคลอื่นนำไปใช้โดยมิชอบ ในช่วงเวลาที่ข้าพเจ้าถูกหลอกลวงให้สมัครงาน/ถูกบังคับควบคุมตัว ข้าพเจ้ามิได้มีส่วนรู้เห็น มิได้รับจ้าง มิได้รับเงินค่าตอบแทนหรือผลประโยชน์ใด ๆ จากการโอนเงินเหล่านี้ และไม่มีเจตนาทุจริตนำบัญชีไปให้ผู้อื่นใช้เป็นบัญชีม้าแต่ประการใด"
-      </blockquote>
-      
-      <p style="margin:15px 0 10px;font-weight:600;color:var(--warn)">คำพูดที่ควรหลีกเลี่ยง (หลีกเลี่ยงคำยอมรับสมัครใจ):</p>
-      <table style="width:100%;border-collapse:collapse;font-size:13.5px;line-height:1.6;margin-top:10px">
-        <thead>
-          <tr style="border-bottom:1px solid var(--card-line);background:#f5efe2">
-            <th style="padding:8px;text-align:left">❌ คำที่ควรหลีกเลี่ยง (เสี่ยงเสียรูปคดี)</th>
-            <th style="padding:8px;text-align:left">✅ คำที่ควรใช้แทน (ความจริงเชิงกฎหมาย)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;color:var(--warn)">"ผมให้เขาใช้บัญชี / ให้เช่าบัญชี"</td>
-            <td style="padding:8px;color:var(--sage);font-weight:600">"บัญชีถูกนำไปใช้โดยมิชอบ"</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;color:var(--warn)">"ผมยอมสแกนหน้าให้เขา"</td>
-            <td style="padding:8px;color:var(--sage);font-weight:600">"ถูกล่อลวง/บังคับให้สแกนใบหน้าในภาวะจำยอม"</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;color:var(--warn)">"ผมเปิดบัญชีม้า"</td>
-            <td style="padding:8px;color:var(--sage);font-weight:600">"ผมเปิดบัญชีสมัครงาน / เพื่อใช้งานปกติ"</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <td style="padding:8px;color:var(--warn)">"รับจ้างโอนเงิน"</td>
-            <td style="padding:8px;color:var(--sage);font-weight:600">"โอนเงินตามหน้าที่แอดมินที่ถูกหลอกจ้างงาน"</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Summons guide -->
-    <h2 class="q">⚠️ มีหมายเรียก แต่ไปพบตามนัดไม่ได้?</h2>
-    <div class="card pad" style="margin-top:12px">
-      <p style="margin:0;font-weight:600;color:var(--warn)">ห้ามเงียบหายหรือหลีกเลี่ยงเด็ดขาด! เพราะเสี่ยงถูกออก "หมายจับ" และเสียรูปคดี</p>
-      <ol style="margin:10px 0 0;padding-left:20px;line-height:1.75">
-        <li><b>โทรแจ้ง พงส. ทันที:</b> โทรไปยังสถานีตำรวจในหมายเรียก แจ้งเหตุผลจำเป็น (สุขภาพ/ค่าเดินทาง/ระยะทางไกล) เพื่อขอเลื่อนหรือนัดวันใหม่ (ส่วนใหญ่สามารถขอเลื่อนได้ 1-2 ครั้งหากแจ้งก่อน)</li>
-        <li><b>ขอสอบปากคำที่ สภ. ใกล้บ้าน:</b> แจ้งความประสงค์กับ พงส. เจ้าของคดีว่าสะดวกสอบปากคำผ่านสถานีตำรวจใกล้บ้าน (เรียกว่า "สอบสวนแทน" หรือ "ฝากสอบสวน") แล้วให้โอนสำนวนประสานงานกัน</li>
-        <li><b>ยื่นหนังสือชี้แจงความบริสุทธิ์:</b> หากไม่สามารถเดินทางไปได้จริงๆ ให้เขียนหนังสือชี้แจงข้อเท็จจริงพร้อมแนบหลักฐาน ส่งไปรษณีย์ตอบรับด่วนที่สุด (EMS) ไปยัง สภ. ต้นเรื่อง เพื่อแสดงความร่วมมือ</li>
-      </ol>
-    </div>
-
-    <!-- Digital Evidence Preservation -->
-    <h2 class="q">🔒 การเก็บรักษาหลักฐานดิจิทัล</h2>
-    <div class="note calm">${iCheck}
-      <div class="t">
-        <b>กฎเหล็กการอนุรักษ์หลักฐาน (Evidence Preservation):</b><br>
-        1. ❌ <b>ห้ามล้างเครื่อง (Factory Reset)</b> โทรศัพท์เด็ดขาด ข้อมูลที่ลบไป ตำรวจไซเบอร์สามารถกู้คืนทางนิติวิทยาศาสตร์ได้<br>
-        2. ❌ <b>ห้ามลบแชต / SMS / ประวัติการโทร</b> แม้จะถูกลบแล้วห้ามใช้แอปทำความสะอาดไฟล์เพิ่ม<br>
-        3. 📸 <b>แคปหน้าจอ (Screenshot)</b> ประวัติทุกอย่างไว้หลายๆ ที่ (ส่งเข้า Email หรือ Cloud) ป้องกันแชตถูกลบจากฝั่งคนร้าย
-      </div>
-    </div>
-
-    <!-- Checklist of questions by pattern -->
-    <h2 class="q">คำถามที่ท่านจะถูกถามแน่ๆ และคำแนะนำในการเตรียมตัว</h2>
-    <div class="card pad" style="margin-top:12px">
-      <h3 style="font-size:16px;margin:0 0 10px;font-family:var(--serif)">ชุดที่ 1: คำถามพื้นฐาน (ทุกเคส)</h3>
-      <ul style="margin:0;padding-left:20px;line-height:1.8">
-        <li>ท่านเปิดบัญชีธนาคารนี้เมื่อใด เพื่อวัตถุประสงค์อะไร? <span style="color:var(--mut)">(เตรียม: สัญญาเปิดบัญชี/วันเปิด)</span></li>
-        <li>ใครเป็นผู้ถือครองโทรศัพท์และใช้งานบัญชีนี้? <span style="color:var(--mut)">(เตรียม: บัญชีซิม/ประวัติการเปลี่ยนมือถือ)</span></li>
-        <li>ท่านตรวจพบว่าบัญชีถูกระงับได้อย่างไร? <span style="color:var(--mut)">(เตรียม: SMS/ประวัติการโอนเงินที่ล้มเหลว)</span></li>
-        <li>ท่านรู้จักหรือเกี่ยวข้องกับผู้เสียหายหรือไม่?</li>
-        <li>มีหลักฐานแสดงแหล่งที่มาของเงินในบัญชีหรือไม่? <span style="color:var(--mut)">(เตรียม: สลิปเงินเดือน, รายการเดินบัญชีย้อนหลัง)</span></li>
-      </ul>
-      
-      ${pid === 'job' ? `
-      <hr style="border:none;border-top:1px solid var(--card-line);margin:15px 0">
-      <h3 style="font-size:16px;margin:0 0 10px;font-family:var(--serif)">ชุดที่ 2: เคสถูกหลอกทำงาน/แอดมิน</h3>
-      <ul style="margin:0;padding-left:20px;line-height:1.8">
-        <li>ทำงานในตำแหน่งใด ใครเป็นคนมอบหมายงาน? <span style="color:var(--mut)">(เตรียม: แชตประวัติคุยกับคนประกาศงาน)</span></li>
-        <li>ทำไมยอมส่งมอบรหัส OTP หรือสแกนใบหน้าตามสั่ง? <span style="color:var(--mut)">(อธิบาย: ความกลัว/ความเข้าใจผิดว่าเป็นขั้นตอนสมัครงานปกติ)</span></li>
-        <li>ได้รับเงินเดือนหรือผลประโยชน์อื่นใดหรือไม่? <span style="color:var(--mut)">(เตรียม: Statement บัญชีอื่นที่รับเงินเดือน)</span></li>
-      </ul>
-      ` : ''}
-
-      ${pid === 'shop' ? `
-      <hr style="border:none;border-top:1px solid var(--card-line);margin:15px 0">
-      <h3 style="font-size:16px;margin:0 0 10px;font-family:var(--serif)">ชุดที่ 2: เคสค้าขายสุจริต</h3>
-      <ul style="margin:0;padding-left:20px;line-height:1.8">
-        <li>ขายสินค้า/บริการอะไร ช่องทางไหนบ้าง? <span style="color:var(--mut)">(เตรียม: ลิงก์หน้าร้าน, ทะเบียนพาณิชย์)</span></li>
-        <li>ชื่อผู้โอนเงินตรงกับชื่อลูกค้าที่สั่งซื้อหรือไม่? <span style="color:var(--mut)">(เตรียม: สลิปเทียบประวัติแชตสั่งสินค้า)</span></li>
-        <li>มีหลักฐานการจัดส่งสินค้าจริงหรือไม่? <span style="color:var(--mut)">(เตรียม: เลข Tracking, ใบส่งของ Flash/Kerry)</span></li>
-      </ul>
-      ` : ''}
-
-      ${pid === 'crypto' ? `
-      <hr style="border:none;border-top:1px solid var(--card-line);margin:15px 0">
-      <h3 style="font-size:16px;margin:0 0 10px;font-family:var(--serif)">ชุดที่ 2: เคสเทรดคริปโต P2P</h3>
-      <ul style="margin:0;padding-left:20px;line-height:1.8">
-        <li>ซื้อขายผ่าน Exchange ใด ได้ทำ KYC หรือไม่? <span style="color:var(--mut)">(เตรียม: ใบรับรอง KYC จาก Exchange)</span></li>
-        <li>ได้ทำการตรวจสอบชื่อสลิปโอนเงินกับชื่อผู้ใช้ Exchange หรือไม่? <span style="color:var(--mut)">(เตรียม: รูปเปรียบเทียบสลิปและข้อมูล P2P Order)</span></li>
-        <li>ธุรกรรมมีกำไรสูงผิดปกติวิสัยตลาดทั่วไปหรือไม่?</li>
-      </ul>
-      ` : ''}
-    </div>
-
-    <!-- Coerced Flow Indicator -->
-    <div class="note dark">
-      <div class="t">
-        <b>💡 กรณีถูกบังคับ/ควบคุมตัว/หน่วงเหนี่ยวกักขัง (เช่น เคสคุณนครินทร์):</b><br>
-        ท่านเป็น <b>"ผู้เสียหาย"</b> ในคดีอาญาฐานหน่วงเหนี่ยวกักขังและข่มขืนใจ ต้องยืนยันกับ พงส. ว่าไม่มีเจตนาทุจริต และขอให้ พงส. ตรวจพยานหลักฐานสถานที่ (CCTV โรงแรม/รีสอร์ท) และสัญญาณโทรศัพท์เพื่อยืนยันว่าท่านอยู่ภายใต้การควบคุมจริง
-      </div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('docs')">ย้อนกลับ</button>
-      <button class="btn btn-primary" onclick="markDone('prep');go('petition')">ไปร่างคำร้องต่อ ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenPetition(){
-  if (!state.facts.tone) {
-    state.facts.tone = STATUS[state.status].door === 'case' ? 'fairness' : 'edd';
-  }
-  
-  const f = state.facts; 
-  const statusLine = STATUS[state.status].label;
-  const tone = state.facts.tone;
-
-  let title = '';
-  let recipient = '';
-  let content = '';
-  let noteText = '';
-
-  if (tone === 'edd') {
-    title = `ขอทำกระบวนการตรวจสอบและพิสูจน์ความสุจริต (EDD) และขอเพิกถอนการระงับบัญชีชั่วคราว`;
-    recipient = `ผู้จัดการธนาคาร ${F(f.bank, 'ระบุชื่อธนาคาร')} สาขา ${F(f.addr ? f.addr.split(' ').pop() : '', 'ระบุสาขา')}`;
-    content = `         ตามที่บัญชีธนาคารของข้าพเจ้า ธนาคาร ${F(f.bank, 'ธนาคาร')} เลขที่บัญชี ${F(f.acct, 'เลขบัญชี')} ถูกจำกัดธุรกรรมชั่วคราวชี้วัดรหัสกลุ่ม "${esc(statusLine)}" นั้น
-
-         ข้าพเจ้ายินดีให้ความร่วมมือต่อนโยบายป้องกันภัยสถาบันการเงิน และใคร่ขอแสดงความบริสุทธิ์ใจโดยยื่นคำร้องขอเข้ากระบวนการตรวจสอบข้อมูลลูกค้าเพิ่มเติม (Enhanced Due Diligence - EDD) เพื่อพิสูจน์แหล่งที่มาของรายได้ พฤติกรรมการใช้บัญชี และการประกอบสัมมาอาชีพที่สุจริตของข้าพเจ้า
-
-         ข้าพเจ้าขอยืนยันว่าไม่ได้เป็นผู้ขาย ให้ยืม หรือให้ผู้อื่นเช่าใช้งานบัญชีนี้แต่อย่างใด พฤติการณ์โดยละเอียดข้าพเจ้าได้ชี้แจงในเอกสารแนบ "บันทึกชี้แจงพฤติการณ์แห่งคดี" และยินดีให้ธนาคารตรวจสอบเส้นทางเดินบัญชีย้อนหลังทั้งหมด
-
-         จึงเรียนมาเพื่อโปรดดำเนินการพิจารณาสอบสวนข้อมูล EDD และอนุมัติการยกเลิกมาตรการระงับการใช้บริการ หรือผ่อนปรนให้ข้าพเจ้ามีสิทธิใช้งานอย่างน้อย ๑ บัญชีดำรงชีพเพื่อบรรเทาความเดือดร้อนต่อไป`;
-    noteText = `โทน EDD (🟢) เหมาะสำหรับการติดต่อสาขาธนาคารโดยตรงเพื่อให้ข้อมูลเพื่อปลดมาตรการระงับ`;
-  } else if (tone === 'fairness') {
-    title = `ขอความอนุเคราะห์ตรวจสอบข้อเท็จจริงและขอความเป็นธรรมเพิกถอนการระงับบัญชี`;
-    recipient = `ผู้กำกับการสถานีตำรวจ ${F(f.station, 'ระบุ สน./สภ.')} (ผ่านพนักงานสอบสวนเจ้าของคดี)`;
-    content = `         ตามที่ข้าพเจ้า นาย/นาง/นางสาว ${F(f.name, 'ชื่อ–นามสกุล')} ถูกจำกัดสิทธิการใช้งานบัญชีเงินฝากธนาคาร ${F(f.bank, 'ธนาคาร')} เลขที่บัญชี ${F(f.acct, 'เลขบัญชี')} ชี้วัดเป็นรหัสกลุ่ม "${esc(statusLine)}" โดยมีการอ้างถึงความเกี่ยวพันกับเส้นทางเงินคดีเลขรับแจ้ง (Case ID) ${F(f.caseId, 'ระบุเลขคดี')} หรือเลขอ้างอิงธนาคาร ${F(f.bankRef, 'ระบุ Bank Ref')} นั้น
-
-         ข้าพเจ้าขอยืนยันอย่างหนักแน่นว่า ข้าพเจ้าเป็นผู้บริสุทธิ์ที่ตกเป็นเหยื่อกลุ่มมิจฉาชีพหลอกลวงให้ทำงานหรือควบคุมบังคับบัญชี ข้าพเจ้าไม่มีส่วนเกี่ยวข้อง เจตนาร่วม หรือได้รับประโยชน์จากเงินทุจริตในคดีแต่อย่างใด ปัจจุบันการระงับบัญชีแบบลูกโซ่ส่งผลให้บัญชีธนาคารอื่นของข้าพเจ้าถูกระงับไปด้วย ทำให้ไม่สามารถใช้ชีวิตประจำวันหรือทำธุรกรรมตามปกติได้เลยและเดือดร้อนอย่างแสนสาหัส
-
-         ข้าพเจ้าจึงใคร่ขอกราบเรียนขอความเป็นธรรมมายังท่าน โปรดช่วยเร่งรัดตรวจสอบปากคำพิจารณาพฤติการณ์แห่งคดีตามเอกสารแนบ และดำเนินการเสนอเรื่องขอเพิกถอนรายชื่อออกจากมาตรการอายัดบัญชีผ่านระบบ Prasan ต่อไป`;
-    noteText = `โทนขอความเป็นธรรม (🟡) เหมาะสำหรับยื่นกับพนักงานสอบสวน สน./สภ. เพื่อปลดคดีในระบบ Prasan`;
-  } else if (tone === 'complaint') {
-    title = `ร้องเรียนการระงับบัญชีเงินฝากโดยมิชอบด้วยกฎหมาย และขอสงวนสิทธิ์เรียกร้องค่าเสียหาย`;
-    recipient = `ผู้จัดการธนาคาร ${F(f.bank, 'ระบุชื่อธนาคาร')} สำนักงานใหญ่ (ผ่านผู้จัดการสาขา)`;
-    content = `         ข้าพเจ้า นาย/นาง/นางสาว ${F(f.name, 'ชื่อ–นามสกุล')} เป็นผู้ฝากเงินโดยสุจริตของธนาคาร ${F(f.bank, 'ธนาคาร')} เลขที่บัญชี ${F(f.acct, 'เลขบัญชี')} โดยปัจจุบันบัญชีดังกล่าวถูกระงับการใช้งานในกลุ่มรหัส "${esc(statusLine)}" นั้น
-
-         ข้าพเจ้าขอยืนยันว่าการที่ธนาคารระงับธุรกรรมการเงินและสิทธิการเข้าถึงทรัพย์สินของข้าพเจ้า โดยไม่ผ่านการตรวจสอบข้อเท็จจริงความเดือดร้อนของผู้ฝากเงินรายย่อยอย่างถี่ถ้วน เป็นการดำเนินการที่ไม่ได้มาตรฐาน กระทบสิทธิขั้นพื้นฐาน ทำให้ข้าพเจ้าไม่สามารถชำระหนี้สิน ขาดรายได้ในการครองชีพ และทำให้ธุรกิจหรือการทำสัมมาอาชีพได้รับความเสียหายจนเสื่อมเสียชื่อเสียงเป็นอย่างยิ่ง
-
-         ข้าพเจ้าจึงร้องเรียนเพื่อให้ธนาคารพิจารณาสิทธิและดำเนินการเพิกถอนการระงับบัญชีของข้าพเจ้าภายใน ๗ วัน นับแต่วันที่ได้รับหนังสือฉบับนี้ หากล่วงเลยเวลาแล้วยังไม่มีการตอบสนอง ข้าพเจ้าขอสงวนสิทธิ์ในการร้องเรียนเรื่องต่อผู้กำกับดูแล (ธนาคารแห่งประเทศไทย) และใช้หนังสือฉบับนี้เป็นหลักฐานประกอบคดีเรียกร้องค่าเสียหายทางแพ่งต่อธนาคารจนถึงที่สุด`;
-    noteText = `โทนร้องเรียน & สงวนสิทธิ์ (🔴) เหมาะใช้ยื่นกรณีทำ EDD แล้วไม่คืบหน้า หรือต้องการร้องเรียนเอาผิดสถาบันการเงิน`;
-  } else {
-    title = `หนังสือขอทราบเหตุ ขอความเป็นธรรม ขอเร่งรัดการสอบสวน และแจ้งสงวนสิทธิดำเนินคดีตามกฎหมาย`;
-    recipient = `ผู้กำกับการสถานีตำรวจ ${F(f.station, 'ระบุ สน./สภ.')} (ผ่านพนักงานสอบสวนเจ้าของคดี)`;
-    content = `         ตามที่ข้าพเจ้า นาย/นาง/นางสาว ${F(f.name, 'ชื่อ–นามสกุล')} เลขประจำตัวประชาชน ${F(f.idcard, 'เลขบัตรประชาชน')} ถูกระงับ/อายัดบัญชีเงินฝากธนาคาร ${F(f.bank, 'ธนาคาร')} เลขที่บัญชี ${F(f.acct, 'เลขบัญชี')} เกี่ยวเนื่องกับคดีหมายเลข ${F(f.caseId, 'ระบุเลขคดี')} นั้น
-
-         ข้าพเจ้าขอยืนยันว่า ข้าพเจ้าเป็นผู้ประกอบอาชีพสุจริต มิได้มีส่วนเกี่ยวข้องกับการกระทำความผิดอาญาแต่อย่างใด ที่ผ่านมาข้าพเจ้าได้พยายามประสานงานขอเจรจาเพื่อแสดงความบริสุทธิ์ใจ แต่คู่กรณี/ผู้แจ้งความปฏิเสธการติดต่อพูดคุย หรือเรียกร้องผลประโยชน์อันมิชอบเกินกว่าความเสียหายจริง ข้าพเจ้าจึงมีความจำเป็นต้องขอยกเลิกการติดต่อเจรจาปากเปล่าทุกช่องทาง และขอเข้าสู่กระบวนการทางกฎหมายเป็นลายลักษณ์อักษร ๑๐๐% นับแต่นี้เป็นต้นไป
-
-         ข้าพเจ้าจึงขอยื่นหนังสือฉบับนี้ เพื่อขอความอนุเคราะห์จากท่านดำเนินการ ดังต่อไปนี้:
-         ๑. ขอทราบเหตุผล และฐานอำนาจทางกฎหมายในการอายัด/ระงับบัญชี (ตาม ป.วิ.อาญา มาตรา ๑๓๒ หรือ พ.ร.ก. อาชญากรรมทางเทคโนโลยีฯ) พร้อมขอสำเนาคำสั่งอายัดเพื่อตรวจสอบสิทธิตามกฎหมาย
-         ๒. ขอให้พนักงานสอบสวนรวบรวมพยานหลักฐานและบันทึกปากคำของข้าพเจ้าเข้าสู่สำนวนสอบสวนเพื่อพิสูจน์ความบริสุทธิ์ ตาม ป.วิ.อาญา มาตรา ๑๓๑
-         ๓. ขอพิจารณาเพิกถอนการอายัด หรือถอนการอายัดเฉพาะส่วนที่ไม่เกี่ยวข้องกับเหตุในคดี เพื่อบรรเทาความเดือดร้อนในการดำรงชีพ
-         ๔. ขอเร่งรัดสรุปสำนวนการสอบสวน ทำความเห็นสั่งคดี (สั่งฟ้องหรือสั่งไม่ฟ้อง) เสนอต่อพนักงานอัยการโดยเร็ว
-
-         ข้อแจ้งสงวนสิทธิทางกฎหมาย: ข้าพเจ้าขอแจ้งให้ทราบว่า หากผลการสอบสวนและการพิจารณาคดีปรากฏว่า ข้าพเจ้าเป็นผู้บริสุทธิ์ พนักงานอัยการมีคำสั่งไม่ฟ้อง หรือศาลมีคำสั่งยกฟ้อง ข้าพเจ้าขอสงวนสิทธิเต็มที่ในการดำเนินคดีอาญาและแพ่งต่อผู้แจ้งความ/คู่กรณี ในข้อหาแจ้งข้อความอันเป็นเท็จแก่เจ้าพนักงาน (ป.อาญา ม.๑๓๗), แจ้งความเท็จเกี่ยวกับความผิดอาญา (ม.๑๗๒), ฟ้องเท็จ (ม.๑๗๕), เบิกความเท็จ (ม.๑๗๗) รวมตลอดถึงการฟ้องเรียกค่าเสียหายทางแพ่ง และการดำเนินคดีตาม ป.อาญา มาตรา ๑๕๗ ต่อเจ้าพนักงานหากมีการละเว้นการปฏิบัติหน้าที่โดยมิชอบ`;
-    noteText = `โทนยื่นเป็นหนังสือ 100% (⚖️) เหมาะสำหรับกรณีตำรวจเงียบ หรือผู้เสียหายไม่ยอมเจรจา/เรียกเงินเกินจริง ใช้เพื่อเร่งรัดคดี อ้าง ม.131 และแจ้งเตือนการฟ้องกลับ`;
-  }
-
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 9 · คำร้องแบบฟอร์มชี้แจง</div>
-    <h1 class="q">ยกร่างคำร้องชี้แจง</h1>
-    <p class="lead">ระบบร่างจดหมายตามหลักวิชาชีพกฎหมายจากสกิลไทย — เลือกโทนที่เหมาะสมกับสถานการณ์ของคุณด้านล่าง</p>
-
-    <!-- Tone Selector -->
-    <div style="margin: 18px 0 20px;" class="no-print">
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn ${tone === 'edd' ? 'btn-primary' : 'btn-ghost'}" onclick="state.facts.tone='edd';render()" style="padding:10px 16px;font-size:14px">
-          🟢 โทน EDD (ขอตรวจสอบกับธนาคาร)
-        </button>
-        <button class="btn ${tone === 'fairness' ? 'btn-primary' : 'btn-ghost'}" onclick="state.facts.tone='fairness';render()" style="padding:10px 16px;font-size:14px">
-          🟡 โทนขอความเป็นธรรม (ส่งตำรวจ)
-        </button>
-        <button class="btn ${tone === 'complaint' ? 'btn-primary' : 'btn-ghost'}" onclick="state.facts.tone='complaint';render()" style="padding:10px 16px;font-size:14px">
-          🔴 โทนร้องเรียน & สงวนสิทธิ์ (เอาผิดธนาคาร)
-        </button>
-        <button class="btn ${tone === 'formal_notice' ? 'btn-primary' : 'btn-ghost'}" onclick="state.facts.tone='formal_notice';render()" style="padding:10px 16px;font-size:14px">
-          ⚖️ โทนยื่นหนังสือเป็นลายลักษณ์อักษร (ตำรวจเงียบ/ผู้เสียหายไม่เจรจา & สงวนสิทธิ์ฟ้องกลับ)
-        </button>
-      </div>
-    </div>
-
-    <div class="doc" id="petition"><div class="rt">เขียนที่ ${F(f.addr, 'สถานที่เขียนจดหมาย')}
-วันที่ ........ เดือน .......... พ.ศ. ........</div>
-
-<b>เรื่อง</b>  ${esc(title)}
-<b>เรียน</b>  ${esc(recipient)}
-<b>อ้างถึง</b> บัญชีธนาคารเลขที่ ${F(f.acct, 'เลขบัญชี')} รหัสกลุ่ม ${esc(statusLine)}
-<b>สิ่งที่ส่งมาด้วย</b> บันทึกชี้แจงพฤติการณ์แห่งคดี
-
-         ข้าพเจ้า ${F(f.name,'ชื่อ–นามสกุล')} เลขประจำตัวประชาชน ${F(f.idcard,'เลขบัตรประชาชน 13 หลัก')}
-ที่อยู่ ${F(f.addr,'ที่อยู่ตามทะเบียนบ้าน/ปัจจุบัน')} โทรศัพท์ ${F(f.phone,'เบอร์โทรศัพท์ติดต่อ')}
-
-${content}
-
-<div class="center">ขอแสดงความนับถือ
-
-ลงชื่อ ........................................................
-( ${F(f.name,'ชื่อ–นามสกุล')} )</div></div>
-
-    <div class="note no-print">${iInfo}<div class="t"><b>คำแนะนำ:</b> ${esc(noteText)} (ร่างนี้เป็นแบบคำเสนอเบื้องต้น ควรลงนามและยื่นแนบพร้อมบันทึกพฤติการณ์แห่งคดีในหน้าถัดไป)</div></div>
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go(STATUS[state.status].door==='case'?'prep':'docs')">ย้อนกลับ</button>
-      <button class="btn btn-ghost" onclick="window.print()">พิมพ์ / บันทึก PDF
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
-      </button>
-      <button class="btn btn-primary" onclick="markDone('petition');go(STATUS[state.status].door==='case'?'download':'next')">ขั้นสุดท้าย: ส่งต่อ ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenNext(){
-  const isBank = state.status ? STATUS[state.status].door==='bank' : true;
-  
-  // F2: Per-bank rules
-  const bankRules = `
-    <h2 class="q">🏦 แนวทางปฏิบัติเฉพาะรายธนาคาร (EDD)</h2>
-    <div class="card pad" style="margin-top:12px">
-      <ul style="margin:0;padding-left:20px;line-height:1.75">
-        <li><b>ธนาคารกรุงเทพ (BBL):</b> ต้องเข้าทำ EDD <b>ที่สาขาที่เปิดบัญชีเท่านั้น</b> (สาขาอื่นไม่สามารถดำเนินการได้) และจำเป็นต้องนำเอกสารแหล่งที่มาเงินที่น่าเชื่อถือไปยื่นชี้แจง</li>
-        <li><b>ธนาคารกรุงศรีอยุธยา (BAY):</b> ธนาคารที่เข้มงวดที่สุด หากโดน CFR/FR01 บัญชีจะถูกล็อคการทำธุรกรรมอิเล็กทรอนิกส์ทั้งหมดถาวร <b>ต้องไปทำธุรกรรมถอนเงินที่หน้าเคาน์เตอร์สาขาเท่านั้น</b> จนกว่าจะมีจดหมายส่งปลด CFR อย่างเป็นทางการจากตำรวจ</li>
-        <li><b>ธนาคารกสิกรไทย (KBank):</b> สามารถติดต่อยื่นเอกสารทบทวนสิทธิ์ได้ที่ทุกสาขา ระยะเวลาพิจารณารายการปลดปกติจะใช้เวลาประมาณ 5 - 7 วันทำการหลังส่งเอกสารครบ</li>
-      </ul>
-    </div>
-  `;
-
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 11 · ส่งต่อให้คนที่ช่วยได้จริง</div>
-    <h1 class="q">เตรียมครบแล้ว — เอาทั้งหมดไปยื่น</h1>
-    <p class="lead">ตั้งหลักช่วยถึงตรงนี้ ขั้นตัดสินใจและยื่นจริงเป็นของคุณ + คนที่มีอำนาจช่วย</p>
-
-    <!-- Gap 2: Online reporting vs official complaint -->
-    <div class="note warn">${iWarn}
-      <div class="t">
-        <b>🚨 คำเตือนสำคัญสำหรับการดำเนินคดี:</b> การแจ้งความออนไลน์ผ่าน thaipoliceonline.go.th <b>เป็นเพียงการลงบันทึกข้อมูลเบื้องต้นเท่านั้น ไม่ใช่การร้องทุกข์ดำเนินคดีอาญาอย่างเป็นทางการ</b> ท่านจำเป็นต้องนำหลักฐานและ Case ID เดินทางไปที่สถานีตำรวจ (สภ./สน.) เพื่อเข้าพบพนักงานสอบสวนและร้องทุกข์เพื่อออกหนังสืออายัด/ขอภาพวงจรปิด CCTV เสมอ
-      </div>
-    </div>
-
-    <h2 class="q">${isBank?'1) ไปธนาคาร (ทางหลักของคุณ)':'1) ยื่นเพิกถอนผ่านช่องทางตำรวจ'}</h2>
-    ${isBank? `
-    <div class="contact"><div class="ci">🏦</div><div><b>สาขาธนาคารเจ้าของบัญชี</b><div class="cd">นำเอกสารตามเช็กลิสต์ไปทำ EDD (ยืนยันตัวตนเข้มข้น) — ธนาคารเป็นผู้ปลดบัญชีม้าเทาอ่อน/ไม่ปรากฏสี</div></div></div>
-    <div class="contact"><div class="ci">☎️</div><div><b>ถ้าธนาคารปฏิเสธ/ปัดให้ไปตำรวจ</b><div class="cd">ร้องเรียน ธปท. (BOT) โทร 1213 · fcc@bot.or.th · services.bot.or.th — และสมาคมธนาคารไทย (TBA) 0 2558 7500</div></div></div>`
-    :`
-    <div class="contact"><div class="ci">🖥️</div><div><b>ระบบ Prasan (ออนไลน์)</b><div class="cd">Thaipoliceonline → "อายัดบัญชีธนาคาร Bank-Portal" → ยืนยันตัวด้วย ThaID → "ส่งคำขอเปิด HR03/ม้าเทา"</div></div></div>
-    <div class="contact"><div class="ci">📄</div><div><b>หรือยื่นหนังสือคำร้อง</b><div class="cd">นำคำร้องที่ร่าง + เอกสาร ยื่นต่อพนักงานสอบสวน หรือขอความเป็นธรรมต่อ ศปอส.ตร.</div></div></div>`}
-
-    ${isBank ? bankRules : ''}
-
-    <h2 class="q">2) ขอทนายฟรี ถ้าไม่มีเงินจ้าง</h2>
-    <div class="contact"><div class="ci">⚖️</div><div><b>สภาทนายความฯ — ทนายอาสา/ขอแรง</b><div class="cd">ให้คำปรึกษาและช่วยคดีฟรีสำหรับผู้มีรายได้น้อย/เข้าเกณฑ์ · โทร 1167</div></div></div>
-    <div class="contact"><div class="ci">🤝</div><div><b>กองทุนยุติธรรม กระทรวงยุติธรรม</b><div class="cd">ขอเงินช่วยค่าทนาย/ค่าประกันตัว · สายด่วน 1111 กด 77</div></div></div>
-    <div class="contact"><div class="ci">🛡️</div><div><b>สำนักงานอัยการคุ้มครองสิทธิฯ (สคช.)</b><div class="cd">ปรึกษากฎหมายเบื้องต้นฟรี</div></div></div>
-
-    <div class="note calm">${iCheck}<div class="t">ถ้าได้รับ <b>หมายเรียก</b> อย่าให้การโดยไม่มีทนายอยู่ด้วยถ้าไม่จำเป็น และตรวจ <b>กำหนดเวลา</b>ในหมายเสมอ</div></div>
-    <div class="note">${iInfo}<div class="t">ถ้าคุณมี<b>บัญชีนิติบุคคล (บริษัท/ห้างหุ้นส่วน)</b>ด้วย — การปลดบัญชีบุคคลกับนิติบุคคลต้อง<b>ยื่นขอปลดแยกกัน</b> และนิติบุคคลมีเงื่อนไขเพิ่ม (เช่น กรรมการที่อยู่ใน HR-03 ต้องยืนยันตัวตนต่อนายทะเบียน) ควรปรึกษาทนายสำหรับเคสนิติบุคคล</div></div>
-
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go(STATUS[state.status].door==='case'?'download':'petition')">ย้อนกลับ</button>
-      <button class="btn btn-ghost" onclick="shareLink()">แชร์ลิงก์ / QR Code <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;margin-bottom:-3px"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
-      <button class="btn btn-primary" onclick="window.print()">พิมพ์ชุดเอกสาร</button>
-    </div>
-
-    <div class="card pad" style="margin-top:20px;border-left:4px solid var(--navy)">
-      <h3 style="font-size:15px;margin:0 0 10px;font-family:var(--serif)">📋 สรุปรายการปฏิบัติและติดตามผล (Actionable Checklist)</h3>
-      <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5">
-        <div style="display:flex;align-items:flex-start;gap:8px">
-          <span style="color:#3f6d5f;font-weight:bold">✓</span>
-          <div><b>เอกสารพร้อมแล้ว:</b> ตรวจสอบและดาวน์โหลดแบบฟอร์มคำร้อง หรือคัดลอกบันทึกพฤติการณ์แห่งคดีเก็บไว้เป็นหลักฐาน</div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px">
-          <span style="color:#3f6d5f;font-weight:bold">✓</span>
-          <div><b>ยื่นเรื่องภายในกรอบเวลา:</b> เดินทางไปสาขาธนาคารเพื่อทำ EDD หรือเข้าพบพนักงานสอบสวนตาม สน./สภ. ทันที</div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px">
-          <span style="color:var(--gold);font-weight:bold">⏳</span>
-          <div><b>ติดตามสถานะคดี:</b> ใช้ Bank Case ID หรือ Police Case ID ติดตามผลผ่าน Call Center 1441 กด 2 หรือระบบ Prasan</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="disclaimer">ตั้งหลัก (Foothold) เป็นเครื่องมือให้ข้อมูลและช่วยจัดเตรียมเอกสารเบื้องต้นเท่านั้น ไม่ใช่คำแนะนำทางกฎหมายและไม่แทนทนายความ · ข้อมูลกฎหมายอ้างอิง พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 และฉบับที่ 2 พ.ศ. 2568 ควรยืนยันฉบับล่าสุดกับทนายก่อนใช้จริง</div>
-  </div>`;
-}
-
-function screenDownload(){
-  const subcase = state.subcase || 'withdraw';
-  const subInfo = SUBCASES[subcase];
-  const f = state.facts;
-  const ev = buildTimeline();
-  
-  // Format timeline events for the statement attachment
-  const timelineStatements = ev.map((x, i) => `   - ${x.d}: ${x.e}`).join('\n');
-  
-  const factStatement = `บันทึกชี้แจงพฤติการณ์แห่งคดี (แนบท้ายหนังสือร้องเรียน)
-
-เขียนที่ ${f.addr || '............'}
-วันที่ ........ เดือน .......... พ.ศ. ........
-
-ข้าพเจ้า ${f.name || '............'} ขอเรียนชี้แจงรายละเอียดพฤติการณ์แห่งคดีและความสุจริตของข้าพเจ้า กรณีบัญชีธนาคาร ${f.bank || '............'} เลขที่บัญชี ${f.acct || '............'} ถูกระงับธุรกรรม ดังมีลำดับเหตุการณ์ข้อเท็จจริง ดังนี้:
-
-๑. ถ้อยคำยืนยันความสุจริต (Core Statement)
-ข้าพเจ้าไม่ปฏิเสธว่าบัญชีดังกล่าวเป็นบัญชีของข้าพเจ้า และมีรายการเงินผ่านบัญชีจริง แต่ขอยืนยันว่าบัญชีดังกล่าวถูกกลุ่มบุคคลอื่นนำไปใช้โดยมิชอบ ในช่วงเวลาที่ข้าพเจ้าถูกหลอกลวงให้สมัครงาน/ถูกบังคับควบคุมตัว ข้าพเจ้ามิได้มีส่วนรู้เห็น มิได้รับจ้าง มิได้รับเงินค่าตอบแทนหรือผลประโยชน์ใด ๆ จากการโอนเงินเหล่านี้ และไม่มีเจตนาทุจริตนำบัญชีไปให้ผู้อื่นใช้เป็นบัญชีม้าแต่ประการใด
-
-๒. ลำดับเหตุการณ์ตามวันเวลาเกิดเหตุ (Chronological Timeline):
-${timelineStatements || '   (ยังไม่มีข้อมูลไทม์ไลน์ที่กรอกในหน้าก่อนหน้า)'}
-
-๓. ข้อมูลการดำเนินการทางคดีและการติดต่อราชการ:
-ข้าพเจ้าได้ดำเนินการไปแจ้งความร้องทุกข์/ลงบันทึกประจำวันเป็นหลักฐานแสดงความบริสุทธิ์ใจไว้ที่ สถานีตำรวจ ${f.station || '............'} เลขที่รายงานคดี/Case ID ${f.caseId || '............'} และได้พยายามประสานงานทำกระบวนการตรวจสอบ EDD หรือขอใช้บัญชีดำรงชีพผ่านระบบตำรวจแล้ว
-
-ลงชื่อ ........................................................ ผู้ชี้แจง
-( ${f.name || '............'} )`;
-
-  const statusLine = state.status ? STATUS[state.status].label : 'ไม่ระบุกลุ่ม';
-  const policeAiPack = `=== แฟ้มประมวลผลข้อมูลส่งพนักงานสอบสวน / ระบบ AI (POLICE AI INTAKE PACK) ===
-วันที่จัดทำ: ${new Date().toLocaleDateString('th-TH')}
-ระบบอ้างอิง: Legal Safeguard v4.2 (Foothold)
-
-[1. ข้อมูลระบุตัวตนและคดี (CASE IDENTIFIERS)]
-- ชื่อ-นามสกุล ผู้ร้อง/ผู้ฝากเงิน: ${f.name || '-'}
-- เลขบัตรประชาชน: ${f.idcard || '-'}
-- เบอร์โทรศัพท์ติดต่อ: ${f.phone || '-'}
-- ที่อยู่ตามทะเบียนบ้าน/ปัจจุบัน: ${f.addr || '-'}
-- ธนาคารและเลขบัญชีที่ถูกระงับ: ${f.bank || '-'} (${f.acct || '-'})
-- รหัสกลุ่มความเสี่ยงระบบ: ${statusLine}
-- สถานีตำรวจต้นเรื่อง / เจ้าของคดี: ${f.station || '-'} (${f.officer || 'ไม่ระบุชื่อ พงส.'})
-- เลขที่อ้างอิงคดี (Case ID / Bank Ref): ${f.caseId || f.bankRef || '-'}
-
-[2. การประเมินประเภทและพฤติการณ์ (CASE CLASSIFICATION & ANCHORS)]
-- สถานการณ์ย่อย: ${subInfo.label}
-- ข้อพิสูจน์ความสุจริต 3 ประการ (Defense Anchors):
-  (1) ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย/ถูกหลอกลวงขณะเปิดบัญชี
-  (2) ไม่ได้รับผลประโยชน์หรือค่าตอบแทนทุจริตจากการโอนเงิน
-  (3) พยายามประสานงานแจ้งระงับ/แสดงตนเพื่อทำ EDD และเข้ากระบวนการทันทีที่ทราบเรื่อง
-
-[3. ลำดับไทม์ไลน์พยานหลักฐาน (CHRONOLOGICAL EVIDENCE TIMELINE)]
-${timelineStatements || '   (ไม่มีข้อมูลไทม์ไลน์)'}
-
-[4. ฐานอำนาจและข้อกฎหมายโต้แย้ง (STATUTORY REFERENCES)]
-- ป.วิ.อาญา มาตรา 131: การรวบรวมพยานหลักฐานเพื่อพิสูจน์ความบริสุทธิ์ของผู้ต้องหา
-- ป.วิ.อาญา มาตรา 132: การจำกัดขอบเขตการอายัดทรัพย์สินเฉพาะส่วนที่เกี่ยวข้อง
-- พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 (มาตรา 6/7)
-- ป.อาญา มาตรา 137, 172, 175, 177: ข้อแจ้งเตือนความเสี่ยงกรณีแจ้งความเท็จ/ฟ้องเท็จ
-========================================================================`;
-
-  return `<div class="screen">
-    <div class="eyebrow">ขั้น 10 · ดาวน์โหลดแบบฟอร์ม</div>
-    <h1 class="q">ดาวน์โหลดแบบฟอร์มและคัดลอกพฤติการณ์</h1>
-    <p class="lead">ระบบ Prasan และระเบียบ ศปอส.ตร. ใช้แบบฟอร์มคำร้องเหล่านี้ และคุณสามารถคัดลอก "บันทึกพฤติการณ์" ที่สร้างขึ้นอัติโนมัติตามหลักวิชาชีพด้านล่างเพื่อแนบไปด้วย</p>
-    
-    <div class="card pad" style="margin-top:18px">
-      <h3>📄 บันทึกชี้แจงพฤติการณ์แห่งคดี (แนบท้ายคำร้อง)</h3>
-      <p style="color:var(--mut)">เอกสารชี้แจงรายละเอียดตามหลักกฎหมายไทยที่สร้างอัตโนมัติจากข้อเท็จจริงของคุณ:</p>
-      <textarea readonly style="width:100%;height:220px;font-family:monospace;font-size:12.5px;padding:10px;background:#f9f9f9;border:1.5px solid var(--card-line);border-radius:8px;resize:vertical;line-height:1.5" onclick="this.select()">${esc(factStatement)}</textarea>
-      <p style="font-size:11.5px;color:var(--mut);margin-top:5px">💡 คลิกที่กล่องด้านบนเพื่อเลือกทั้งหมด แล้วกด Copy ไปวางในโปรแกรม Word หรือส่งในแชตได้ทันที</p>
-    </div>
-
-    <!-- Police AI Intake Pack Box -->
-    <div class="card pad" style="margin-top:18px; border-left: 4px solid var(--sage)">
-      <h3>🤖 แฟ้มประมวลผลข้อมูลส่ง พงส. / AI สติ (Police AI Intake Pack)</h3>
-      <p style="color:var(--mut)">ชุดข้อมูลดิจิทัลจัดเรียงโครงสร้างมาตรฐาน สำหรับก๊อปปี้ไปวางใน Line Bot AI ของตำรวจ (เช่น บอตสติ สน.คันนายาว) หรือส่งให้พนักงานสอบสวนเพื่อนำเข้าสำนวนคดีทันที:</p>
-      <textarea readonly style="width:100%;height:240px;font-family:monospace;font-size:12px;padding:10px;background:#f4f7f5;border:1.5px solid var(--sage);border-radius:8px;resize:vertical;line-height:1.5" onclick="this.select()">${esc(policeAiPack)}</textarea>
-      <p style="font-size:11.5px;color:var(--sage);margin-top:5px;font-weight:600">💡 คลิกเลือกทั้งหมด คัดลอกแล้วนำไปแปะในแชต Line ตำรวจ หรือพิมพ์แนบสำนวนสอบสวนได้เลย</p>
-    </div>
-
-    <!-- Official AMLO HR-03 Guideline Download -->
-    <div class="card pad" style="margin-top:18px; border-left: 4px solid var(--navy)">
-      <h3>🔑 เอกสารระเบียบราชการที่ต้องพกไปธนาคาร</h3>
-      <p style="color:var(--mut);margin-bottom:10px">พิมพ์ระเบียบ ปปง. (HR-03) เพื่อประกอบการเจรจาต่อหน้าเคาน์เตอร์กับเจ้าหน้าที่ที่ปัดความรับผิดชอบ:</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href="forms/amlo-hr03-guideline.pdf" target="_blank" style="text-decoration:none">📥 ดาวน์โหลดแนวทางปฏิบัติ ปปง. รหัส HR-03 (PDF)</a>
-      </div>
-    </div>
-
-    <div class="card pad" style="margin-top:18px">
-      <h3>📁 แบบฟอร์มประจำสถานการณ์ของคุณ: <b>${subInfo.label}</b></h3>
-      <p style="color:var(--mut)">คำร้องชี้แจงสถานการณ์ย่อยแบบทางการ:</p>
-      <div class="btn-row" style="margin-top:10px">
-        <a class="btn btn-primary" href="forms/${subInfo.form.replace('.pdf', '.docx')}" download style="text-decoration:none">📥 ดาวน์โหลดเทมเพลต Word (.docx)</a>
-      </div>
-    </div>
-
-    <h2 class="q">📂 รวมดาวน์โหลดเอกสารทั้งหมด</h2>
-    <div class="card pad" style="margin-top:12px">
-      <ul style="margin:0;padding-left:20px;line-height:2">
-        <li><b>⚖️ ชุดหนังสือทางกฎหมาย 4 ฉบับ (ตำรวจเงียบ / ผู้เสียหายไม่เจรจา & สงวนสิทธิ์ฟ้องกลับ):</b> 
-          <a href="LEGAL_ACTION_PACKAGE.md" target="_blank">อ่านรายละเอียดและคัดลอกร่าง (.md)</a>
-        </li>
-        <li><b>หนังสือขอ พงส.เพิกถอนรายชื่อม้าเทา:</b> 
-          <a href="forms/petition-revoke.docx" download>Word (.docx)</a> | 
-          <a href="forms/petition-revoke.pdf" download target="_blank">PDF (.pdf)</a>
-        </li>
-        <li><b>หนังสือขอความเป็นธรรมถึง ศปอส.ตร.:</b> 
-          <a href="forms/petition-fairness.docx" download>Word (.docx)</a> | 
-          <a href="forms/petition-fairness.pdf" download target="_blank">PDF (.pdf)</a>
-        </li>
-        <li><b>แบบร้องเรียนธนาคารปฏิเสธการทำ EDD:</b> 
-          <a href="forms/edd-complaint.docx" download>Word (.docx)</a> | 
-          <a href="forms/edd-complaint.pdf" download target="_blank">PDF (.pdf)</a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 6 sub-cases template downloads -->
-    <h2 class="q">💼 แบบบันทึกข้อความชี้แจง 6 กรณี (สำหรับพนักงานสอบสวนส่งระบบ Prasan)</h2>
-    <div class="card pad" style="margin-top:12px">
-      <table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;text-align:left">
-        <thead>
-          <tr style="border-bottom:1px solid var(--card-line)">
-            <th style="padding:6px">สถานการณ์คดี</th>
-            <th style="padding:6px">เทมเพลต Word</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${Object.entries(SUBCASES).map(([k,v]) => `
-            <tr style="border-bottom:1px solid var(--card-line)">
-              <td style="padding:6px;font-weight:600">${v.label}</td>
-              <td style="padding:6px"><a href="forms/${v.form.replace('.pdf', '.docx')}" download>ดาวน์โหลด .docx</a></td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-ghost" onclick="go('petition')">ย้อนกลับ</button>
-      <button class="btn btn-primary" onclick="markDone('download');go('next')">ไปขั้นตอนส่งต่อ ${arrow}</button>
-    </div>
-  </div>`;
-}
-
-function screenGlossary(){
-  const tab = state.glossaryTab || 'terms';
-  setTimeout(()=>{
-    const select = document.getElementById('glossary-tab-select');
-    if(select) {
-      select.value = tab;
-      select.addEventListener('change', e => {
-        state.glossaryTab = e.target.value;
-        render();
-      });
-    }
-  },0);
-
-  const contentMap = {
-    terms: `
-      <div class="card pad">
-        <ul style="margin:0;padding-left:15px;line-height:1.8">
-          <li><b>CFR:</b> Central Fraud Registry - ทะเบียนคดีทุจริตกลางของธนาคาร</li>
-          <li><b>AOC:</b> Anti-Online Fraud Center - ศูนย์ปฏิบัติการแก้ไขปัญหาอาชญากรรมออนไลน์ (สายด่วน 1441)</li>
-          <li><b>EDD:</b> Enhanced Due Diligence - กระบวนการตรวจสอบและยืนยันตัวตนความเสี่ยงสูงของลูกค้าที่สถาบันการเงิน</li>
-          <li><b>พงส.:</b> พนักงานสอบสวน</li>
-          <li><b>ศปอส.ตร.:</b> ศูนย์ปราบปรามอาชญากรรมทางเทคโนโลยีสารสนเทศ สำนักงานตำรวจแห่งชาติ (PCT)</li>
-          <li><b>ปปง.:</b> สำนักงานป้องกันและปราบปรามการฟอกเงิน</li>
-        </ul>
-      </div>
-    `,
-    contacts: `
-      <div class="card pad">
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div class="contact"><div class="ci">📞</div><div><b>สายด่วน AOC 1441</b><div class="cd">โทรได้ 24 ชั่วโมง เพื่ออายัด/ปลดอายัด เบอร์ติดต่อ AOC ตรง</div><a href="tel:1441" class="btn btn-primary btn-sm" style="display:inline-block;margin-top:5px;text-decoration:none;padding:4px 8px;font-size:12px;border-radius:4px;text-align:center">โทร 1441</a></div></div>
-          <div class="contact"><div class="ci">⚖️</div><div><b>สภาทนายความในพระบรมราชูปถัมภ์</b><div class="cd">ทนายความอาสาช่วยเหลือประชาชน โทร 1167</div><a href="tel:1167" class="btn btn-primary btn-sm" style="display:inline-block;margin-top:5px;text-decoration:none;padding:4px 8px;font-size:12px;border-radius:4px;text-align:center">โทร 1167</a></div></div>
-          <div class="contact"><div class="ci">🏦</div><div><b>ศูนย์คุ้มครองผู้ใช้บริการทางการเงิน (ธปท.)</b><div class="cd">ร้องเรียนการถูกปฏิเสธ EDD โทร 1213</div><a href="tel:1213" class="btn btn-primary btn-sm" style="display:inline-block;margin-top:5px;text-decoration:none;padding:4px 8px;font-size:12px;border-radius:4px;text-align:center">โทร 1213</a></div></div>
-        </div>
-      </div>
-    `
-  };
-
-  return `<div class="screen">
-    <div class="eyebrow">พจนานุกรมและรายชื่อติดต่อ</div>
-    <h1 class="q">📚 ศูนย์รวมข้อมูลช่วยเหลือ</h1>
-    <p class="lead">คำศัพท์และช่องทางติดต่อด่วนโดยไม่ต้องล็อคขั้นตอนการเดินเรื่อง</p>
-    
-    <div style="margin-bottom:15px">
-      <label style="font-weight:600;display:block;margin-bottom:5px">เลือกหมวดหมู่ข้อมูล:</label>
-      <select id="glossary-tab-select" style="width:100%;padding:10px;border-radius:6px;border:1px solid var(--card-line);font-size:16px;background:var(--card-bg);color:var(--text)">
-        <option value="terms">คำย่อและนิยามทางกฎหมาย</option>
-        <option value="contacts">เบอร์โทรและช่องทางติดต่อด่วน</option>
-      </select>
-    </div>
-
-    ${contentMap[tab]}
-
-    <div class="btn-row" style="margin-top:20px">
-      <button class="btn btn-ghost" onclick="go('entry')">กลับหน้าหลัก</button>
-    </div>
-  </div>`;
-}
-
-/* ===================== router ===================== */
-function render(){
-  renderNav();
-  const map={entry:screenEntry,triage:screenTriage,orient:screenOrient,subcase:screenSubcase,pattern:screenPattern,facts:screenFacts,
-             timeline:screenTimeline,docs:screenDocs,prep:screenPrep,petition:screenPetition,download:screenDownload,next:screenNext,glossary:screenGlossary};
-  screenEl.innerHTML=(map[state.step]||screenEntry)();
-}
-render();
-</script>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        // Data Store for Account Categories
+        const categoryDetails = {
+            lightGray: {
+                title: "⚪ เทาอ่อน - ไม่รู้ตัว (ผู้บริสุทธิ์/เหยื่อ)",
+                tagClass: "bg-emerald-950 text-emerald-300 border border-emerald-700",
+                name: "ผู้เสียหายที่ถูกแอบอ้างนำข้อมูลไปเปิดบัญชี (ไม่มีเจตนา)",
+                desc: "คุณคือเหยื่อของการถูกขโมยหรือแอบอ้างข้อมูลส่วนบุคคล สิ่งสำคัญที่สุดคือการแสดงเจตนาบริสุทธิ์โดยเร็วที่สุด และเตรียมหลักฐานที่พิสูจน์ได้ว่าคุณไม่ได้เป็นผู้เปิดบัญชีหรือทำธุรกรรมนั้นๆ",
+                dos: [
+                    "ไปแจ้งความลงบันทึกประจำวันระบุว่าถูกแอบอ้างนำข้อมูลไปเปิดบัญชี",
+                    "ขอหนังสือรับรองและอายัดทุกบัญชีกับธนาคารเจ้าของบัญชี",
+                    "ยื่นหนังสือบริสุทธิ์ใจต่อพนักงานสอบสวนพร้อมหลักฐานเอกสาร"
+                ],
+                donts: [
+                    "ห้ามลบแชท ประวัติการคุย หรือรีเซ็ตโทรศัพท์เด็ดขาด",
+                    "ห้ามยินยอมรับเงินชดเชยเพื่อจบลับๆ โดยไม่ผ่านตำรวจ",
+                    "ห้ามหลบหนีหรือปฏิเสธการเข้าพบพนักงานสอบสวนตามหมายเรียก"
+                ],
+                chartData: [90, 10] // High innocence probability, low criminal risk
+            },
+            lightBrown: {
+                title: "🟤 น้ำตาลอ่อน - รู้ตัวแต่ให้ใช้",
+                tagClass: "bg-amber-950 text-amber-300 border border-amber-800",
+                name: "ยินยอมให้ผู้อื่นใช้บัญชี (ได้รับค่าตอบแทน/มีประโยชน์)",
+                desc: "คุณเปิดบัญชีหรือมอบบัญชีให้ผู้อื่นนำไปใช้ โดยได้รับผลตอบแทน แม้ไม่ได้ร่วมกระทำความผิดในคดีฉ้อโกงหลัก แต่มีความเสี่ยงสูงที่จะตกเป็นผู้ต้องหาตาม พ.ร.ก. อาชญากรรมทางเทคโนโลยี มาตรา 9",
+                dos: [
+                    "เตรียมหลักฐานข้อความว่าจ้าง และสลิปโอนเงินค่าจ้างที่ได้รับ",
+                    "เข้าพบพนักงานสอบสวนเพื่อแสดงความบริสุทธิ์ใจว่าไม่ได้ร่วมฉ้อโกง",
+                    "ยินยอมให้ความร่วมมืออายัดและตรวจสอบบัญชี"
+                ],
+                donts: [
+                    "ห้ามโกหกหรือปิดบังพนักงานสอบสวนเรื่องเงินค่าตอบแทนที่ได้รับ",
+                    "ห้ามโอนย้ายเงินที่คงค้างในบัญชีออกไปเด็ดขาด",
+                    "ห้ามติดต่อผู้ว่าจ้างเพื่อทำลายหลักฐาน"
+                ],
+                chartData: [45, 55] // Medium innocence proof needed, moderate risk
+            },
+            darkGray: {
+                title: "🩶 เทาเข้ม - ไม่รู้ตัวแต่ควรระวัง",
+                tagClass: "bg-gray-800 text-gray-300 border border-gray-700",
+                name: "ให้เพื่อน/ญาติยืมบัญชีโดยถูกหลอกลวงวัตถุประสงค์",
+                desc: "คุณให้คนสนิทยืมบัญชีไปใช้งานโดยถูกหลอกว่านำไปใช้เรื่องสุจริต แต่กลับถูกนำไปใช้รับเงินผิดกฎหมาย ต้องเร่งรวบรวมหลักฐานบทสนทนาเพื่อพิสูจน์ว่าถูกหลอกเจตนา",
+                dos: [
+                    "รวบรวมแชทบทสนทนาเหตุผลที่ขอยืมบัญชีทั้งหมด",
+                    "รีบแจ้งความลงบันทึกประจำวันว่าถูกหลอกนำบัญชีไปใช้ผิดวัตถุประสงค์",
+                    "ติดต่อญาติ/เพื่อนผู้นั้นให้มาชี้แจงร่วมกัน"
+                ],
+                donts: [
+                    "ห้ามช่วยปกปิดความผิดให้เพื่อนหรือญาติที่นำบัญชีไปใช้",
+                    "ห้ามลบประวัติการสนทนาในไลน์/แชท",
+                    "ห้ามรับเงินส่วนแบ่งจากธุรกรรมต้องสงสัย"
+                ],
+                chartData: [70, 30] // Moderate-high innocence proof needed
+            },
+            darkBrown: {
+                title: "🟤 น้ำตาลเข้ม - รู้ตัวและใช้เอง",
+                tagClass: "bg-amber-950 text-amber-200 border border-amber-700",
+                name: "ทำหน้าที่โอนเงิน / กดเงินสดให้ผู้อื่นด้วยตนเอง",
+                desc: "คุณเป็นผู้ทำธุรกรรมกดเงินหรือโอนเงินให้ผู้อื่นตามคำสั่ง มีความเสี่ยงถูกแจ้งข้อหาร่วมกันฉ้อโกงประชาชนหรือฟอกเงิน ซึ่งมีอัตราโทษสูง",
+                dos: [
+                    "ปรึกษาทนายความหรือสภาทนายความก่อนเข้าให้การ",
+                    "รวบรวมหลักฐานคำสั่งการ สลิป และเส้นทางการส่งมอบเงินทั้งหมด",
+                    "ให้ความร่วมมือกับเจ้าหน้าที่เพื่อบรรเทาผลร้าย"
+                ],
+                donts: [
+                    "ห้ามหลบหนีหมายเรียกของพนักงานสอบสวน",
+                    "ห้ามทำลายโทรศัพท์มือถือหรือสมุดบัญชี",
+                    "ห้ามยักย้ายถ่ายเททรัพย์สิน"
+                ],
+                chartData: [20, 80] // Low innocence proof, high legal risk
+            },
+            black: {
+                title: "🖤 ดำ - เกี่ยวข้องกับขบวนการ",
+                name: "เปิดบัญชีม้าเป็นอาชีพ / สมาชิกแก๊งคอลเซ็นเตอร์",
+                tagClass: "bg-red-950 text-red-300 border border-red-800",
+                desc: "การเปิดบัญชีม้าเพื่อจำหน่ายหรือให้ผู้อื่นนำไปใช้กระทำผิด มีโทษจำคุกไม่เกิน 3 ปี หรือปรับไม่เกิน 300,000 บาท ตามกฎหมาย พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี",
+                dos: [
+                    "จัดหาทนายความเข้าร่วมรับฟังการสอบสวนตามสิทธิ",
+                    "ให้การตามความจริงเพื่อขอรับผลบรรเทาโทษทางอาญา",
+                    "เตรียมแนวทางเยียวยาชดใช้ค่าเสียหายแก่เหยื่อ"
+                ],
+                donts: [
+                    "ห้ามปฏิเสธข้อเท็จจริงที่มีพยานหลักฐานมัดตัวชัดเจน",
+                    "ห้ามยุ่งเหยิงกับพยานหลักฐานหรือข่มขู่ผู้เสียหาย",
+                    "ห้ามหลบหนีการดำเนินคดี"
+                ],
+                chartData: [5, 95] // Critical legal risk
+            }
+        };
+
+        let currentCategory = 'lightGray';
+        let riskChartInstance = null;
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            initGaugeChart();
+            generateStatementText();
+            updateChecklistProgress();
+        });
+
+        // Navigation Page Switcher
+        function switchSection(sectionKey) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
+            
+            // Reset nav buttons styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-accent', 'text-gray-900', 'font-bold', 'shadow');
+                btn.classList.add('bg-brand-card', 'text-gray-300');
+            });
+
+            // Show selected section
+            const targetSec = document.getElementById(`sec-${sectionKey}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            // Highlight nav button
+            const activeNav = document.getElementById(`nav-btn-${sectionKey.replace('-mode', '')}`);
+            if (activeNav) {
+                activeNav.classList.remove('bg-brand-card', 'text-gray-300');
+                activeNav.classList.add('bg-brand-accent', 'text-gray-900', 'font-bold', 'shadow');
+            }
+
+            // Scroll top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Account Risk Category Selection Logic
+        function selectCategory(catKey) {
+            currentCategory = catKey;
+            const data = categoryDetails[catKey];
+            if (!data) return;
+
+            // Update Active Class styling on Buttons
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-brand-accent', 'shadow-md');
+            });
+            const selectedBtn = document.getElementById(`cat-btn-${catKey}`);
+            if (selectedBtn) selectedBtn.classList.add('ring-2', 'ring-brand-accent', 'shadow-md');
+
+            // Update Analysis Text UI
+            document.getElementById('analysis-category-tag').innerText = data.title;
+            document.getElementById('analysis-category-tag').className = `text-xs font-bold px-2.5 py-0.5 rounded-full ${data.tagClass}`;
+            document.getElementById('analysis-title').innerText = data.name;
+            document.getElementById('analysis-desc').innerText = data.desc;
+
+            // Update Do's
+            const dosList = document.getElementById('analysis-dos');
+            dosList.innerHTML = '';
+            data.dos.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                dosList.appendChild(li);
+            });
+
+            // Update Don'ts
+            const dontsList = document.getElementById('analysis-donts');
+            dontsList.innerHTML = '';
+            data.donts.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                dontsList.appendChild(li);
+            });
+
+            // Update Chart Data
+            if (riskChartInstance) {
+                riskChartInstance.data.datasets[0].data = data.chartData;
+                riskChartInstance.update();
+            }
+        }
+
+        // Checklist Progress Tracker
+        function updateChecklistProgress() {
+            const checkboxes = document.querySelectorAll('#checklist-container input[type="checkbox"]');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => { if (cb.checked) checkedCount++; });
+
+            const total = checkboxes.length;
+            const percent = Math.round((checkedCount / total) * 100);
+
+            document.getElementById('doc-progress-bar').style.width = `${percent}%`;
+            document.getElementById('doc-counter').innerText = `${checkedCount} จาก ${total} เอกสารพร้อมแล้ว`;
+            document.getElementById('doc-percent-text').innerText = `${percent}%`;
+        }
+
+        // Statement Draft Generator Logic
+        function generateStatementText() {
+            const name = document.getElementById('stmt-name').value.trim() || "[ชื่อ-นามสกุล ของท่าน]";
+            const idCard = document.getElementById('stmt-idcard').value.trim() || "[หมายเลขบัตรประชาชน 13 หลัก]";
+            const bank = document.getElementById('stmt-bank').value.trim() || "[ชื่อธนาคาร และ เลขที่บัญชี]";
+            const rawDate = document.getElementById('stmt-date').value;
+            const dateStr = rawDate ? new Date(rawDate).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' }) : "[ระบุวันที่ทราบเรื่อง]";
+            const reason = document.getElementById('stmt-reason').value.trim() || "[ระบุเหตุผลและข้อเท็จจริง เช่น ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น]";
+
+            const outputText = 
+`หนังสือชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจ
+
+ทำที่: ............................................................................
+วันที่: ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+
+เรื่อง: ขอชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจกรณีบัญชีธนาคารถูกระงับ/อายัด
+เรียน: พนักงานสอบสวน / ผู้บริหารธนาคาร ${bank.split(' ')[0] || ''}
+
+ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard} 
+ขอทำหนังสือฉบับนี้ขึ้นเพื่อชี้แจงข้อเท็จจริงกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกดำเนินการระงับ/อายัดธุรกรรม เมื่อวันที่ ${dateStr}
+
+ข้าพเจ้าขอชี้แจงข้อเท็จจริงด้วยความบริสุทธิ์ใจ ดังนี้:
+${reason}
+
+ทั้งนี้ ข้าพเจ้าขอรับรองด้วยเกียรติว่า ข้าพเจ้ามิได้มีเจตนาทุจริต มิได้มีส่วนเกี่ยวข้องกับขบวนการอาชญากรรมทางเทคโนโลยี หรือการฉ้อโกงประชาชนใดๆ ทั้งสิ้น ข้าพเจ้ายินดีให้ความร่วมมือกับพนักงานสอบสวนและธนาคารในการตรวจสอบเส้นทางการเงิน เอกสารพยานหลักฐาน และยินดีเข้าให้การด้วยความบริสุทธิ์ใจทุกประการ
+
+จึงเรียนมาเพื่อโปรดทราบและพิจารณาให้ความความเป็นธรรมแก่ข้าพเจ้าด้วย
+
+ลงชื่อ........................................................ ผู้ชี้แจง
+( ${name} )
+โทรศัพท์: ....................................................`;
+
+            document.getElementById('statement-output').innerText = outputText;
+        }
+
+        // Copy Statement Text to Clipboard
+        function copyStatementToClipboard() {
+            const text = document.getElementById('statement-output').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("คัดลอกร่างหนังสือชี้แจงเรียบร้อยแล้ว! สามารถนำไปวางในแอปโน้ตหรือปริ้นท์ได้ทันที");
+            }).catch(err => {
+                alert("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาครอบดำและคัดลอกด้วยตนเอง");
+            });
+        }
+
+        // Initialize Dynamic Risk Polar Chart (Chart.js)
+        function initGaugeChart() {
+            Chart.defaults.font.family = 'Sarabun, sans-serif';
+            Chart.defaults.color = '#9ca3af';
+
+            const ctx = document.getElementById('riskGaugeChart').getContext('2d');
+            riskChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['โอกาสแสดงความบริสุทธิ์ใจ (%)', 'ความเสี่ยงทางกฎหมาย (%)'],
+                    datasets: [{
+                        data: [90, 10],
+                        backgroundColor: [
+                            '#66efac', // emerald
+                            '#ef4444'  // red
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#1f2937'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 10,
+                                font: { size: 11 },
+                                color: '#d1d5db'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
