@@ -117,7 +117,12 @@ def run_dashboard_tests(page, test_dir, is_mobile=False):
         page.locator('#historyModal .modal-close').click()
         page.wait_for_timeout(200)
 
-    # 10. Capture Screenshot
+    # 10. Test Police AI Pack Export
+    ai_btn = page.locator('button', has_text='Export แฟ้มส่ง พงส./AI')
+    assert ai_btn.is_visible(), "Police AI Pack export button should be visible in controls"
+    print("✓ 10. Police AI Intake Pack export button verified")
+
+    # 11. Capture Screenshot
     page.screenshot(path=os.path.join(test_dir, prefix + "dashboard_renders.png"), full_page=True)
     print("Captured: " + prefix + "dashboard_renders.png")
 

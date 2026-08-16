@@ -143,6 +143,7 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
   <div class="controls">
     <button class="btn btn-primary" onclick="addCase()">+ New Case</button>
     <button class="btn btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+    <button class="btn btn-secondary" onclick="exportPolicePack()">🤖 Export แฟ้มส่ง พงส./AI</button>
     <a href="LEGAL_ACTION_PACKAGE.md" target="_blank" class="btn btn-secondary" style="text-decoration:none">📜 ชุดหนังสือทางกฎหมาย 4 ฉบับ</a>
     <button class="btn btn-secondary" onclick="resetDemo()">🔄 Reset Demo</button>
   </div>
@@ -231,61 +232,67 @@ body { font-family: 'IBM Plex Sans Thai', -apple-system, sans-serif; background:
 
 <div class="toast" id="toast"></div>
 <script>
+function getRelDate(offsetDays) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return d.toISOString().split('T')[0];
+}
+
 const DEMO_CASES = [
   { 
     id: "ปปง. 1-00847-2569", 
     name: "M.P. Account Freeze", 
     type: "AMLO", 
-    deadline: "2026-08-05", 
+    deadline: getRelDate(3), 
     evidencePercent: 85, 
     petitionPercent: 67, 
     priority: "high", 
-    nextAction: "Submit FRO1 by Aug 5",
+    nextAction: "Submit FRO1 by deadline",
     statusLog: [
-      { date: "2026-08-01T14:30:00.000Z", note: "โทรสอบถาม 1441 — เจ้าหน้าที่แจ้งว่าอยู่ระหว่างพิจารณา คาดว่าทราบผลภายใน 5 วัน", updatedBy: "manual" },
-      { date: "2026-07-25T10:15:00.000Z", note: "ยื่นเอกสารหลักฐานเพิ่มเติมที่สำนักงาน ปปง.", updatedBy: "manual" }
+      { date: new Date(Date.now() - 2*86400000).toISOString(), note: "โทรสอบถาม 1441 — เจ้าหน้าที่แจ้งว่าอยู่ระหว่างพิจารณา คาดว่าทราบผลภายใน 5 วัน", updatedBy: "manual" },
+      { date: new Date(Date.now() - 7*86400000).toISOString(), note: "ยื่นเอกสารหลักฐานเพิ่มเติมที่สำนักงาน ปปง.", updatedBy: "manual" }
     ]
   },
   { 
     id: "ปปง. 1-00923-2569", 
     name: "Khlong Toei Co., Ltd", 
     type: "Prasan", 
-    deadline: "2026-08-08", 
+    deadline: getRelDate(5), 
     evidencePercent: 72, 
     petitionPercent: 50, 
     priority: "high", 
     nextAction: "Deliver CFR to Prasan",
     statusLog: [
-      { date: "2026-07-27T09:00:00.000Z", note: "เข้าพบพนักงานสอบสวน สภ.คลองเตย ยื่นหนังสือขอความเป็นธรรม", updatedBy: "manual" }
+      { date: new Date(Date.now() - 4*86400000).toISOString(), note: "เข้าพบพนักงานสอบสวน สภ.คลองเตย ยื่นหนังสือขอความเป็นธรรม", updatedBy: "manual" }
     ]
   },
   { 
     id: "ปปง. 1-00756-2569", 
     name: "P.K. Sole Proprietor", 
     type: "EDD", 
-    deadline: "2026-08-15", 
+    deadline: getRelDate(10), 
     evidencePercent: 58, 
     petitionPercent: 40, 
     priority: "medium", 
     nextAction: "Confirm EDD status via 1441",
     statusLog: [
-      { date: "2026-07-20T11:20:00.000Z", note: "ยื่นเรื่องทำ EDD กับสาขาธนาคารกรุงเทพ", updatedBy: "manual" }
+      { date: new Date(Date.now() - 10*86400000).toISOString(), note: "ยื่นเรื่องทำ EDD กับสาขาธนาคารกรุงเทพ", updatedBy: "manual" }
     ]
   },
-  { id: "ปปง. 1-00615-2569", name: "A.S. Joint Liability", type: "AMLO", deadline: "2026-08-19", evidencePercent: 45, petitionPercent: 25, priority: "medium", nextAction: "Collect 3 supporting docs", statusLog: [] },
-  { id: "ปปง. 1-00521-2569", name: "S.N. Unauthorized Use", type: "Prasan", deadline: "2026-08-23", evidencePercent: 62, petitionPercent: 25, priority: "medium", nextAction: "Await legal review", statusLog: [] },
-  { id: "ปปง. 1-00489-2569", name: "B.K. Dormant Account", type: "EDD", deadline: "2026-08-30", evidencePercent: 30, petitionPercent: 15, priority: "low", nextAction: "Start initial draft", statusLog: [] },
+  { id: "ปปง. 1-00615-2569", name: "A.S. Joint Liability", type: "AMLO", deadline: getRelDate(14), evidencePercent: 45, petitionPercent: 25, priority: "medium", nextAction: "Collect 3 supporting docs", statusLog: [] },
+  { id: "ปปง. 1-00521-2569", name: "S.N. Unauthorized Use", type: "Prasan", deadline: getRelDate(20), evidencePercent: 62, petitionPercent: 25, priority: "medium", nextAction: "Await legal review", statusLog: [] },
+  { id: "ปปง. 1-00489-2569", name: "B.K. Dormant Account", type: "EDD", deadline: getRelDate(30), evidencePercent: 30, petitionPercent: 15, priority: "low", nextAction: "Start initial draft", statusLog: [] },
   { 
     id: "ปปง. 1-00421-2569", 
     name: "T.M. Clearance", 
     type: "AMLO", 
-    deadline: "2026-08-08", 
+    deadline: getRelDate(45), 
     evidencePercent: 100, 
     petitionPercent: 100, 
     priority: "low", 
     nextAction: "Closed - Account unfrozen",
     statusLog: [
-      { date: "2026-07-30T16:00:00.000Z", note: "ธนาคารแจ้งปลดอายัดเรียบร้อยแล้ว บัญชีใช้งานได้ปกติ", updatedBy: "manual" }
+      { date: new Date(Date.now() - 12*86400000).toISOString(), note: "ธนาคารแจ้งปลดอายัดเรียบร้อยแล้ว บัญชีใช้งานได้ปกติ", updatedBy: "manual" }
     ]
   }
 ];
@@ -355,6 +362,7 @@ function renderDashboard() {
         ${freshness.isStale ? '<a href="tel:1441" class="cta-call-link">📞 โทร 1441</a>' : ''}
         <button class="btn-mini" onclick="openStatusForm('${safeId}')">📞 อัปเดตสถานะ</button>
         <button class="btn-mini-ghost" onclick="viewStatusHistory('${safeId}')">🕐 ประวัติ (${(c.statusLog || []).length})</button>
+        <button class="btn-mini-ghost" onclick="exportPolicePack('${safeId}')">🤖 แฟ้ม พงส.</button>
       </div>
 
       <div class="status-form" id="statusForm-${safeId}" style="display:none;">
@@ -476,6 +484,61 @@ function exportCSV() {
   link.click();
   document.body.removeChild(link);
   showToast('📥 ดาวน์โหลด CSV สำเร็จ (' + cases.length + ' คดี)');
+}
+
+function exportPolicePack(singleCaseId = null) {
+  const cases = JSON.parse(localStorage.getItem('cases') || '[]');
+  if (cases.length === 0) { showToast('ไม่มีคดีในระบบ'); return; }
+  
+  const targetCases = singleCaseId ? cases.filter(c => c.id === singleCaseId) : cases;
+  if (targetCases.length === 0) { showToast('ไม่พบข้อมูลคดี'); return; }
+
+  let txt = `========================================================================\n`;
+  txt += `🤖 แฟ้มประมวลผลข้อมูลคดีส่งพนักงานสอบสวน / ระบบ AI (POLICE AI INTAKE PACK)\n`;
+  txt += `ระบบอ้างอิง: Legal Safeguard v4.2 (Foothold Multi-Case Dashboard)\n`;
+  txt += `วันที่ส่งออก: ${new Date().toLocaleDateString('th-TH')} ${new Date().toLocaleTimeString('th-TH')}\n`;
+  txt += `จำนวนคดีในระบบ: ${targetCases.length} คดี\n`;
+  txt += `========================================================================\n\n`;
+
+  targetCases.forEach((c, idx) => {
+    const daysLeft = Math.ceil((new Date(c.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+    let statusText = '🟢 ON TRACK';
+    if (daysLeft < 0 || daysLeft <= 7) statusText = '🔴 URGENT';
+    else if (daysLeft <= 15) statusText = '🟡 AT RISK';
+
+    const latestLog = c.statusLog && c.statusLog.length > 0 ? c.statusLog[c.statusLog.length - 1] : null;
+    const latestNote = latestLog ? `${latestLog.note} (${new Date(latestLog.date).toLocaleDateString('th-TH')})` : 'ยังไม่มีบันทึก';
+
+    txt += `[คดีที่ ${idx + 1}: ${c.id}] ${c.name}\n`;
+    txt += `------------------------------------------------------------------------\n`;
+    txt += `- ประเภทคดี: ${c.type}\n`;
+    txt += `- ระดับความเร่งด่วน: ${c.priority.toUpperCase()} (${statusText})\n`;
+    txt += `- วันครบกำหนดตามระเบียบ: ${c.deadline} (คงเหลือ ${daysLeft} วัน)\n`;
+    txt += `- ความคืบหน้าพยานหลักฐาน: ${c.evidencePercent}%\n`;
+    txt += `- ความคืบหน้าคำร้อง/หนังสือ: ${c.petitionPercent}%\n`;
+    txt += `- การดำเนินการถัดไป (Next Action): ${c.nextAction}\n`;
+    txt += `- อัปเดตสถานะล่าสุด: ${latestNote}\n`;
+    txt += `- เอกสารแนบในสารบบ: ${(c.documents || []).join(', ') || 'ไม่มีเอกสาร'}\n`;
+    txt += `- ข้อพิสูจน์ความสุจริต: ตามหลัก ป.วิ.อาญา ม.131 (พิสูจน์สุจริต) และ ม.132 (จำกัดการอายัด)\n\n`;
+  });
+
+  txt += `========================================================================\n`;
+  txt += `ข้อแจ้งเตือนสิทธิทางกฎหมาย: ข้อมูลนี้ถูกจัดตั้งขึ้นด้วยระบบ Zero-Server Local State\n`;
+  txt += `เพื่อใช้ประกอบการยื่นหนังสือขอความเป็นธรรมต่อ พงส., 1441, ปปง., และระบบ AI สอบสวน\n`;
+  txt += `========================================================================\n`;
+
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  const fname = singleCaseId 
+    ? `Police_AI_Pack_${singleCaseId.replace(/[^a-zA-Z0-9-]/g, '_')}.txt`
+    : `Police_AI_Intake_Pack_All_${new Date().toISOString().split('T')[0]}.txt`;
+  link.setAttribute('download', fname);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast(`🤖 ดาวน์โหลดแฟ้มส่ง พงส. / AI สำเร็จ (${targetCases.length} คดี)`);
 }
 
 function resetDemo() {

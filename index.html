@@ -1318,10 +1318,40 @@ ${timelineStatements || '   (ยังไม่มีข้อมูลไทม
 ๓. ข้อมูลการดำเนินการทางคดีและการติดต่อราชการ:
 ข้าพเจ้าได้ดำเนินการไปแจ้งความร้องทุกข์/ลงบันทึกประจำวันเป็นหลักฐานแสดงความบริสุทธิ์ใจไว้ที่ สถานีตำรวจ ${f.station || '............'} เลขที่รายงานคดี/Case ID ${f.caseId || '............'} และได้พยายามประสานงานทำกระบวนการตรวจสอบ EDD หรือขอใช้บัญชีดำรงชีพผ่านระบบตำรวจแล้ว
 
-ข้าพเจ้าพร้อมที่จะให้ความร่วมมือกับเจ้าหน้าที่ทุกประการในการตรวจสอบเส้นทางเงินเพื่อพิสูจน์ความสุจริต
-
 ลงชื่อ ........................................................ ผู้ชี้แจง
 ( ${f.name || '............'} )`;
+
+  const statusLine = state.status ? STATUS[state.status].label : 'ไม่ระบุกลุ่ม';
+  const policeAiPack = `=== แฟ้มประมวลผลข้อมูลส่งพนักงานสอบสวน / ระบบ AI (POLICE AI INTAKE PACK) ===
+วันที่จัดทำ: ${new Date().toLocaleDateString('th-TH')}
+ระบบอ้างอิง: Legal Safeguard v4.2 (Foothold)
+
+[1. ข้อมูลระบุตัวตนและคดี (CASE IDENTIFIERS)]
+- ชื่อ-นามสกุล ผู้ร้อง/ผู้ฝากเงิน: ${f.name || '-'}
+- เลขบัตรประชาชน: ${f.idcard || '-'}
+- เบอร์โทรศัพท์ติดต่อ: ${f.phone || '-'}
+- ที่อยู่ตามทะเบียนบ้าน/ปัจจุบัน: ${f.addr || '-'}
+- ธนาคารและเลขบัญชีที่ถูกระงับ: ${f.bank || '-'} (${f.acct || '-'})
+- รหัสกลุ่มความเสี่ยงระบบ: ${statusLine}
+- สถานีตำรวจต้นเรื่อง / เจ้าของคดี: ${f.station || '-'} (${f.officer || 'ไม่ระบุชื่อ พงส.'})
+- เลขที่อ้างอิงคดี (Case ID / Bank Ref): ${f.caseId || f.bankRef || '-'}
+
+[2. การประเมินประเภทและพฤติการณ์ (CASE CLASSIFICATION & ANCHORS)]
+- สถานการณ์ย่อย: ${subInfo.label}
+- ข้อพิสูจน์ความสุจริต 3 ประการ (Defense Anchors):
+  (1) ขาดอำนาจควบคุมบัญชี/ถูกสวมรอย/ถูกหลอกลวงขณะเปิดบัญชี
+  (2) ไม่ได้รับผลประโยชน์หรือค่าตอบแทนทุจริตจากการโอนเงิน
+  (3) พยายามประสานงานแจ้งระงับ/แสดงตนเพื่อทำ EDD และเข้ากระบวนการทันทีที่ทราบเรื่อง
+
+[3. ลำดับไทม์ไลน์พยานหลักฐาน (CHRONOLOGICAL EVIDENCE TIMELINE)]
+${timelineStatements || '   (ไม่มีข้อมูลไทม์ไลน์)'}
+
+[4. ฐานอำนาจและข้อกฎหมายโต้แย้ง (STATUTORY REFERENCES)]
+- ป.วิ.อาญา มาตรา 131: การรวบรวมพยานหลักฐานเพื่อพิสูจน์ความบริสุทธิ์ของผู้ต้องหา
+- ป.วิ.อาญา มาตรา 132: การจำกัดขอบเขตการอายัดทรัพย์สินเฉพาะส่วนที่เกี่ยวข้อง
+- พ.ร.ก. มาตรการป้องกันและปราบปรามอาชญากรรมทางเทคโนโลยี พ.ศ. 2566 (มาตรา 6/7)
+- ป.อาญา มาตรา 137, 172, 175, 177: ข้อแจ้งเตือนความเสี่ยงกรณีแจ้งความเท็จ/ฟ้องเท็จ
+========================================================================`;
 
   return `<div class="screen">
     <div class="eyebrow">ขั้น 10 · ดาวน์โหลดแบบฟอร์ม</div>
@@ -1333,6 +1363,14 @@ ${timelineStatements || '   (ยังไม่มีข้อมูลไทม
       <p style="color:var(--mut)">เอกสารชี้แจงรายละเอียดตามหลักกฎหมายไทยที่สร้างอัตโนมัติจากข้อเท็จจริงของคุณ:</p>
       <textarea readonly style="width:100%;height:220px;font-family:monospace;font-size:12.5px;padding:10px;background:#f9f9f9;border:1.5px solid var(--card-line);border-radius:8px;resize:vertical;line-height:1.5" onclick="this.select()">${esc(factStatement)}</textarea>
       <p style="font-size:11.5px;color:var(--mut);margin-top:5px">💡 คลิกที่กล่องด้านบนเพื่อเลือกทั้งหมด แล้วกด Copy ไปวางในโปรแกรม Word หรือส่งในแชตได้ทันที</p>
+    </div>
+
+    <!-- Police AI Intake Pack Box -->
+    <div class="card pad" style="margin-top:18px; border-left: 4px solid var(--sage)">
+      <h3>🤖 แฟ้มประมวลผลข้อมูลส่ง พงส. / AI สติ (Police AI Intake Pack)</h3>
+      <p style="color:var(--mut)">ชุดข้อมูลดิจิทัลจัดเรียงโครงสร้างมาตรฐาน สำหรับก๊อปปี้ไปวางใน Line Bot AI ของตำรวจ (เช่น บอตสติ สน.คันนายาว) หรือส่งให้พนักงานสอบสวนเพื่อนำเข้าสำนวนคดีทันที:</p>
+      <textarea readonly style="width:100%;height:240px;font-family:monospace;font-size:12px;padding:10px;background:#f4f7f5;border:1.5px solid var(--sage);border-radius:8px;resize:vertical;line-height:1.5" onclick="this.select()">${esc(policeAiPack)}</textarea>
+      <p style="font-size:11.5px;color:var(--sage);margin-top:5px;font-weight:600">💡 คลิกเลือกทั้งหมด คัดลอกแล้วนำไปแปะในแชต Line ตำรวจ หรือพิมพ์แนบสำนวนสอบสวนได้เลย</p>
     </div>
 
     <!-- Official AMLO HR-03 Guideline Download -->
