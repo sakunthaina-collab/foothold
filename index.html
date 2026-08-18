@@ -630,18 +630,27 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: STATEMENT GENERATOR -->
+            <!-- SECTION 4: LEGAL PETITIONS & STATEMENT GENERATOR -->
             <section id="sec-generator-mode" class="page-section hidden">
                 <div class="card-panel">
-                    <h2 style="font-size:22px; margin-top:0;">📝 เครื่องมือสร้างหนังสือชี้แจงความบริสุทธิ์ใจ (อัตโนมัติ)</h2>
-                    <p style="color:var(--muted); font-size:13px;">กรอกข้อมูลเพื่อสร้างร่างหนังสือสำหรับนำไปยื่นต่อพนักงานสอบสวนหรือธนาคาร</p>
+                    <h2 style="font-size:22px; margin-top:0;">📝 เครื่องมือสร้างหนังสือทางกฎหมายอัตโนมัติ (4 ฉบับ)</h2>
+                    <p style="color:var(--muted); font-size:13px;">เลือกประเภทหนังสือทางกฎหมาย กรอกข้อมูลเพื่อสร้างหนังสือยื่นต่อพนักงานสอบสวนหรือธนาคารได้ทันที</p>
 
                     <div style="display:grid; grid-template-columns:1fr 1.2fr; gap:24px; margin-top:20px;">
                         <!-- Input Form -->
                         <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line);">
                             <div style="display:flex; flex-direction:column; gap:12px; font-size:12px;">
                                 <div>
-                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ชื่อ-นามสกุล:</label>
+                                    <label style="display:block; color:var(--gold); font-weight:bold; margin-bottom:4px;">เลือกประเภทหนังสือทางกฎหมายที่ต้องการสร้าง:</label>
+                                    <select id="stmt-type" onchange="generateStatementText()" style="width:100%; padding:10px 12px; background:var(--navy-2); border:1px solid var(--gold); border-radius:8px; color:var(--ink); font-size:13px; font-weight:bold;">
+                                        <option value="unfreeze" selected>📜 หนังสือขอปลดอายัด/ระงับบัญชี (หรือปลดเฉพาะส่วนที่ไม่เกี่ยวข้อง) (ม.132)</option>
+                                        <option value="innocence">📝 หนังสือชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจ</option>
+                                        <option value="inquiry">🏛️ หนังสือขอทราบเหตุและฐานอำนาจในการอายัด/ระงับบัญชี</option>
+                                        <option value="expedite">⏱️ หนังสือขอเร่งรัดผลการสอบสวนและขอทราบความคืบหน้าคดี</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ชื่อ-นามสกุล ของท่าน:</label>
                                     <input type="text" id="stmt-name" oninput="generateStatementText()" placeholder="นายสมชาย ใจบริสุทธิ์" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
                                 </div>
                                 <div>
@@ -649,12 +658,20 @@
                                     <input type="text" id="stmt-idcard" oninput="generateStatementText()" placeholder="1-XXXX-XXXXX-XX-X" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-family:monospace;">
                                 </div>
                                 <div>
-                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ธนาคารและเลขบัญชี:</label>
-                                    <input type="text" id="stmt-bank" oninput="generateStatementText()" placeholder="ธ.กสิกรไทย 012-3-45678-9" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">สถานีตำรวจท้องที่เกิดเหตุ / พนักงานสอบสวนเจ้าของคดี:</label>
+                                    <input type="text" id="stmt-police" oninput="generateStatementText()" placeholder="สภ.เมืองนนทบุรี / สน.บางซื่อ" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
                                 </div>
                                 <div>
-                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ข้อเท็จจริงย่อ:</label>
-                                    <textarea id="stmt-reason" oninput="generateStatementText()" rows="3" placeholder="ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);"></textarea>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ธนาคารและเลขบัญชีที่ถูกอายัด:</label>
+                                    <input type="text" id="stmt-bank" oninput="generateStatementText()" placeholder="ธ.กสิกรไทย เลขที่ 012-3-45678-9" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ยอดเงินที่ถูกอายัด / ยอดความเสียหายจริงในคดี (ถ้าทราบ):</label>
+                                    <input type="text" id="stmt-amount" oninput="generateStatementText()" placeholder="เช่น ยอดอายัดในคดี 15,000 บาท (ยอดเงินคงเหลือในบัญชี 150,000 บาท)" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);">
+                                </div>
+                                <div>
+                                    <label style="display:block; color:var(--muted); margin-bottom:4px;">ข้อเท็จจริงสรุปเหตุผลความบริสุทธิ์ใจ:</label>
+                                    <textarea id="stmt-reason" oninput="generateStatementText()" rows="3" placeholder="ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น หรือ เป็นเงินออมส่วนตัวที่ไม่เกี่ยวข้องกับความเสียหายในคดี" style="width:100%; padding:8px 12px; background:var(--navy-2); border:1px solid var(--line); border-radius:8px; color:var(--ink);"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -663,10 +680,10 @@
                         <div style="background:var(--navy); padding:18px; border-radius:12px; border:1px solid var(--line); display:flex; flex-direction:column; justify-content:space-between;">
                             <div>
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <span style="font-size:12px; color:var(--muted);">ตัวอย่างหนังสือชี้แจง</span>
+                                    <span style="font-size:12px; color:var(--muted);">ตัวอย่างร่างหนังสือทางกฎหมายที่เลือก</span>
                                     <button onclick="copyStatementToClipboard()" class="primary-button" style="min-height:36px; padding:0 14px; font-size:12px;">📋 คัดลอกข้อความ</button>
                                 </div>
-                                <div id="statement-output" style="background:#090e14; padding:14px; border-radius:8px; font-family:monospace; font-size:11px; color:#d1d5db; white-space:pre-wrap; max-height:320px; overflow-y:auto;"></div>
+                                <div id="statement-output" style="background:#090e14; padding:14px; border-radius:8px; font-family:monospace; font-size:11px; color:#d1d5db; white-space:pre-wrap; max-height:380px; overflow-y:auto;"></div>
                             </div>
                             <div style="font-size:11px; color:var(--sage); margin-top:10px;">🛡️ ข้อมูลจะถูกบันทึกลงในอุปกรณ์นี้เท่านั้น</div>
                         </div>
@@ -820,22 +837,49 @@
         }
 
         function generateStatementText() {
-            const name = document.getElementById('stmt-name').value.trim() || "[ชื่อ-นามสกุล ของท่าน]";
-            const idCard = document.getElementById('stmt-idcard').value.trim() || "[หมายเลขบัตรประชาชน 13 หลัก]";
-            const bank = document.getElementById('stmt-bank').value.trim() || "[ชื่อธนาคาร และ เลขที่บัญชี]";
-            const reason = document.getElementById('stmt-reason').value.trim() || "[ระบุเหตุผลและข้อเท็จจริง เช่น ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น]";
+            const docType = document.getElementById('stmt-type')?.value || 'unfreeze';
+            const name = document.getElementById('stmt-name')?.value.trim() || "[ชื่อ-นามสกุล ของท่าน]";
+            const idCard = document.getElementById('stmt-idcard')?.value.trim() || "[หมายเลขบัตรประชาชน 13 หลัก]";
+            const police = document.getElementById('stmt-police')?.value.trim() || "[สถานีตำรวจท้องที่เกิดเหตุ / พนักงานสอบสวนเจ้าของคดี]";
+            const bank = document.getElementById('stmt-bank')?.value.trim() || "[ชื่อธนาคาร และ เลขที่บัญชีที่ถูกอายัด]";
+            const amount = document.getElementById('stmt-amount')?.value.trim() || "[ระบุยอดอายัด / ยอดเงินคงเหลือ]";
+            const reason = document.getElementById('stmt-reason')?.value.trim() || "[ระบุข้อเท็จจริง เช่น ถูกแอบอ้างนำข้อมูลไปเปิดบัญชีโดยข้าพเจ้าไม่มีส่วนรู้เห็น หรือ เป็นเงินออมส่วนตัวที่ไม่เกี่ยวข้อง]";
 
-            const outputText = 
-`หนังสือชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจ
+            const todayStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+            let outputText = "";
 
-ทำที่: ............................................................................
-วันที่: ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}
+            if (docType === 'unfreeze') {
+                outputText = 
+`เขียนที่: ............................................................................
+วันที่: ${todayStr}
 
-เรื่อง: ขอชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจกรณีบัญชีธนาคารถูกระงับ/อายัด
-เรียน: พนักงานสอบสวน / ผู้บริหารธนาคาร ${bank.split(' ')[0] || ''}
+เรื่อง: ขอให้ยกเลิกการอายัดบัญชีเงินฝากธนาคาร หรือถอนการอายัดเฉพาะส่วนที่ไม่เกี่ยวข้อง (ป.วิ.อาญา ม.132)
+เรียน: พนักงานสอบสวนเจ้าของคดี / ผู้กำกับการ ${police}
 
-ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard} 
-ขอทำหนังสือฉบับนี้ขึ้นเพื่อชี้แจงข้อเท็จจริงกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกดำเนินการระงับ/อายัดธุรกรรม
+ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard}
+ขอทำหนังสือฉบับนี้ยื่นต่อพนักงานสอบสวนเพื่อขอความเป็นธรรมและขอปลดการอายัดบัญชีเงินฝาก ดังความต่อไปนี้:
+
+ข้อ 1. ตามที่ ข้าพเจ้าเป็นเจ้าของบัญชีเงินฝากธนาคาร ${bank} ซึ่งถูกดำเนินการระงับ/อายัดการทำธุรกรรมตามการประสานงานของ ${police} นั้น
+
+ข้อ 2. ข้าพเจ้าขอเรียนว่า ข้าพเจ้าเป็นผู้ประกอบอาชีพสุจริต และมิได้มีส่วนเกี่ยวข้องกับการกระทำความผิดตามที่ถูกร้องเรียน ${reason}
+
+ข้อ 3. ตามประมวลกฎหมายวิธีพิจารณาความอาญา มาตรา 132 การอายัดทรัพย์สินต้องกระทำเฉพาะทรัพย์สินที่เกี่ยวกับความผิดเท่าที่จำเป็น การอายัดเงินในบัญชีทั้งหมดเกินกว่ายอดความเสียหายจริง (${amount}) ส่งผลให้ข้าพเจ้าได้รับความเดือดร้อนอย่างร้ายแรงในการดำรงชีวิต
+
+ข้าพเจ้าจึงขอความอนุเคราะห์จากพนักงานสอบสวน โปรดพิจารณามีคำสั่งยกเลิกการอายัดบัญชีเงินฝากของข้าพเจ้า หรือถอนการอายัดเฉพาะส่วนที่ไม่เกี่ยวข้องกับความเสียหายในคดีโดยเร็วด้วย
+
+ลงชื่อ........................................................ ผู้ร้อง / เจ้าของบัญชี
+( ${name} )
+โทรศัพท์: ....................................................`;
+            } else if (docType === 'innocence') {
+                outputText = 
+`เขียนที่: ............................................................................
+วันที่: ${todayStr}
+
+เรื่อง: ขอชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจกรณีบัญชีธนาคารถูกระงับ/อายัด (ป.วิ.อาญา ม.131)
+เรียน: พนักงานสอบสวนเจ้าของคดี / ผู้กำกับการ ${police}
+
+ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard}
+ขอทำหนังสือฉบับนี้ขึ้นเพื่อชี้แจงข้อเท็จจริงและแสดงความบริสุทธิ์ใจกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกดำเนินการระงับ/อายัดธุรกรรม
 
 ข้าพเจ้าขอชี้แจงข้อเท็จจริงด้วยความบริสุทธิ์ใจ ดังนี้:
 ${reason}
@@ -847,6 +891,45 @@ ${reason}
 ลงชื่อ........................................................ ผู้ชี้แจง
 ( ${name} )
 โทรศัพท์: ....................................................`;
+            } else if (docType === 'inquiry') {
+                outputText = 
+`เขียนที่: ............................................................................
+วันที่: ${todayStr}
+
+เรื่อง: ขอทราบเหตุผล ฐานอำนาจทางกฎหมายในการระงับ/อายัดบัญชีเงินฝากธนาคาร และขอสำเนาคำสั่งอายัด
+เรียน: พนักงานสอบสวนเจ้าของคดี / ผู้กำกับการ ${police}
+
+ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard}
+ขอทำหนังสือฉบับนี้ยื่นต่อพนักงานสอบสวนเพื่อขอทราบข้อมูลทางกฎหมายกรณีบัญชีเงินฝากธนาคาร ${bank} ถูกระงับ/อายัด ดังต่อไปนี้:
+
+1. ขอทราบฐานอำนาจตามกฎหมายที่ใช้ออกคำสั่งระงับหรืออายัดบัญชีเงินฝากของข้าพเจ้า (เช่น ป.วิ.อาญา มาตรา 132 หรือ พ.ร.ก.มาตรการป้องกันอาชญากรรมทางเทคโนโลยี พ.ศ. 2566)
+2. ขอทราบยอดเงินที่มีการแจ้งความหรืออายัดในคดีนี้ว่ามีจำนวนเท่าใด (${amount})
+3. ขอรับสำเนาคำสั่งหนังสือแจ้งอายัด หรือหนังสือประสานงานระงับบัญชีดังกล่าวเพื่อประกอบการสู้คดีและแสดงความบริสุทธิ์ใจ
+
+จึงเรียนมาเพื่อโปรดพิจารณาและแจ้งผลให้ข้าพเจ้าทราบเป็นลายลักษณ์อักษรภายใน 7 วันด้วย
+
+ลงชื่อ........................................................ ผู้ร้อง / เจ้าของบัญชี
+( ${name} )
+โทรศัพท์: ....................................................`;
+            } else if (docType === 'expedite') {
+                outputText = 
+`เขียนที่: ............................................................................
+วันที่: ${todayStr}
+
+เรื่อง: ขอเร่งรัดผลการสอบสวนและขอทราบความคืบหน้าการดำเนินคดี
+เรียน: พนักงานสอบสวนเจ้าของคดี / ผู้กำกับการ ${police}
+
+ข้าพเจ้า ${name} หมายเลขบัตรประจำตัวประชาชน ${idCard}
+ขอทำหนังสือฉบับนี้เพื่อขอสอบถามและติดตามความคืบหน้ากรณีบัญชีเงินฝากธนาคาร ${bank} ถูกระงับ/อายัดการทำธุรกรรม
+
+เนื่องจาก ข้าพเจ้าได้เคยยื่นหนังสือชี้แจงข้อเท็จจริงและหลักฐานแสดงความบริสุทธิ์ใจไปแล้ว แต่ปัจจุบันการสอบสวนยังไม่มีความคืบหน้า และบัญชียังถูกระงับอยู่อย่างต่อเนื่อง ส่งผลกระทบต่อภาระค่าใช้จ่ายในการดำรงชีวิตประจำวันอย่างร้ายแรง
+
+ข้าพเจ้าจึงขอความอนุเคราะห์จากพนักงานสอบสวน โปรดเร่งรัดสรุปสำนวนการสอบสวน หรือมีคำสั่งถอนการอายัดบัญชีเงินฝากของข้าพเจ้าโดยเร็วด้วย
+
+ลงชื่อ........................................................ ผู้ร้อง / เจ้าของบัญชี
+( ${name} )
+โทรศัพท์: ....................................................`;
+            }
 
             document.getElementById('statement-output').innerText = outputText;
         }

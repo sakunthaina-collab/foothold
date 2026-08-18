@@ -170,12 +170,11 @@ def run_test():
             page.on("pageerror", lambda err: console_errors.append(f"[{vp_name}] Uncaught Exception: {err.message}"))
             
             # Load page
-            page.goto(file_url)
             try:
-                page.wait_for_function("typeof go === 'function'", timeout=5000)
+                page.goto(file_url, wait_until="commit", timeout=10000)
             except Exception:
                 pass
-            page.wait_for_timeout(300)
+            page.wait_for_timeout(500)
             
             # Helper to take screenshot
             def take_screenshot(step_name):
