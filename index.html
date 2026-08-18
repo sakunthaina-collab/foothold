@@ -47,6 +47,8 @@
         a { color: inherit; text-decoration: none; }
         button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
         
+        .hidden { display: none !important; }
+        
         .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
         .app-frame { min-height: 100vh; overflow-x: hidden; background: radial-gradient(circle at 80% 8%, rgba(246,196,69,.09), transparent 29rem), var(--navy); }
         
@@ -267,6 +269,27 @@
                 <a href="javascript:void(0)" onclick="switchSection('flowchart-mode')">แผนผังคดี</a>
             </nav>
         </header>
+
+        <!-- STICKY SUB-HEADER NAVIGATION (Mobile & Desktop Tab Bar) -->
+        <div style="background:var(--navy-2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:90; box-shadow:0 4px 12px rgba(0,0,0,.3);">
+            <div class="container" style="display:flex; gap:8px; overflow-x:auto; padding:10px 0; scrollbar-width:none;">
+                <button id="tab-btn-main-wizard" onclick="switchSection('main-wizard')" class="nav-tab-btn primary-button" style="min-height:36px; padding:0 14px; font-size:12px; white-space:nowrap; shrink:0;">
+                    📱 Step 1: ประเมินความเสี่ยง
+                </button>
+                <button id="tab-btn-emergency-mode" onclick="switchSection('emergency-mode')" class="nav-tab-btn quiet-link" style="border:1px solid var(--red); color:var(--red); padding:0 14px; min-height:36px; border-radius:10px; font-size:12px; white-space:nowrap; background:rgba(232,93,82,.1); shrink:0;">
+                    🚨 3 ขั้นตอนเร่งด่วน
+                </button>
+                <button id="tab-btn-step3-mode" onclick="switchSection('step3-mode')" class="nav-tab-btn quiet-link" style="border:1px solid var(--gold); color:var(--gold); padding:0 14px; min-height:36px; border-radius:10px; font-size:12px; white-space:nowrap; background:rgba(246,196,69,.1); shrink:0;">
+                    📋 Step 3: สรุปเหตุการณ์ & เช็กลิสต์
+                </button>
+                <button id="tab-btn-generator-mode" onclick="switchSection('generator-mode')" class="nav-tab-btn quiet-link" style="border:1px solid var(--line); padding:0 14px; min-height:36px; border-radius:10px; font-size:12px; white-space:nowrap; shrink:0;">
+                    📝 สร้างหนังสือชี้แจง
+                </button>
+                <button id="tab-btn-flowchart-mode" onclick="switchSection('flowchart-mode')" class="nav-tab-btn quiet-link" style="border:1px solid var(--line); padding:0 14px; min-height:36px; border-radius:10px; font-size:12px; white-space:nowrap; shrink:0;">
+                    🗺️ แผนผังคดี
+                </button>
+            </div>
+        </div>
 
         <!-- MAIN CONTAINER -->
         <main class="container">
