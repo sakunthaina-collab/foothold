@@ -499,6 +499,67 @@
                 </div>
             </section>
 
+            <!-- SECTION 1.5: SECTION 9 PROOF GUIDE INFOGRAPHIC & CHECKLIST -->
+            <section class="section-box" style="border: 1px solid rgba(246,196,69,.4); background: rgba(23,36,49,.7);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                    <div>
+                        <span class="eyebrow" style="color:var(--gold); border-color:rgba(246,196,69,.4); background:rgba(246,196,69,.1);">
+                            ⭐ หลักสำคัญทางกฎหมาย
+                        </span>
+                        <h2 style="font-size:22px; margin:6px 0 0; color:var(--ink);">
+                            พิสูจน์ความผิดตาม มาตรา 9 : บัญชีที่ถูกอายัด มีความผิดหรือไม่?
+                        </h2>
+                    </div>
+                    <button onclick="openInfographicModal()" class="primary-button" style="min-height:36px; padding:0 14px; font-size:12px; background:var(--gold); color:#101923;">
+                        🔍 ดูรูปภาพอินโฟกราฟิกฉบับเต็ม
+                    </button>
+                </div>
+
+                <div style="display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1.2fr); gap: 24px; align-items:start;" class="classifier-layout">
+                    <!-- Left: Infographic Thumbnail Preview -->
+                    <div style="background:var(--navy); padding:12px; border-radius:14px; border:1px solid var(--line); text-align:center; cursor:pointer;" onclick="openInfographicModal()">
+                        <img src="img/sec9_infographic.png" alt="พิสูจน์ความผิดตาม มาตรา 9" style="width:100%; border-radius:10px; height:auto; display:block; aspect-ratio:3/4; object-fit:cover;" />
+                        <small style="color:var(--gold); display:block; margin-top:8px; font-weight:600; font-size:12px;">🔍 แตะที่รูปเพื่อขยายใหญ่</small>
+                    </div>
+
+                    <!-- Right: 4 Core Assessment Points -->
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <!-- Point 1 -->
+                        <div style="background:var(--navy-2); padding:12px 14px; border-radius:10px; border:1px solid var(--line);">
+                            <strong style="color:var(--sage); font-size:14px; display:block; margin-bottom:4px;">1️⃣ บัญชีอยู่กับตัวหรือไม่? 🔒</strong>
+                            <p style="font-size:12px; color:var(--muted); margin:0 0 6px;">สมุดคู่ฝาก, บัตร ATM, แอปฯ ธนาคาร อยู่ในความครอบครองของท่านเองตั้งแต่เปิดบัญชี</p>
+                            <div style="font-size:11px; color:#cbd5e1;">✅ หากไม่อยู่กับตัว ได้ส่งมอบอะไรให้ใครบ้าง เช่น รหัส PIN, ซิมการ์ด, รหัส OTP</div>
+                        </div>
+
+                        <!-- Point 2 -->
+                        <div style="background:var(--navy-2); padding:12px 14px; border-radius:10px; border:1px solid var(--line);">
+                            <strong style="color:var(--gold); font-size:14px; display:block; margin-bottom:4px;">2️⃣ รู้หรือควรรู้ว่าจะถูกนำไปใช้ทำผิด? ⚖️</strong>
+                            <p style="font-size:12px; color:var(--muted); margin:0 0 6px;">ผู้ที่นำบัญชีไปใช้คือใคร รู้จักกันอย่างไร ได้รับผลตอบแทนหรือไม่</p>
+                            <div style="font-size:11px; color:#cbd5e1;">⚠️ ตอนเปิดบัญชีหรือส่งมอบ ทราบหรือไม่ว่ามีความผิดตามกฎหมาย</div>
+                        </div>
+
+                        <!-- Point 3 -->
+                        <div style="background:var(--navy-2); padding:12px 14px; border-radius:10px; border:1px solid var(--line);">
+                            <strong style="color:var(--blue); font-size:14px; display:block; margin-bottom:4px;">3️⃣ ซิมการ์ด & รหัส OTP 📱</strong>
+                            <p style="font-size:12px; color:var(--muted); margin:0 0 6px;">หมายเลขโทรศัพท์ผูกแอปฯ ต้องเป็นชื่อของตนเอง ซิมการ์ดอยู่ในครอบครอง และเป็นผู้รับ OTP เอง</p>
+                        </div>
+
+                        <!-- Point 4 -->
+                        <div style="background:rgba(246,196,69,.08); padding:12px 14px; border-radius:10px; border:1px solid rgba(246,196,69,.3);">
+                            <strong style="color:var(--gold); font-size:14px; display:block; margin-bottom:4px;">4️⃣ ประเด็นสำคัญสำหรับ "ม้าเทา" 🐴</strong>
+                            <div style="font-size:12px; color:var(--sage); margin-bottom:4px;">🟢 <strong>ตอบว่า "อยู่กับตัว":</strong> ต้องพิสูจน์เส้นทางการเงินว่าโอนไปไหนเพื่อยืนยันความสุจริต (EDD)</div>
+                            <div style="font-size:12px; color:var(--red);">🔴 <strong>ตอบว่า "ไม่อยู่กับตัว":</strong> เข้าข่ายความผิดมาตรา 9 ทันที ยากต่อการขอปลดอายัด</div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-top:4px;">
+                            <button onclick="switchSection('step3-mode')" class="primary-button" style="flex:1; font-size:12px; min-height:38px;">
+                                📋 เตรียมหลักฐาน "บัญชีอยู่กับตัว" ใน Step 3 ➔
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- SECTION 2: EMERGENCY MODE -->
             <section id="sec-emergency-mode" class="page-section hidden">
                 <div class="card-panel" style="border:2px solid var(--red); background:rgba(116,48,47,.25);">
@@ -1107,6 +1168,32 @@ ${docs.map(d => "   " + d).join("\n")}
                 }
             });
         }
+
+        function openInfographicModal() {
+            const modal = document.getElementById('infographicModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeInfographicModal() {
+            const modal = document.getElementById('infographicModal');
+            if (modal) modal.classList.add('hidden');
+        }
     </script>
+
+    <!-- INFOGRAPHIC MODAL VIEWER -->
+    <div id="infographicModal" class="modal-backdrop hidden" onclick="closeInfographicModal()">
+        <div class="wizard-shell" style="width:min(96%, 740px); padding:20px; background:var(--navy-2);" onclick="event.stopPropagation()">
+            <div class="wizard-topbar" style="padding:0 0 14px; margin-bottom:14px;">
+                <h3 style="margin:0; font-size:18px; color:var(--ink);">⭐ พิสูจน์ความผิดตาม มาตรา 9 (บัญชีอยู่กับตัว vs ให้ผู้อื่นใช้)</h3>
+                <button onclick="closeInfographicModal()" class="icon-button">✕</button>
+            </div>
+            <div style="max-height:80vh; overflow-y:auto; text-align:center;">
+                <img src="img/sec9_infographic.png" alt="คู่มือพิสูจน์ความผิดตามมาตรา 9" style="width:100%; height:auto; border-radius:12px; display:block;" />
+            </div>
+            <div style="margin-top:14px; text-align:right;">
+                <button onclick="closeInfographicModal()" class="primary-button" style="min-height:36px; padding:0 16px; font-size:12px;">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
